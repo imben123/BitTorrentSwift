@@ -7,9 +7,15 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1B3C8BC97CF348658E4045BE /* Pods_BitTorrentTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F06CDEA60C367043DF5EC106 /* Pods_BitTorrentTests.framework */; };
 		B585AB781C3833450093FA41 /* BitTorrent.h in Headers */ = {isa = PBXBuildFile; fileRef = B585AB771C3833450093FA41 /* BitTorrent.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		B585AB7F1C3833450093FA41 /* BitTorrent.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B585AB741C3833450093FA41 /* BitTorrent.framework */; };
 		B585AB841C3833450093FA41 /* BitTorrentTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B585AB831C3833450093FA41 /* BitTorrentTests.swift */; };
+		B585ABBD1C383E3A0093FA41 /* BencodeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B585ABBC1C383E3A0093FA41 /* BencodeTests.swift */; };
+		B585ABC01C383EDB0093FA41 /* Bencode.swift in Sources */ = {isa = PBXBuildFile; fileRef = B585ABBF1C383EDB0093FA41 /* Bencode.swift */; };
+		B585ABC41C384BA60093FA41 /* BitsAndByteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B585ABC31C384BA60093FA41 /* BitsAndByteTests.swift */; };
+		B585ABC71C384C240093FA41 /* Bytes.swift in Sources */ = {isa = PBXBuildFile; fileRef = B585ABC61C384C240093FA41 /* Bytes.swift */; };
+		B585ABCA1C3850320093FA41 /* Ascii.swift in Sources */ = {isa = PBXBuildFile; fileRef = B585ABC91C3850320093FA41 /* Ascii.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -23,12 +29,20 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		66F0E83A1EF54A6356D316E5 /* Pods-BitTorrentTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BitTorrentTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-BitTorrentTests/Pods-BitTorrentTests.release.xcconfig"; sourceTree = "<group>"; };
+		6F83B4F06B81FAC04EF5D28F /* Pods-BitTorrentTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BitTorrentTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-BitTorrentTests/Pods-BitTorrentTests.debug.xcconfig"; sourceTree = "<group>"; };
 		B585AB741C3833450093FA41 /* BitTorrent.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = BitTorrent.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B585AB771C3833450093FA41 /* BitTorrent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BitTorrent.h; sourceTree = "<group>"; };
 		B585AB791C3833450093FA41 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B585AB7E1C3833450093FA41 /* BitTorrentTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BitTorrentTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		B585AB831C3833450093FA41 /* BitTorrentTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BitTorrentTests.swift; sourceTree = "<group>"; };
 		B585AB851C3833450093FA41 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		B585ABBC1C383E3A0093FA41 /* BencodeTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = BencodeTests.swift; path = Bencode/BencodeTests.swift; sourceTree = "<group>"; };
+		B585ABBF1C383EDB0093FA41 /* Bencode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Bencode.swift; path = Bencode/Bencode.swift; sourceTree = "<group>"; };
+		B585ABC31C384BA60093FA41 /* BitsAndByteTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = BitsAndByteTests.swift; path = Utilities/BitsAndByteTests.swift; sourceTree = "<group>"; };
+		B585ABC61C384C240093FA41 /* Bytes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Bytes.swift; path = Utilities/Bytes.swift; sourceTree = "<group>"; };
+		B585ABC91C3850320093FA41 /* Ascii.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Ascii.swift; path = Utilities/Ascii.swift; sourceTree = "<group>"; };
+		F06CDEA60C367043DF5EC106 /* Pods_BitTorrentTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BitTorrentTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -44,18 +58,38 @@
 			buildActionMask = 2147483647;
 			files = (
 				B585AB7F1C3833450093FA41 /* BitTorrent.framework in Frameworks */,
+				1B3C8BC97CF348658E4045BE /* Pods_BitTorrentTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		48E2FD7DD7B47F2D40F8F5F7 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				F06CDEA60C367043DF5EC106 /* Pods_BitTorrentTests.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		A00A8A7DDBD5AAEED8917824 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				6F83B4F06B81FAC04EF5D28F /* Pods-BitTorrentTests.debug.xcconfig */,
+				66F0E83A1EF54A6356D316E5 /* Pods-BitTorrentTests.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
 		B585AB6A1C3833450093FA41 = {
 			isa = PBXGroup;
 			children = (
 				B585AB761C3833450093FA41 /* BitTorrent */,
 				B585AB821C3833450093FA41 /* BitTorrentTests */,
 				B585AB751C3833450093FA41 /* Products */,
+				A00A8A7DDBD5AAEED8917824 /* Pods */,
+				48E2FD7DD7B47F2D40F8F5F7 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -72,6 +106,8 @@
 			isa = PBXGroup;
 			children = (
 				B585AB771C3833450093FA41 /* BitTorrent.h */,
+				B585ABC81C384C270093FA41 /* Utilities */,
+				B585ABB91C3839030093FA41 /* Bencode */,
 				B585AB791C3833450093FA41 /* Info.plist */,
 			);
 			path = BitTorrent;
@@ -81,9 +117,44 @@
 			isa = PBXGroup;
 			children = (
 				B585AB831C3833450093FA41 /* BitTorrentTests.swift */,
+				B585ABC51C384C0D0093FA41 /* Utilities */,
+				B585ABBE1C383E3D0093FA41 /* Bencode */,
 				B585AB851C3833450093FA41 /* Info.plist */,
 			);
 			path = BitTorrentTests;
+			sourceTree = "<group>";
+		};
+		B585ABB91C3839030093FA41 /* Bencode */ = {
+			isa = PBXGroup;
+			children = (
+				B585ABBF1C383EDB0093FA41 /* Bencode.swift */,
+			);
+			name = Bencode;
+			sourceTree = "<group>";
+		};
+		B585ABBE1C383E3D0093FA41 /* Bencode */ = {
+			isa = PBXGroup;
+			children = (
+				B585ABBC1C383E3A0093FA41 /* BencodeTests.swift */,
+			);
+			name = Bencode;
+			sourceTree = "<group>";
+		};
+		B585ABC51C384C0D0093FA41 /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+				B585ABC31C384BA60093FA41 /* BitsAndByteTests.swift */,
+			);
+			name = Utilities;
+			sourceTree = "<group>";
+		};
+		B585ABC81C384C270093FA41 /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+				B585ABC61C384C240093FA41 /* Bytes.swift */,
+				B585ABC91C3850320093FA41 /* Ascii.swift */,
+			);
+			name = Utilities;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -122,9 +193,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = B585AB8B1C3833450093FA41 /* Build configuration list for PBXNativeTarget "BitTorrentTests" */;
 			buildPhases = (
+				ECADB4127EA3F6BF79B8661D /* Check Pods Manifest.lock */,
 				B585AB7A1C3833450093FA41 /* Sources */,
 				B585AB7B1C3833450093FA41 /* Frameworks */,
 				B585AB7C1C3833450093FA41 /* Resources */,
+				F07B70F094871EF2DDB043E3 /* Embed Pods Frameworks */,
+				374A9349FDDCEAEA4D705738 /* Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -142,6 +216,7 @@
 		B585AB6B1C3833450093FA41 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				LastSwiftMigration = 0720;
 				LastSwiftUpdateCheck = 0720;
 				LastUpgradeCheck = 0720;
 				ORGANIZATIONNAME = "Ben Davis";
@@ -189,11 +264,62 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		374A9349FDDCEAEA4D705738 /* Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-BitTorrentTests/Pods-BitTorrentTests-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		ECADB4127EA3F6BF79B8661D /* Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		F07B70F094871EF2DDB043E3 /* Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-BitTorrentTests/Pods-BitTorrentTests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		B585AB6F1C3833450093FA41 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B585ABC01C383EDB0093FA41 /* Bencode.swift in Sources */,
+				B585ABCA1C3850320093FA41 /* Ascii.swift in Sources */,
+				B585ABC71C384C240093FA41 /* Bytes.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -201,7 +327,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B585ABBD1C383E3A0093FA41 /* BencodeTests.swift in Sources */,
 				B585AB841C3833450093FA41 /* BitTorrentTests.swift in Sources */,
+				B585ABC41C384BA60093FA41 /* BitsAndByteTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -308,6 +436,7 @@
 		B585AB891C3833450093FA41 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
@@ -318,12 +447,14 @@
 				PRODUCT_BUNDLE_IDENTIFIER = bendavis.BitTorrent;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
 		};
 		B585AB8A1C3833450093FA41 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
@@ -339,6 +470,7 @@
 		};
 		B585AB8C1C3833450093FA41 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 6F83B4F06B81FAC04EF5D28F /* Pods-BitTorrentTests.debug.xcconfig */;
 			buildSettings = {
 				INFOPLIST_FILE = BitTorrentTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
@@ -349,6 +481,7 @@
 		};
 		B585AB8D1C3833450093FA41 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 66F0E83A1EF54A6356D316E5 /* Pods-BitTorrentTests.release.xcconfig */;
 			buildSettings = {
 				INFOPLIST_FILE = BitTorrentTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
@@ -376,6 +509,7 @@
 				B585AB8A1C3833450093FA41 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		B585AB8B1C3833450093FA41 /* Build configuration list for PBXNativeTarget "BitTorrentTests" */ = {
 			isa = XCConfigurationList;
@@ -384,6 +518,7 @@
 				B585AB8D1C3833450093FA41 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

@@ -1,0 +1,105 @@
+//
+//  BitsAndByteTests.swift
+//  BitTorrent
+//
+//  Created by Ben Davis on 02/01/2016.
+//  Copyright © 2016 Ben Davis. All rights reserved.
+//
+
+import XCTest
+@testable import BitTorrent
+
+class BitsAndByteTests: XCTestCase {
+    
+    override func setUp() {
+        super.setUp()
+        // Put setup code here. This method is called before the invocation of each test method in the class.
+    }
+    
+    override func tearDown() {
+        // Put teardown code here. This method is called after the invocation of each test method in the class.
+        super.tearDown()
+    }
+    
+    func testEncode8BitInteger() {
+        let integer: UInt8 = 123
+        let data = integer.toBytes()
+        
+        let pointer = UnsafePointer<Byte>(data.bytes)
+        let value: Byte = pointer.memory
+        XCTAssertEqual(value, integer)
+    }
+    
+    func testAsciiEncodeDigit() {
+        doTestForAsciiEncodeDigit(0, ascii: 48)
+        doTestForAsciiEncodeDigit(5, ascii: 53)
+        doTestForAsciiEncodeDigit(9, ascii: 57)
+    }
+    
+    func doTestForAsciiEncodeDigit(digit: UInt8, ascii: UInt8) {
+        do {
+            let value = try digit.asciiValue()
+            XCTAssertEqual(value, ascii)
+        } catch _ {
+            XCTFail()
+        }
+    }
+    
+    func testInvalidAsciiDigit() {
+        let digit: UInt8 = 10
+        var caughtError = false
+        
+        do {
+            let _ = try digit.asciiValue()
+        } catch _ as AsciiError {
+            caughtError = true
+        } catch _ {}
+        
+        if !caughtError {
+            XCTFail()
+        }
+    }
+    
+    func testAsciiEncodeInteger() {
+        doTestForIntegerInAscii(0)
+        doTestForIntegerInAscii(1)
+        doTestForIntegerInAscii(123)
+        doTestForIntegerInAscii(9999)
+    }
+    
+    func doTestForIntegerInAscii(integer: Int) {
+        let data = integer.digitsInAscii()
+        let string = NSString(data: data, encoding: NSASCIIStringEncoding)
+        XCTAssertEqual(string, "\(integer)")
+    }
+    
+    func testAsciiEncodeCharacter() {
+        doTestForCharacterInAscii("a")
+        doTestForCharacterInAscii("z")
+        doTestForCharacterInAscii("~")
+        doTestForCharacterInAscii(" ")
+    }
+    
+    func doTestForCharacterInAscii(character: Character) {
+        let data = try! character.asciiValue()
+        let string = NSString(data: data, encoding: NSASCIIStringEncoding)!
+        XCTAssertEqual(string, "\(character)")
+    }
+    
+    func testInvalidAsciiCharacter() {
+        
+        let character: Character = "€"
+        var caughtError = false
+        
+        do {
+            let _ = try character.asciiValue()
+        } catch _ as AsciiError {
+            caughtError = true
+        } catch _ {}
+        
+        if !caughtError {
+            XCTFail()
+        }
+    }
+    
+}
