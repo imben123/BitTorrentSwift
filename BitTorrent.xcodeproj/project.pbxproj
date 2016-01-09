@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		1B3C8BC97CF348658E4045BE /* Pods_BitTorrentTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F06CDEA60C367043DF5EC106 /* Pods_BitTorrentTests.framework */; };
 		B585AB781C3833450093FA41 /* BitTorrent.h in Headers */ = {isa = PBXBuildFile; fileRef = B585AB771C3833450093FA41 /* BitTorrent.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		B585AB7F1C3833450093FA41 /* BitTorrent.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B585AB741C3833450093FA41 /* BitTorrent.framework */; };
 		B585AB841C3833450093FA41 /* BitTorrentTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B585AB831C3833450093FA41 /* BitTorrentTests.swift */; };
@@ -29,8 +28,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		66F0E83A1EF54A6356D316E5 /* Pods-BitTorrentTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BitTorrentTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-BitTorrentTests/Pods-BitTorrentTests.release.xcconfig"; sourceTree = "<group>"; };
-		6F83B4F06B81FAC04EF5D28F /* Pods-BitTorrentTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BitTorrentTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-BitTorrentTests/Pods-BitTorrentTests.debug.xcconfig"; sourceTree = "<group>"; };
 		B585AB741C3833450093FA41 /* BitTorrent.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = BitTorrent.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B585AB771C3833450093FA41 /* BitTorrent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BitTorrent.h; sourceTree = "<group>"; };
 		B585AB791C3833450093FA41 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -42,7 +39,6 @@
 		B585ABC31C384BA60093FA41 /* BitsAndByteTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = BitsAndByteTests.swift; path = Utilities/BitsAndByteTests.swift; sourceTree = "<group>"; };
 		B585ABC61C384C240093FA41 /* Bytes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Bytes.swift; path = Utilities/Bytes.swift; sourceTree = "<group>"; };
 		B585ABC91C3850320093FA41 /* Ascii.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Ascii.swift; path = Utilities/Ascii.swift; sourceTree = "<group>"; };
-		F06CDEA60C367043DF5EC106 /* Pods_BitTorrentTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BitTorrentTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -58,38 +54,18 @@
 			buildActionMask = 2147483647;
 			files = (
 				B585AB7F1C3833450093FA41 /* BitTorrent.framework in Frameworks */,
-				1B3C8BC97CF348658E4045BE /* Pods_BitTorrentTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		48E2FD7DD7B47F2D40F8F5F7 /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				F06CDEA60C367043DF5EC106 /* Pods_BitTorrentTests.framework */,
-			);
-			name = Frameworks;
-			sourceTree = "<group>";
-		};
-		A00A8A7DDBD5AAEED8917824 /* Pods */ = {
-			isa = PBXGroup;
-			children = (
-				6F83B4F06B81FAC04EF5D28F /* Pods-BitTorrentTests.debug.xcconfig */,
-				66F0E83A1EF54A6356D316E5 /* Pods-BitTorrentTests.release.xcconfig */,
-			);
-			name = Pods;
-			sourceTree = "<group>";
-		};
 		B585AB6A1C3833450093FA41 = {
 			isa = PBXGroup;
 			children = (
 				B585AB761C3833450093FA41 /* BitTorrent */,
 				B585AB821C3833450093FA41 /* BitTorrentTests */,
 				B585AB751C3833450093FA41 /* Products */,
-				A00A8A7DDBD5AAEED8917824 /* Pods */,
-				48E2FD7DD7B47F2D40F8F5F7 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -193,12 +169,9 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = B585AB8B1C3833450093FA41 /* Build configuration list for PBXNativeTarget "BitTorrentTests" */;
 			buildPhases = (
-				ECADB4127EA3F6BF79B8661D /* Check Pods Manifest.lock */,
 				B585AB7A1C3833450093FA41 /* Sources */,
 				B585AB7B1C3833450093FA41 /* Frameworks */,
 				B585AB7C1C3833450093FA41 /* Resources */,
-				F07B70F094871EF2DDB043E3 /* Embed Pods Frameworks */,
-				374A9349FDDCEAEA4D705738 /* Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -263,54 +236,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
-
-/* Begin PBXShellScriptBuildPhase section */
-		374A9349FDDCEAEA4D705738 /* Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Copy Pods Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-BitTorrentTests/Pods-BitTorrentTests-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		ECADB4127EA3F6BF79B8661D /* Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Check Pods Manifest.lock";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
-			showEnvVarsInLog = 0;
-		};
-		F07B70F094871EF2DDB043E3 /* Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Embed Pods Frameworks";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-BitTorrentTests/Pods-BitTorrentTests-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		B585AB6F1C3833450093FA41 /* Sources */ = {
@@ -470,7 +395,6 @@
 		};
 		B585AB8C1C3833450093FA41 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 6F83B4F06B81FAC04EF5D28F /* Pods-BitTorrentTests.debug.xcconfig */;
 			buildSettings = {
 				INFOPLIST_FILE = BitTorrentTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
@@ -481,7 +405,6 @@
 		};
 		B585AB8D1C3833450093FA41 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 66F0E83A1EF54A6356D316E5 /* Pods-BitTorrentTests.release.xcconfig */;
 			buildSettings = {
 				INFOPLIST_FILE = BitTorrentTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
