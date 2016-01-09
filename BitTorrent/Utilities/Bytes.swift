@@ -36,8 +36,13 @@ extension NSMutableData {
 
 extension UInt8 {
     
-    func toBytes() -> NSData {
+    func toData() -> NSData {
         return NSData(byteArray: [self])
+    }
+    
+    static func fromData(byte: NSData) -> UInt8 {
+        let pointer = UnsafePointer<UInt8>(byte.bytes)
+        return pointer.memory
     }
     
 }

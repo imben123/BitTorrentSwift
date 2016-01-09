@@ -1,5 +1,5 @@
 //
-//  BencodeTests.swift
+//  BEncoderTests.swift
 //  BitTorrent
 //
 //  Created by Ben Davis on 02/01/2016.
@@ -9,7 +9,7 @@
 import XCTest
 @testable import BitTorrent
 
-class BencodeTests: XCTestCase {
+class BEncoderTests: XCTestCase {
     
     override func setUp() {
         super.setUp()
@@ -30,63 +30,63 @@ class BencodeTests: XCTestCase {
     }
     
     func doTestEncodeInteger(integer: Int) {
-        let data = Bencode.encodeInteger(integer)
+        let data = BEncoder.encodeInteger(integer)
         let string = NSString(data: data, encoding: NSASCIIStringEncoding)
         XCTAssertEqual(string, "i\(integer)e")
     }
     
     func testEncodeBytes() {
         let byteString = NSData(byteArray: [ 1, 2, 3, 255, 0])
-        let data = Bencode.encodeByteString(byteString)
+        let data = BEncoder.encodeByteString(byteString)
         let expectedResult = try! NSMutableData(data: Character("5").asciiValue())
-            .andData(Bencode.StringSizeDelimiter)
+            .andData(BEncoder.StringSizeDelimiter)
             .andData(byteString)
         XCTAssertEqual(data, expectedResult)
     }
     
     func testEncodeString() {
-        let data = Bencode.encodeString("foobar")
+        let data = BEncoder.encodeString("foobar")
         let expectedResult = NSData(byteArray: [54, 58, 102, 111, 111, 98, 97, 114])
         XCTAssertEqual(data, expectedResult)
     }
     
     func testEncodeEmptyString() {
-        let data = Bencode.encodeString("")
+        let data = BEncoder.encodeString("")
         let expectedResult = NSData(byteArray: [48, 58])
         XCTAssertEqual(data, expectedResult)
     }
     
     func testEmptyList() {
-        let data = Bencode.encodeList([])
+        let data = BEncoder.encodeList([])
         let expectedResult = NSData(byteArray: [108, 101])
         XCTAssertEqual(data, expectedResult)
     }
     
-    func testListWithBencodedObject() {
-        let bencodedInteger = Bencode.encodeInteger(123)
-        let data = Bencode.encodeList([bencodedInteger])
+    func testListWithBEncodedObject() {
+        let bEncodedInteger = BEncoder.encodeInteger(123)
+        let data = BEncoder.encodeList([bEncodedInteger])
         let expectedResult = NSData(byteArray: [108, 105, 49, 50, 51, 101, 101])
         XCTAssertEqual(data, expectedResult)
     }
     
-    func testListWithMultipleBencodedObjects() {
+    func testListWithMultipleBEncodedObjects() {
         
         let exampleData = self.exampleListAndExpectedValues()
-        let bencodedData = Bencode.encodeList(exampleData.list)
+        let bEncodedData = BEncoder.encodeList(exampleData.list)
         let expectedResult = NSData(byteArray: exampleData.expectedValues)
 
-        XCTAssertEqual(bencodedData, expectedResult)
+        XCTAssertEqual(bEncodedData, expectedResult)
     }
     
     private func exampleListAndExpectedValues() -> (list: [NSData], expectedValues: [Byte]) {
         
-        let bencodedDataArray = [
-            Bencode.encodeInteger(123),
-            Bencode.encodeInteger(0),
-            Bencode.encodeInteger(999),
-            Bencode.encodeString("foobar"),
-            Bencode.encodeString("999"),
-            Bencode.encodeByteString(NSData(byteArray: [0, 1, 2, 3, 255]))
+        let bEncodedDataArray = [
+            BEncoder.encodeInteger(123),
+            BEncoder.encodeInteger(0),
+            BEncoder.encodeInteger(999),
+            BEncoder.encodeString("foobar"),
+            BEncoder.encodeString("999"),
+            BEncoder.encodeByteString(NSData(byteArray: [0, 1, 2, 3, 255]))
         ]
         
         let expectedResultArray: [Byte] = [
@@ -100,18 +100,18 @@ class BencodeTests: XCTestCase {
             101                                 // e
         ]
         
-        return (bencodedDataArray, expectedResultArray)
+        return (bEncodedDataArray, expectedResultArray)
     }
     
     func testEncodeEmptyDictionary() {
-        let data = Bencode.encodeDictionary([:])
+        let data = BEncoder.encodeDictionary([:])
         let expectedResult = NSData(byteArray: [100, 101]) // de
         XCTAssertEqual(data, expectedResult)
     }
     
     func testEncodeDictionaryWithOneValue() {
-        let data = Bencode.encodeDictionary([
-            NSData(byteArray: [1]) : Bencode.encodeInteger(1)
+        let data = BEncoder.encodeDictionary([
+            NSData(byteArray: [1]) : BEncoder.encodeInteger(1)
             ])
         let expectedResult = NSData(byteArray:
             [
@@ -125,50 +125,52 @@ class BencodeTests: XCTestCase {
     
     func testSimpleDictionary() {
         let exampleDictionary = exampleDictionaryAndExpectedValues()
-        let bencodedData = Bencode.encodeDictionary(exampleDictionary.dictionary)
+        let bEncodedData = BEncoder.encodeDictionary(exampleDictionary.dictionary)
         let expectedResult = NSData(byteArray: exampleDictionary.expectedValues)
-        XCTAssertEqual(bencodedData, expectedResult)
+        XCTAssertEqual(bEncodedData, expectedResult)
     }
     
     func exampleDictionaryAndExpectedValues() -> (dictionary: [NSData:NSData], expectedValues: [Byte]) {
         
         // Order is not maintained by dictionary so this test can fail due to order change
         
-        let bencodedDataDictionary = [
-            NSData(byteArray: [1])                  : Bencode.encodeInteger(1),
-            "foo".asciiValue()                      : Bencode.encodeString("bar"),
-            "baz".asciiValue()                      : Bencode.encodeByteString(NSData(byteArray: [0,7,255])),
+        let bEncodedDataDictionary = [
+            NSData(byteArray: [1])                  : BEncoder.encodeInteger(1),
+            "foo".asciiValue()                      : BEncoder.encodeString("bar"),
+            "baz".asciiValue()                      : BEncoder.encodeByteString(NSData(byteArray: [0,7,255])),
         ]
         
         let expectedResultArray: [Byte] = [
-            100, // d
+            100,                    // d
             
             51, 58, 98,  97,  122,  // 3:baz
             51, 58, 0,   7,   255,  // 3:\0x00\0x07\0xFF
             
-            49, 58, 1,      // 1:\0x1
-            105, 49, 101,   // i1e
+            49, 58, 1,              // 1:\0x1
+            105, 49, 101,           // i1e
             
-            51, 58, 102, 111, 111,      // 3:foo
-            51, 58, 98,  97,  114,   // 3:bar
+            51, 58, 102, 111, 111,  // 3:foo
+            51, 58, 98,  97,  114,  // 3:bar
             
-            101             // e
+            101                     // e
         ]
         
-        return (bencodedDataDictionary, expectedResultArray)
+        return (bEncodedDataDictionary, expectedResultArray)
     }
     
     func testEncodeDictionaryWithAllTypes() {
         
+        // Order is not maintained by dictionary so this test can fail due to order change
+
         let exampleList = self.exampleListAndExpectedValues()
         let exampleDictionary = self.exampleDictionaryAndExpectedValues()
 
-        let bencodedDataDictionary = [
-            NSData(byteArray: [1])                  : Bencode.encodeInteger(1),
-            "foo".asciiValue()                      : Bencode.encodeString("bar"),
-            "baz".asciiValue()                      : Bencode.encodeByteString(NSData(byteArray: [0,7,255])),
-            NSData(byteArray: [0])                  : Bencode.encodeList(exampleList.list),
-            NSData(byteArray: [255, 255, 255, 255]) : Bencode.encodeDictionary(exampleDictionary.dictionary)
+        let bEncodedDataDictionary = [
+            NSData(byteArray: [1])                  : BEncoder.encodeInteger(1),
+            "foo".asciiValue()                      : BEncoder.encodeString("bar"),
+            "baz".asciiValue()                      : BEncoder.encodeByteString(NSData(byteArray: [0,7,255])),
+            NSData(byteArray: [0])                  : BEncoder.encodeList(exampleList.list),
+            NSData(byteArray: [255, 255, 255, 255]) : BEncoder.encodeDictionary(exampleDictionary.dictionary)
         ]
         
         var expectedResultArray: [Byte] = [100]                                 // d
@@ -177,10 +179,10 @@ class BencodeTests: XCTestCase {
         expectedResultArray.appendContentsOf([51, 58, 0,   7,   255])           // 3:\0x00\0x07\0xFF
 
         expectedResultArray.appendContentsOf([52, 58, 255, 255, 255, 255])      // 4:\0xFF\0xFF\0xFF\0xFF
-        expectedResultArray.appendContentsOf(exampleDictionary.expectedValues)  // <bencoded values>
+        expectedResultArray.appendContentsOf(exampleDictionary.expectedValues)  // <bEncoded values>
 
         expectedResultArray.appendContentsOf([49, 58, 0])                       // 1:\0x0
-        expectedResultArray.appendContentsOf(exampleList.expectedValues)        // <bencoded values>
+        expectedResultArray.appendContentsOf(exampleList.expectedValues)        // <bEncoded values>
 
         expectedResultArray.appendContentsOf([49, 58, 1])                       // 1:\0x1
         expectedResultArray.appendContentsOf([105, 49, 101])                    // i1e
@@ -190,9 +192,9 @@ class BencodeTests: XCTestCase {
         
         expectedResultArray.append(101)                                         // e
         
-        let bencodedData = Bencode.encodeDictionary(bencodedDataDictionary)
+        let bEncodedData = BEncoder.encodeDictionary(bEncodedDataDictionary)
         let expectedResult = NSData(byteArray: expectedResultArray)
-        XCTAssertEqual(bencodedData, expectedResult)
+        XCTAssertEqual(bEncodedData, expectedResult)
         
     }
 }

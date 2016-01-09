@@ -1,5 +1,5 @@
 //
-//  Bencode.swift
+//  BEncoder.swift
 //  BitTorrent
 //
 //  Created by Ben Davis on 02/01/2016.
@@ -8,17 +8,17 @@
 
 import Foundation
 
-enum BencodeException: ErrorType {
+enum BEncoderException: ErrorType {
     case InvalidAscii
 }
 
-public class Bencode {
+public class BEncoder {
     
-    public static let IntergerStartToken: NSData = try! Character("i").asciiValue()
-    public static let StructureEndToken: NSData = try! Character("e").asciiValue()
-    public static let StringSizeDelimiter: NSData = try! Character(":").asciiValue()
-    public static let ListStartToken: NSData = try! Character("l").asciiValue()
-    public static let DictinaryStartToken: NSData = try! Character("d").asciiValue()
+    public static let IntergerStartToken:   NSData = try! Character("i").asciiValue()
+    public static let StructureEndToken:    NSData = try! Character("e").asciiValue()
+    public static let StringSizeDelimiter:  NSData = try! Character(":").asciiValue()
+    public static let ListStartToken:       NSData = try! Character("l").asciiValue()
+    public static let DictinaryStartToken:  NSData = try! Character("d").asciiValue()
     
     public class func encodeInteger(integer: Int) -> NSData {
         let data = NSMutableData(data: IntergerStartToken)
@@ -66,7 +66,7 @@ public class Bencode {
     }
     
     private class func appendKeyValuePairToDictionaryData(data: NSMutableData, key: NSData, value: NSData) -> NSMutableData {
-        data.appendData(Bencode.encodeByteString(key))
+        data.appendData(self.encodeByteString(key))
         data.appendData(value)
         return data
     }
