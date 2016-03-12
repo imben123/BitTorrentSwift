@@ -1,34 +1,15 @@
 //
-//  BitsAndByteTests.swift
+//  AsciiTests.swift
 //  BitTorrent
 //
-//  Created by Ben Davis on 02/01/2016.
+//  Created by Ben Davis on 12/03/2016.
 //  Copyright © 2016 Ben Davis. All rights reserved.
 //
 
 import XCTest
 @testable import BitTorrent
 
-class BitsAndByteTests: XCTestCase {
-    
-    override func setUp() {
-        super.setUp()
-        // Put setup code here. This method is called before the invocation of each test method in the class.
-    }
-    
-    override func tearDown() {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
-        super.tearDown()
-    }
-    
-    func testEncode8BitInteger() {
-        let integer: UInt8 = 123
-        let data = integer.toData()
-        
-        let pointer = UnsafePointer<Byte>(data.bytes)
-        let value: Byte = pointer.memory
-        XCTAssertEqual(value, integer)
-    }
+class AssciiTests: XCTestCase {
     
     func testAsciiEncodeDigit() {
         doTestForAsciiEncodeDigit(0, ascii: 48)
@@ -137,17 +118,12 @@ class BitsAndByteTests: XCTestCase {
         }
     }
     
-    func doTestForIntegerFromData(integer: UInt8) {
-        let data = integer.toData()
-        let result = UInt8.fromData(data)
-        XCTAssertEqual(result, integer)
+    func testAsciiToDigit() {
+        doTestToConvertAsciiToDigit(0)
+        doTestToConvertAsciiToDigit(5)
+        doTestToConvertAsciiToDigit(9)
     }
     
-    func testIntegerFromData() {
-        doTestForIntegerFromData(0)
-        doTestForIntegerFromData(5)
-        doTestForIntegerFromData(UInt8.max)
-    }
     
     func doTestToConvertAsciiToDigit(integer: UInt8) {
         let ascii = try! integer.asciiValue()
@@ -155,10 +131,11 @@ class BitsAndByteTests: XCTestCase {
         XCTAssertEqual(integer, result)
     }
     
-    func testAsciiToDigit() {
-        doTestToConvertAsciiToDigit(0)
-        doTestToConvertAsciiToDigit(5)
-        doTestToConvertAsciiToDigit(9)
+    func testDecodeInvalidAsciiDigit() {
+        doTestDecodeInvalidAsciiDigit(58)
+        doTestDecodeInvalidAsciiDigit(47)
+        doTestDecodeInvalidAsciiDigit(0)
+        doTestDecodeInvalidAsciiDigit(UInt8.max)
     }
     
     func doTestDecodeInvalidAsciiDigit(invalidDigit: UInt8) {
@@ -175,11 +152,10 @@ class BitsAndByteTests: XCTestCase {
         }
     }
     
-    func testDecodeInvalidAsciiDigit() {
-        doTestDecodeInvalidAsciiDigit(58)
-        doTestDecodeInvalidAsciiDigit(47)
-        doTestDecodeInvalidAsciiDigit(0)
-        doTestDecodeInvalidAsciiDigit(UInt8.max)
+    func testDecodeAsciiDigitData() {
+        doTestDecodeAsciiDigitData(0)
+        doTestDecodeAsciiDigitData(5)
+        doTestDecodeAsciiDigitData(9)
     }
     
     func doTestDecodeAsciiDigitData(digit: UInt8) {
@@ -188,21 +164,9 @@ class BitsAndByteTests: XCTestCase {
         XCTAssertEqual(digit, result)
     }
     
-    func testDecodeAsciiDigitData() {
-        doTestDecodeAsciiDigitData(0)
-        doTestDecodeAsciiDigitData(5)
-        doTestDecodeAsciiDigitData(9)
-    }
-    
     func testEmptyDataGivesZeroIntegerValue() {
         let result = try! Int.fromAsciiData(NSData())
         XCTAssertEqual(result, 0)
-    }
-    
-    func dotestDecodeAsciiInteger(integer: Int) {
-        let data = integer.digitsInAscii()
-        let result = try! Int.fromAsciiData(data)
-        XCTAssertEqual(result, integer)
     }
     
     func testDecodeAsciiInteger() {
@@ -210,6 +174,12 @@ class BitsAndByteTests: XCTestCase {
         dotestDecodeAsciiInteger(5)
         dotestDecodeAsciiInteger(255)
         dotestDecodeAsciiInteger(9999)
+    }
+    
+    func dotestDecodeAsciiInteger(integer: Int) {
+        let data = integer.digitsInAscii()
+        let result = try! Int.fromAsciiData(data)
+        XCTAssertEqual(result, integer)
     }
     
     func testErrorThrownIfInvalidAsciiData() {
@@ -226,23 +196,4 @@ class BitsAndByteTests: XCTestCase {
         }
     }
     
-    func testGetByteAtIndex() {
-        let data = NSData(byteArray: [0,1,2,3,4,5])
-        for i: Byte in 0...5 {
-            XCTAssertEqual(data[Int(i)], i)
-        }
-    }
-    
-    func testOutOfBoundsExceptionOnInvalidIndex() {
-        let data = NSData(byteArray: [0,1,2,3,4,5])
-        
-        let error1 = data[999]
-        XCTAssertNil(error1)
-        
-        let error2 = data[6]
-        XCTAssertNil(error2)
-        
-        let error3 = data[-1]
-        XCTAssertNil(error3)
-    }
 }
