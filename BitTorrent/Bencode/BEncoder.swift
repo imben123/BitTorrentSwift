@@ -61,6 +61,18 @@ public class BEncoder {
         }
     }
     
+    public class func encodeDictionary(dictionary: [String:NSData]) throws -> NSData {
+        let dictionaryWithEncodedKeys = try self.createDictionaryWithEncodedKeys(dictionary)
+        return self.encodeDictionary(dictionaryWithEncodedKeys)
+    }
+    
+    private class func createDictionaryWithEncodedKeys(dictionary: [String:NSData]) throws -> [NSData:NSData] {
+        var dictionaryWithEncodedKeys: [NSData: NSData] = [:]
+        for (key, value) in dictionary {
+            dictionaryWithEncodedKeys[try key.asciiValue()] = value
+        }
+        return dictionaryWithEncodedKeys
+    }
     public class func encodeDictionary(dictionary: [NSData:NSData]) -> NSData {
         let innerData = encodeDictionaryInnerValues(dictionary)
         return NSMutableData(data: DictinaryStartToken).andData(innerData).andData(StructureEndToken)
