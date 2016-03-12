@@ -9,6 +9,43 @@
 import XCTest
 @testable import BitTorrent
 
+class ByteStreamTests: XCTestCase {
+
+    func testCanCreateByteStreamWithData() {
+        let _ = ByteStream(data: NSData())
+    }
+    
+    func testCannotGetAnyBytesFromEmptyData() {
+        let byteStream = ByteStream(data: NSData())
+        let byte = byteStream.nextByte()
+        XCTAssertNil(byte)
+    }
+    
+    func testCanGetFirstByte() {
+        let byteStream = ByteStream(data: NSData(byteArray: [5]))
+        let byte = byteStream.nextByte()
+        XCTAssertEqual(byte, 5)
+    }
+    
+    func testCanGetFirstAndSecondByte() {
+        let byteStream = ByteStream(data: NSData(byteArray: [5, 6]))
+        let byte1 = byteStream.nextByte()
+        let byte2 = byteStream.nextByte()
+        XCTAssertEqual(byte1, 5)
+        XCTAssertEqual(byte2, 6)
+    }
+    
+    func testCannotGetMoreBytesThanExist() {
+        let byteStream = ByteStream(data: NSData(byteArray: [5, 6]))
+        let byte1 = byteStream.nextByte()
+        let byte2 = byteStream.nextByte()
+        let byte3 = byteStream.nextByte()
+        XCTAssertEqual(byte1, 5)
+        XCTAssertEqual(byte2, 6)
+        XCTAssertNil(byte3)
+    }
+}
+
 class BEncoderDecodeTests: XCTestCase {
 
 }

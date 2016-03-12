@@ -8,6 +8,35 @@
 
 import Foundation
 
+class ByteStream {
+    
+    let data: NSData
+    private var pointer: UnsafePointer<Byte>
+    private var currentIndex = 0
+    private let length: Int
+    
+    init(data: NSData) {
+        self.data = data
+        self.pointer = UnsafePointer<Byte>(data.bytes)
+        self.length = data.length
+    }
+    
+    func nextByte() -> Byte? {
+        if self.currentIndex == self.length {
+            return nil
+        }
+        let result = self.pointer.memory
+        self.advancePointer()
+        return result
+    }
+    
+    private func advancePointer() {
+        self.pointer = self.pointer.advancedBy(1)
+        self.currentIndex++
+    }
+    
+}
+
 public extension BEncoder {
 
     
