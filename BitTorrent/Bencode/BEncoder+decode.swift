@@ -8,53 +8,6 @@
 
 import Foundation
 
-public protocol ByteStream {
-    var currentIndex: Int { get }
-    func nextByte() -> Byte?
-    func indexIsValid(index: Int) -> Bool
-    func nextBytes(numberOfBytes: Int) -> NSData?
-}
-
-class NSDataByteStream: ByteStream {
-    
-    var currentIndex = 0
-    private let data: NSData
-    private let length: Int
-    private var pointer: UnsafePointer<Byte>
-    
-    init(data: NSData) {
-        self.data = data
-        self.pointer = UnsafePointer<Byte>(data.bytes)
-        self.length = data.length
-    }
-    
-    func nextByte() -> Byte? {
-        if self.currentIndex == self.length {
-            return nil
-        }
-        let result = self.pointer.memory
-        self.advancePointer()
-        return result
-    }
-    
-    private func advancePointer() {
-        self.pointer = self.pointer.advancedBy(1)
-        self.currentIndex++
-    }
-    
-    func indexIsValid(index: Int) -> Bool {
-        return index >= 0 && index <= self.length
-    }
-    
-    func nextBytes(numberOfBytes: Int) -> NSData? {
-        if !self.indexIsValid(self.currentIndex + numberOfBytes) {
-            return nil
-        }
-        return self.data.subdataWithRange(NSMakeRange(self.currentIndex, numberOfBytes))
-    }
-    
-}
-
 public extension BEncoder {
     
     public class func decodeInteger(data: NSData) throws -> Int {
