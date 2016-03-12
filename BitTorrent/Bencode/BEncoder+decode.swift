@@ -66,5 +66,16 @@ public extension BEncoder {
         return byteStream.nextBytes(numberOfBytes)!
     }
 
+    public class func decodeString(data: NSData) throws -> String {
+        return try self.decodeString(NSDataByteStream(data: data));
+    }
+
+    class func decodeString(byteStream: ByteStream) throws -> String {
+        let data = try self.decodeByteString(byteStream)
+        guard let result = String(asciiData: data) else {
+            throw AsciiError.Invalid
+        }
+        return result
+    }
     
 }

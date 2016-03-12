@@ -117,5 +117,19 @@ class BEncoderDecodeTests: XCTestCase {
         }
 
     }
+    
+    func testDecodeEmptyString() {
+        let emptyString = ""
+        let input = BEncoder.encodeString(emptyString)
+        let result = try! BEncoder.decodeString(input)
+        XCTAssertEqual(emptyString, result)
+    }
+    
+    func testDecodeString() {
+        let string = "A simple test string"
+        let input = BEncoder.encodeString(string)
+        let result = try! BEncoder.decodeString(input)
+        XCTAssertEqual(string, result)
+    }
 
 }

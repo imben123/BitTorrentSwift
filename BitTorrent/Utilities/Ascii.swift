@@ -111,16 +111,15 @@ extension Character {
 
 extension String {
     
+    init?(asciiData: NSData) {
+        self.init(data: asciiData, encoding: NSASCIIStringEncoding)
+    }
+    
     func asciiValue() throws -> NSData {
-        let data = NSMutableData()
-        for character in self.utf8 {
-            if UnicodeScalar(character).isASCII() {
-                data.appendData(character.toData())
-            } else {
-                throw AsciiError.Invalid
-            }
+        guard let result = (self as NSString).dataUsingEncoding(NSASCIIStringEncoding) else {
+            throw AsciiError.Invalid
         }
-        return data
+        return result
     }
     
 }
