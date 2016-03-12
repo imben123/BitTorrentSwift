@@ -23,6 +23,28 @@ extension NSData {
         return result
     }
     
+    subscript(index: Int) -> Byte? {
+        get {
+            if index < 0 || index >= self.length {
+                return nil
+            }
+            let originPointer = self.bytes
+            let memoryPointer = UnsafePointer<Byte>(originPointer.advancedBy(index))
+            return memoryPointer.memory
+        }
+    }
+    
+    subscript(range: Range<Int>) -> NSData? {
+        get {
+            let location = range.startIndex
+            let length = range.endIndex - range.startIndex
+            if range.startIndex < 0 || range.endIndex >= self.length {
+                return nil
+            }
+            return self.subdataWithRange(NSMakeRange(location, length))
+        }
+    }
+    
 }
 
 extension NSMutableData {

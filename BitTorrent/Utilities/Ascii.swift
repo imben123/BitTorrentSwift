@@ -102,10 +102,14 @@ extension Character {
 
 extension String {
     
-    func asciiValue() -> NSData {
+    func asciiValue() throws -> NSData {
         let data = NSMutableData()
         for character in self.utf8 {
-            data.appendData(character.toData())
+            if UnicodeScalar(character).isASCII() {
+                data.appendData(character.toData())
+            } else {
+                throw AsciiError.Invalid
+            }
         }
         return data
     }

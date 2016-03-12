@@ -73,6 +73,28 @@ class BitsAndByteTests: XCTestCase {
         XCTAssertEqual(string, "\(integer)")
     }
     
+    func testAsciiEncodeString() {
+        let string = "abc"
+        let data = try! string.asciiValue()
+        let result = NSString(data: data, encoding: NSASCIIStringEncoding)
+        XCTAssertEqual(string, result)
+    }
+    
+    func testAsciiEncodeStringThrowsOnInvalidAscii() {
+        let string = "ab€c"
+        var caughtError = false
+        
+        do {
+            let _ = try string.asciiValue()
+        } catch _ as AsciiError {
+            caughtError = true
+        } catch _ {}
+        
+        if !caughtError {
+            XCTFail()
+        }
+    }
+    
     func testAsciiEncodeCharacter() {
         doTestForCharacterInAscii("a")
         doTestForCharacterInAscii("z")
@@ -189,5 +211,25 @@ class BitsAndByteTests: XCTestCase {
         if !caughtError {
             XCTFail()
         }
+    }
+    
+    func testGetByteAtIndex() {
+        let data = NSData(byteArray: [0,1,2,3,4,5])
+        for i: Byte in 0...5 {
+            XCTAssertEqual(data[Int(i)], i)
+        }
+    }
+    
+    func testOutOfBoundsExceptionOnInvalidIndex() {
+        let data = NSData(byteArray: [0,1,2,3,4,5])
+        
+        let error1 = data[999]
+        XCTAssertNil(error1)
+        
+        let error2 = data[6]
+        XCTAssertNil(error2)
+        
+        let error3 = data[-1]
+        XCTAssertNil(error3)
     }
 }

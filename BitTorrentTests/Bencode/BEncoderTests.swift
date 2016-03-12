@@ -136,8 +136,8 @@ class BEncoderTests: XCTestCase {
         
         let bEncodedDataDictionary = [
             NSData(byteArray: [1])                  : BEncoder.encodeInteger(1),
-            "foo".asciiValue()                      : BEncoder.encodeString("bar"),
-            "baz".asciiValue()                      : BEncoder.encodeByteString(NSData(byteArray: [0,7,255])),
+            try! "foo".asciiValue()                 : BEncoder.encodeString("bar"),
+            try! "baz".asciiValue()                 : BEncoder.encodeByteString(NSData(byteArray: [0,7,255])),
         ]
         
         let expectedResultArray: [Byte] = [
@@ -167,8 +167,8 @@ class BEncoderTests: XCTestCase {
 
         let bEncodedDataDictionary = [
             NSData(byteArray: [1])                  : BEncoder.encodeInteger(1),
-            "foo".asciiValue()                      : BEncoder.encodeString("bar"),
-            "baz".asciiValue()                      : BEncoder.encodeByteString(NSData(byteArray: [0,7,255])),
+            try! "foo".asciiValue()                 : BEncoder.encodeString("bar"),
+            try! "baz".asciiValue()                 : BEncoder.encodeByteString(NSData(byteArray: [0,7,255])),
             NSData(byteArray: [0])                  : BEncoder.encodeList(exampleList.list),
             NSData(byteArray: [255, 255, 255, 255]) : BEncoder.encodeDictionary(exampleDictionary.dictionary)
         ]

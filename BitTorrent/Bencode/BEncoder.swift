@@ -10,6 +10,7 @@ import Foundation
 
 enum BEncoderException: ErrorType {
     case InvalidAscii
+    case InvalidBEncode
 }
 
 public class BEncoder {
@@ -38,7 +39,7 @@ public class BEncoder {
         let stringUTF8 = string.utf8
         let data = NSMutableData(data: stringUTF8.count.digitsInAscii())
             .andData(StringSizeDelimiter)
-            .andData(string.asciiValue())
+            .andData(try! string.asciiValue())
         return data
     }
     
