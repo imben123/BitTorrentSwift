@@ -9,26 +9,26 @@
 import XCTest
 @testable import BitTorrent
 
-class ByteStreamTests: XCTestCase {
+class NSDataByteStreamTests: XCTestCase {
 
     func testCanCreateByteStreamWithData() {
-        let _ = ByteStream(data: NSData())
+        let _ = NSDataByteStream(data: NSData())
     }
     
     func testCannotGetAnyBytesFromEmptyData() {
-        let byteStream = ByteStream(data: NSData())
+        let byteStream = NSDataByteStream(data: NSData())
         let byte = byteStream.nextByte()
         XCTAssertNil(byte)
     }
     
     func testCanGetFirstByte() {
-        let byteStream = ByteStream(data: NSData(byteArray: [5]))
+        let byteStream = NSDataByteStream(data: NSData(byteArray: [5]))
         let byte = byteStream.nextByte()
         XCTAssertEqual(byte, 5)
     }
     
     func testCanGetFirstAndSecondByte() {
-        let byteStream = ByteStream(data: NSData(byteArray: [5, 6]))
+        let byteStream = NSDataByteStream(data: NSData(byteArray: [5, 6]))
         let byte1 = byteStream.nextByte()
         let byte2 = byteStream.nextByte()
         XCTAssertEqual(byte1, 5)
@@ -36,13 +36,37 @@ class ByteStreamTests: XCTestCase {
     }
     
     func testCannotGetMoreBytesThanExist() {
-        let byteStream = ByteStream(data: NSData(byteArray: [5, 6]))
+        let byteStream = NSDataByteStream(data: NSData(byteArray: [5, 6]))
         let byte1 = byteStream.nextByte()
         let byte2 = byteStream.nextByte()
         let byte3 = byteStream.nextByte()
         XCTAssertEqual(byte1, 5)
         XCTAssertEqual(byte2, 6)
         XCTAssertNil(byte3)
+    }
+    
+    func testCanGetMultipleBytes() {
+        let byteStream = NSDataByteStream(data: NSData(byteArray: [5, 6, 7]))
+        let bytes = byteStream.nextBytes(2)
+        XCTAssertEqual(bytes, NSData(byteArray: [5, 6]))
+    }
+    
+    func testCanGetAllBytes() {
+        let byteStream = NSDataByteStream(data: NSData(byteArray: [5, 6, 7]))
+        let bytes = byteStream.nextBytes(3)
+        XCTAssertEqual(bytes, NSData(byteArray: [5, 6, 7]))
+    }
+    
+    func testCanGet0Bytes() {
+        let byteStream = NSDataByteStream(data: NSData(byteArray: [5, 6, 7]))
+        let bytes = byteStream.nextBytes(0)
+        XCTAssertEqual(bytes, NSData())
+    }
+    
+    func testCannotGetTooManyBytes() {
+        let byteStream = NSDataByteStream(data: NSData(byteArray: [5, 6, 7]))
+        let bytes = byteStream.nextBytes(4)
+        XCTAssertNil(bytes)
     }
 }
 
@@ -89,89 +113,70 @@ class BEncoderDecodeTests: XCTestCase {
             try BEncoder.decodeInteger("i1x1e".asciiValue())
         }
     }
-    
-}
 
-//class BEncoderDecodeTests: XCTestCase {
-//    
-//    // MARK: -
-//    
-//    func testDecode0ByteString() {
-//        let input = try! NSMutableData(data: Character("0").asciiValue())
-//            .andData(BEncoder.StringSizeDelimiter)
-//        
-//        let result = try! BEncoder.decodeByteString(input)
-//        
-//        XCTAssertEqual(result, NSData())
-//    }
-//    
-//    func testDecode5ByteString() {
-//        let byteString = NSData(byteArray: [ 1, 2, 3, 255, 0])
-//        let input = try! NSMutableData(data: Character("5").asciiValue())
-//            .andData(BEncoder.StringSizeDelimiter)
-//            .andData(byteString)
-//        
-//        let result = try! BEncoder.decodeByteString(input)
-//        
-//        XCTAssertEqual(result, byteString)
-//    }
-//    
-//    func testDecode10ByteString() {
-//        let byteString = NSData(byteArray: [1,2,3,4,5,6,7,8,9,0])
-//        let input = try! NSMutableData(data: "10".asciiValue())
-//            .andData(BEncoder.StringSizeDelimiter)
-//            .andData(byteString)
-//        
-//        let result = try! BEncoder.decodeByteString(input)
-//        
-//        XCTAssertEqual(result, byteString)
-//    }
-//    
-//    func testExceptionThrownIfNoDelimiter() {
-//        let input = try! NSMutableData(data: Character("1").asciiValue())
-//            .andData(NSData(byteArray: [ 5 ]))
-//        
-//        assertExceptionThrown(BEncoderException.InvalidBEncode) {
-//            let _ = try BEncoder.decodeByteString(input)
-//        }
-//        
-//    }
-//    
-//    func testExceptionThrownIfStringLengthMissing() {
-//        let input = NSMutableData(data: BEncoder.StringSizeDelimiter)
-//            .andData(NSData(byteArray: [ 5 ]))
-//        
-//        assertExceptionThrown(BEncoderException.InvalidBEncode) {
-//            let _ = try BEncoder.decodeByteString(input)
-//        }
-//    }
-//    
-//    func testExceptionThrownIfStringLengthIsNaN() {
-//        let input = try! NSMutableData(data: Character("x").asciiValue())
-//            .andData(BEncoder.StringSizeDelimiter)
-//            .andData(NSData(byteArray: [ 5 ]))
-//        
-//        assertExceptionThrown(BEncoderException.InvalidBEncode) {
-//            let _ = try BEncoder.decodeByteString(input)
-//        }
-//        
-//    }
-//    
-//    func testExceptionThrownIfStringLengthWrong() {
-//        
-//        let shortInput = try! NSMutableData(data: Character("5").asciiValue())
-//            .andData(BEncoder.StringSizeDelimiter)
-//            .andData(NSData(byteArray: [ 1, 2, 3, 255]))
-//        
-//        let longInput = try! NSMutableData(data: Character("5").asciiValue())
-//            .andData(BEncoder.StringSizeDelimiter)
-//            .andData(NSData(byteArray: [ 1, 2, 3, 255, 0, 5]))
-//        
-//        
-//        assertExceptionThrown(BEncoderException.InvalidBEncode) {
-//            let _ = try BEncoder.decodeByteString(shortInput)
-//            let _ = try BEncoder.decodeByteString(longInput)
-//        }
-//    }
-//
-//}
+    // MARK: -
+
+    func testDecode0ByteString() {
+        let input = try! NSMutableData(data: Character("0").asciiValue())
+            .andData(BEncoder.StringSizeDelimiterToken)
+        
+        let result = try! BEncoder.decodeByteString(input)
+        
+        XCTAssertEqual(result, NSData())
+    }
+    
+    func testDecode5ByteString() {
+        let byteString = NSData(byteArray: [ 1, 2, 3, 255, 0])
+        let input = try! NSMutableData(data: Character("5").asciiValue())
+            .andData(BEncoder.StringSizeDelimiterToken)
+            .andData(byteString)
+        
+        let result = try! BEncoder.decodeByteString(input)
+        
+        XCTAssertEqual(result, byteString)
+    }
+
+    func testDecode10ByteString() {
+        let byteString = NSData(byteArray: [1,2,3,4,5,6,7,8,9,0])
+        let input = try! NSMutableData(data: "10".asciiValue())
+            .andData(BEncoder.StringSizeDelimiterToken)
+            .andData(byteString)
+        
+        let result = try! BEncoder.decodeByteString(input)
+        
+        XCTAssertEqual(result, byteString)
+    }
+    
+    func testExceptionThrownIfNoDelimiter() {
+        let input = try! NSMutableData(data: Character("1").asciiValue())
+            .andData(NSData(byteArray: [ 5 ]))
+        
+        assertExceptionThrown(BEncoderException.InvalidBEncode) {
+            let _ = try BEncoder.decodeByteString(input)
+        }
+        
+    }
+    
+    func testExceptionThrownIfStringLengthIsNaN() {
+        let input = try! NSMutableData(data: Character("x").asciiValue())
+            .andData(BEncoder.StringSizeDelimiterToken)
+            .andData(NSData(byteArray: [ 5 ]))
+        
+        assertExceptionThrown(BEncoderException.InvalidBEncode) {
+            let _ = try BEncoder.decodeByteString(input)
+        }
+        
+    }
+    
+    func testExceptionThrownIfStringLengthShort() {
+        let shortInput = try! NSMutableData(data: Character("5").asciiValue())
+            .andData(BEncoder.StringSizeDelimiterToken)
+            .andData(NSData(byteArray: [ 1, 2, 3, 255]))
+        
+        assertExceptionThrown(BEncoderException.InvalidBEncode) {
+            let _ = try BEncoder.decodeByteString(shortInput)
+        }
+
+    }
+
+}

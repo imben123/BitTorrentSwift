@@ -39,7 +39,7 @@ class BEncoderTests: XCTestCase {
         let byteString = NSData(byteArray: [ 1, 2, 3, 255, 0])
         let data = BEncoder.encodeByteString(byteString)
         let expectedResult = try! NSMutableData(data: Character("5").asciiValue())
-            .andData(BEncoder.StringSizeDelimiter)
+            .andData(BEncoder.StringSizeDelimiterToken)
             .andData(byteString)
         XCTAssertEqual(data, expectedResult)
     }

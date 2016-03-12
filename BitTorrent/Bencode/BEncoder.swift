@@ -15,11 +15,17 @@ enum BEncoderException: ErrorType {
 
 public class BEncoder {
     
-    public static let IntergerStartToken:   NSData = try! Character("i").asciiValue()
-    public static let StructureEndToken:    NSData = try! Character("e").asciiValue()
-    public static let StringSizeDelimiter:  NSData = try! Character(":").asciiValue()
-    public static let ListStartToken:       NSData = try! Character("l").asciiValue()
-    public static let DictinaryStartToken:  NSData = try! Character("d").asciiValue()
+    static let ascii_i:      Byte = 105
+    static let ascii_e:      Byte = 101
+    static let ascii_colon:  Byte = 58
+    static let ascii_l:      Byte = 108
+    static let ascii_d:      Byte = 100
+    
+    static let IntergerStartToken:       NSData = try! Character("i").asciiValue()
+    static let StructureEndToken:        NSData = try! Character("e").asciiValue()
+    static let StringSizeDelimiterToken: NSData = try! Character(":").asciiValue()
+    static let ListStartToken:           NSData = try! Character("l").asciiValue()
+    static let DictinaryStartToken:      NSData = try! Character("d").asciiValue()
     
     public class func encodeInteger(integer: Int) -> NSData {
         let data = NSMutableData(data: IntergerStartToken)
@@ -31,14 +37,14 @@ public class BEncoder {
     public class func encodeByteString(byteString: NSData) -> NSData {
         let numberOfBytes = byteString.length
         return NSMutableData(data: numberOfBytes.digitsInAscii())
-            .andData(StringSizeDelimiter)
+            .andData(StringSizeDelimiterToken)
             .andData(byteString)
     }
     
     public class func encodeString(string: String) -> NSData {
         let stringUTF8 = string.utf8
         let data = NSMutableData(data: stringUTF8.count.digitsInAscii())
-            .andData(StringSizeDelimiter)
+            .andData(StringSizeDelimiterToken)
             .andData(try! string.asciiValue())
         return data
     }
