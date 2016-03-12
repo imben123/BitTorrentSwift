@@ -48,51 +48,51 @@ class ByteStreamTests: XCTestCase {
 
 class BEncoderDecodeTests: XCTestCase {
 
+    func testCanDecodeInteger() {
+        encodeIntegerAndTestDecode(0)
+        encodeIntegerAndTestDecode(1)
+        encodeIntegerAndTestDecode(255)
+        encodeIntegerAndTestDecode(99999)
+    }
+    
+    func encodeIntegerAndTestDecode(integer: Int) {
+        let encodedInteger = BEncoder.encodeInteger(integer)
+        decodeIntegerAndCompare(encodedInteger, expectedResult: integer)
+    }
+    
+    func decodeIntegerAndCompare(bEncodedInteger: NSData, expectedResult: Int) {
+        let result = try! BEncoder.decodeInteger(bEncodedInteger)
+        XCTAssertEqual(result, expectedResult)
+    }
+    
+    func testExceptionThrownIfFirstCharacterNotLowerCaseI() {
+        assertExceptionThrown(BEncoderException.InvalidBEncode) {
+            try BEncoder.decodeInteger("x5e".asciiValue())
+        }
+    }
+    
+    func testExceptionThrownIfLastCharacterNotLowerCaseE() {
+        assertExceptionThrown(BEncoderException.InvalidBEncode) {
+            try BEncoder.decodeInteger("i5x".asciiValue())
+        }
+    }
+    
+    func testExceptionThrownIfMissingLastCharacter() {
+        assertExceptionThrown(BEncoderException.InvalidBEncode) {
+            try BEncoder.decodeInteger("i5".asciiValue())
+        }
+    }
+    
+    func testExceptionThrownIfNotValidNumber() {
+        assertExceptionThrown(BEncoderException.InvalidBEncode) {
+            try BEncoder.decodeInteger("ixe".asciiValue())
+            try BEncoder.decodeInteger("i1x1e".asciiValue())
+        }
+    }
+    
 }
 
 //class BEncoderDecodeTests: XCTestCase {
-//    
-//    func testCanDecodeInteger() {
-//        encodeIntegerAndTestDecode(0)
-//        encodeIntegerAndTestDecode(1)
-//        encodeIntegerAndTestDecode(255)
-//        encodeIntegerAndTestDecode(99999)
-//    }
-//    
-//    func encodeIntegerAndTestDecode(integer: Int) {
-//        let encodedInteger = BEncoder.encodeInteger(integer)
-//        decodeIntegerAndCompare(encodedInteger, expectedResult: integer)
-//    }
-//    
-//    func decodeIntegerAndCompare(bEncodedInteger: NSData, expectedResult: Int) {
-//        let result = try! BEncoder.decodeInteger(bEncodedInteger)
-//        XCTAssertEqual(result, expectedResult)
-//    }
-//    
-//    func testExceptionThrownIfFirstCharacterNoti() {
-//        assertExceptionThrown(BEncoderException.InvalidBEncode) {
-//            try BEncoder.decodeInteger("x5e".asciiValue())
-//        }
-//    }
-//    
-//    func testExceptionThrownIfLastCharacterNote() {
-//        assertExceptionThrown(BEncoderException.InvalidBEncode) {
-//            try BEncoder.decodeInteger("i5x".asciiValue())
-//        }
-//    }
-//    
-//    func testExceptionThrownIfNotValidNumber() {
-//        assertExceptionThrown(BEncoderException.InvalidBEncode) {
-//            try BEncoder.decodeInteger("ixe".asciiValue())
-//            try BEncoder.decodeInteger("i1x1e".asciiValue())
-//        }
-//    }
-//    
-//    func testCanDecodeIntegerWithTrailingCharacters() {
-////        let testInteger = 567
-////        let result = try! BEncoder.decodeInteger("i\(testInteger)e some more characters".asciiValue())
-////        XCTAssertEqual(result, testInteger)
-//    }
 //    
 //    // MARK: -
 //    

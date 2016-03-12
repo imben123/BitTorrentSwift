@@ -39,6 +39,46 @@ class ByteStream {
 
 public extension BEncoder {
 
+    internal static let asciiE: Byte = 101
+    internal static let asciiI: Byte = 105
+    
+    public class func decodeInteger(data: NSData) throws -> Int {
+        
+        let byteStream = ByteStream(data: data)
+        
+        try self.testFirstByte(byteStream, expectedFirstByte: asciiI)
+
+        var currentDigit = byteStream.nextByte()
+        var result: Int = 0
+        while currentDigit != asciiE {
+            result = try self.appendNextDigitIfNotNil(result, currentDigit: currentDigit)
+            currentDigit = byteStream.nextByte()
+        }
+        return Int(result)
+    }
+    
+    private class func testFirstByte(byteStream: ByteStream, expectedFirstByte: Byte) throws {
+        let firstByte = byteStream.nextByte()
+        if firstByte != expectedFirstByte {
+            throw BEncoderException.InvalidBEncode
+        }
+    }
+    
+    private class func appendNextDigitIfNotNil(integer: Int, currentDigit: Byte?) throws -> Int {
+        if let digit = currentDigit {
+            return try self.appendAsciiDigitToInteger(integer, digit: digit)
+        } else {
+            throw BEncoderException.InvalidBEncode
+        }
+    }
+    
+    private class func appendAsciiDigitToInteger(integer: Int, digit: UInt8) throws -> Int {
+        do {
+            return try integer.appendAsciiDigit(digit)
+        } catch let e as AsciiError where e == AsciiError.Invalid {
+            throw BEncoderException.InvalidBEncode
+        }
+    }
     
 }
 
