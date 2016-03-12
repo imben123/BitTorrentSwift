@@ -73,6 +73,19 @@ class BitsAndByteTests: XCTestCase {
         XCTAssertEqual(string, "\(integer)")
     }
     
+    func testAppendAsciiDigit() {
+        doTestAppendAsciiDigit(123, digit: 4, expectedResult: 1234)
+        doTestAppendAsciiDigit(1, digit: 0, expectedResult: 10)
+        doTestAppendAsciiDigit(567, digit: 0, expectedResult: 5670)
+        doTestAppendAsciiDigit(0, digit: 4, expectedResult: 4)
+        doTestAppendAsciiDigit(0, digit: 0, expectedResult: 0)
+    }
+    
+    func doTestAppendAsciiDigit(integer: Int, digit: UInt8, expectedResult: Int) {
+        let result = try! integer.appendAsciiDigit(try! digit.asciiValue())
+        XCTAssertEqual(result, expectedResult, "\(integer)\(digit) != \(result)")
+    }
+    
     func testAsciiEncodeString() {
         let string = "abc"
         let data = try! string.asciiValue()

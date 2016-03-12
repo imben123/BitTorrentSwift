@@ -82,6 +82,15 @@ extension Int {
     
 }
 
+extension Int {
+    
+    func appendAsciiDigit(asciiDigit: Byte) throws -> Int {
+        let digit = Int(try asciiDigit.fromAsciiValue())
+        return self*10 + digit
+    }
+    
+}
+
 extension Character {
     
     func asciiValue() throws -> NSData {
