@@ -48,4 +48,18 @@ class NSDataByteStream: ByteStream {
         return index >= 0 && index <= self.length
     }
     
+    func advanceBy(numberOfBytes: Int) {
+        
+        let finalIndex = self.currentIndex + numberOfBytes
+        
+        if finalIndex > self.length {
+            self.advancePointer(self.length - self.currentIndex)
+        } else if finalIndex < 0 {
+            self.advancePointer(-self.currentIndex)
+        } else {
+            self.advancePointer(numberOfBytes)
+        }
+        
+    }
+    
 }

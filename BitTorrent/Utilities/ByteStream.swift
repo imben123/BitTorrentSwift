@@ -17,5 +17,7 @@ public protocol ByteStream {
     func nextBytes(numberOfBytes: Int) -> NSData?
 
     func indexIsValid(index: Int) -> Bool
+    
+    func advanceBy(numberOfBytes: Int)
 
 }

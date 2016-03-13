@@ -84,4 +84,53 @@ class NSDataByteStreamTests: XCTestCase {
         XCTAssertEqual(bytes, NSData(byteArray: [5, 6]))
         XCTAssertEqual(byte, UInt8(7))
     }
+    
+    func testCanAdvanceForward1Byte() {
+        let byteStream = NSDataByteStream(data: NSData(byteArray: [5, 6, 7, 8]))
+        byteStream.advanceBy(1)
+        let byte = byteStream.nextByte()
+        XCTAssertEqual(byte, 6)
+    }
+    
+    func testCanAdvanceForwardMultipleBytes() {
+        let byteStream = NSDataByteStream(data: NSData(byteArray: [5, 6, 7, 8]))
+        byteStream.advanceBy(3)
+        let byte = byteStream.nextByte()
+        XCTAssertEqual(byte, 8)
+    }
+    
+    func testCanAdvanceBackward1Byte() {
+        let byteStream = NSDataByteStream(data: NSData(byteArray: [5, 6, 7, 8]))
+        
+        var byte = byteStream.nextByte()
+        XCTAssertEqual(byte, 5)
+        
+        byteStream.advanceBy(-1)
+        byte = byteStream.nextByte()
+        XCTAssertEqual(byte, 5)
+    }
+    
+    func testCanAdvanceBackwardMultipleBytes() {
+        let byteStream = NSDataByteStream(data: NSData(byteArray: [5, 6, 7, 8]))
+        
+        var byte = byteStream.nextByte()
+        byte = byteStream.nextByte()
+        XCTAssertEqual(byte, 6)
+        
+        byteStream.advanceBy(-2)
+        byte = byteStream.nextByte()
+        XCTAssertEqual(byte, 5)
+    }
+    
+    func testAdvanceForwardTooFarStopsAtEnd() {
+        let byteStream = NSDataByteStream(data: NSData(byteArray: [5, 6, 7, 8]))
+        byteStream.advanceBy(999)
+        XCTAssertEqual(byteStream.currentIndex, 4)
+    }
+    
+    func testAdvanceBackTooFarStopsAtBeggining() {
+        let byteStream = NSDataByteStream(data: NSData(byteArray: [5, 6, 7, 8]))
+        byteStream.advanceBy(-999)
+        XCTAssertEqual(byteStream.currentIndex, 0)
+    }
 }
