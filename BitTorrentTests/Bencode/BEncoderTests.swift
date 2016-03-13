@@ -21,10 +21,12 @@ class BEncoderTests: XCTestCase {
         super.tearDown()
     }
     
+    // MARK: - Integers
+    
     func testEncodeInteger() {
         doTestEncodeInteger(0)
         doTestEncodeInteger(1)
-        doTestEncodeInteger(05)
+        doTestEncodeInteger(5)
         doTestEncodeInteger(123)
         doTestEncodeInteger(9999)
     }
@@ -35,12 +37,28 @@ class BEncoderTests: XCTestCase {
         XCTAssertEqual(string, "i\(integer)e")
     }
     
-    func testEncodeBytes() {
+    // MARK: - Byte Strings
+    
+    func testEncodeEmptyByteString() {
+        let data = try! BEncoder.encode(NSData())
+        let expectedResult = NSData(byteArray: [48, 58])
+        XCTAssertEqual(data, expectedResult)
+    }
+    
+    func testEncodeByteString() {
         let byteString = NSData(byteArray: [ 1, 2, 3, 255, 0])
         let data = try! BEncoder.encode(byteString)
         let expectedResult = try! NSMutableData(data: Character("5").asciiValue())
             .andData(BEncoder.StringSizeDelimiterToken)
             .andData(byteString)
+        XCTAssertEqual(data, expectedResult)
+    }
+    
+    // MARK: - Strings
+    
+    func testEncodeEmptyString() {
+        let data = try! BEncoder.encode("")
+        let expectedResult = NSData(byteArray: [48, 58])
         XCTAssertEqual(data, expectedResult)
     }
     
@@ -51,24 +69,20 @@ class BEncoderTests: XCTestCase {
     }
     
     func testEncodeNonAsciiStringThrows() {
-        assertExceptionThrown(AsciiError.Invalid) {
+        assertExceptionThrown(BEncoderException.InvalidAscii) {
             let _ = try BEncoder.encode("🙂")
         }
     }
     
-    func testEncodeEmptyString() {
-        let data = try! BEncoder.encode("")
-        let expectedResult = NSData(byteArray: [48, 58])
-        XCTAssertEqual(data, expectedResult)
-    }
+    // MARK: - Lists
     
-    func testEmptyList() {
+    func testEncodeEmptyList() {
         let data = try! BEncoder.encode([])
         let expectedResult = NSData(byteArray: [108, 101])
         XCTAssertEqual(data, expectedResult)
     }
     
-    func testListWithOneObject() {
+    func testEncodeListWithOneObject() {
         let integer = 123
         let data = try! BEncoder.encode([integer])
         let expectedResult = NSData(byteArray: [108, 105, 49, 50, 51, 101, 101])
@@ -82,6 +96,36 @@ class BEncoderTests: XCTestCase {
         
         XCTAssertEqual(bEncodedData, expectedResult)
     }
+    
+    func testEncodeListWithNestedDictionary() {
+        
+        let input = [
+            123,
+            [ "foo": "bar" ],
+            "baz"
+        ]
+        
+        let expectedResultArray: [Byte] = [
+            108,                    // l
+            
+            105, 49, 50, 51, 101,   // i123e
+            
+            100,                    // d
+            51, 58, 102, 111, 111,  // 3:foo
+            51, 58, 98,  97,  114,  // 3:bar
+            101,                    // e
+            
+            51, 58, 98,  97,  122,  // 3:baz
+            
+            101                     // e
+        ]
+        
+        let result = try! BEncoder.encode(input)
+        let expectedResult = NSData(byteArray: expectedResultArray)
+        XCTAssertEqual(result, expectedResult)
+    }
+    
+    // MARK: - Dictionaries
     
     func testEncodeEmptyDictionary() {
         let data = try! BEncoder.encode(Dictionary<NSData, NSData>())
@@ -103,7 +147,7 @@ class BEncoderTests: XCTestCase {
         XCTAssertEqual(data, expectedResult)
     }
     
-    func testSimpleDictionary() {
+    func testEncodeSimpleDictionary() {
         let exampleDictionary = exampleDictionaryAndExpectedValues()
         let bEncodedData = try! BEncoder.encode(exampleDictionary.dictionary)
         let expectedResult = NSData(byteArray: exampleDictionary.expectedValues)
@@ -138,13 +182,13 @@ class BEncoderTests: XCTestCase {
             "baz" : try! BEncoder.encode(NSData(byteArray: [0,7,255])),
         ]
         
-        assertExceptionThrown(AsciiError.Invalid) {
+        assertExceptionThrown(BEncoderException.InvalidAscii) {
             try BEncoder.encodeDictionary(bEncodedDataDictionary)
         }
 
     }
     
-    func testCanRecursivlyEncodeDictionaryWithAllTypes() {
+    func testEncodeDictionaryWithList() {
         
         // Order is not maintained by dictionary so this test can fail due to order change
         
@@ -183,7 +227,7 @@ class BEncoderTests: XCTestCase {
         XCTAssertEqual(bEncodedData, expectedResult)
     }
     
-    func testEncodeNonEncodedDictionaryWithStringKeys() {
+    func testEncodeDictionaryWithListAndStringKeys() {
         let input = [
             "hello": ["world", 123],
             "foo": "bar",
@@ -212,34 +256,6 @@ class BEncoderTests: XCTestCase {
         let result = try! BEncoder.encode(input)
         let expectedData = NSData(byteArray: expectedResultArray)
         XCTAssertEqual(result, expectedData)
-    }
-    
-    func testEncodeListWithNestedDictionary() {
-        
-        let input = [
-            123,
-            [ "foo": "bar" ],
-            "baz"
-        ]
-        
-        let expectedResultArray: [Byte] = [
-            108,                    // l
-            
-            105, 49, 50, 51, 101,   // i123e
-
-            100,                    // d
-            51, 58, 102, 111, 111,  // 3:foo
-            51, 58, 98,  97,  114,  // 3:bar
-            101,                    // e
-            
-            51, 58, 98,  97,  122,  // 3:baz
-
-            101                     // e
-        ]
-        
-        let result = try! BEncoder.encode(input)
-        let expectedResult = NSData(byteArray: expectedResultArray)
-        XCTAssertEqual(result, expectedResult)
     }
 
     // MARK: - Example inputs
@@ -295,6 +311,14 @@ class BEncoderTests: XCTestCase {
         ]
         
         return (bEncodedDataDictionary, expectedResultArray)
+    }
+    
+    // MARK: - 
+    
+    func testExceptionThrownIfTryToEncodeObjectNotRepresentableInBEncode() {
+        assertExceptionThrown(BEncoderException.UnrepresentableObject) {
+            let _ = try BEncoder.encode(UIView())
+        }
     }
     
 }

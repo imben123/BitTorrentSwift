@@ -11,6 +11,7 @@ import Foundation
 enum BEncoderException: ErrorType {
     case InvalidAscii
     case InvalidBEncode
+    case UnrepresentableObject
 }
 
 public class BEncoder {
@@ -27,6 +28,13 @@ public class BEncoder {
     static let ListStartToken:           NSData = try! Character("l").asciiValue()
     static let DictinaryStartToken:      NSData = try! Character("d").asciiValue()
     
+    /**
+     Creates a NSData object containing the BEncoded representation of the object passed.
+     
+     - parameter object: Object to be encoded
+     
+     - throws: BEncoderException if the object cannot be represented in BEncode
+     */
     public class func encode(object: AnyObject) throws -> NSData {
         if object is Int {
             return self.encodeInteger(object as! Int)
@@ -36,12 +44,12 @@ public class BEncoder {
             return self.encodeByteString(object as! NSData)
         } else if object is [AnyObject] {
             return try self.encodeList(object as! [AnyObject])
-        } else if object is [NSData:AnyObject] {
-            return try self.encodeDictionary(object as! [NSData:AnyObject])
         } else if object is [String:AnyObject] {
             return try self.encodeDictionary(object as! [String:AnyObject])
+        } else if object is [NSData:AnyObject] {
+            return try self.encodeByteStringKeyedDictionary(object as! [NSData:AnyObject])
         }
-        return NSData()
+        throw BEncoderException.UnrepresentableObject
     }
 
     /**
@@ -66,15 +74,25 @@ public class BEncoder {
     
     /**
      Creates a BEncoded byte string with the ascii representation of the string
+     
+     - throws: BEncoderException.InvalidAscii if the string cannot be represented in ASCII
      */
     public class func encodeString(string: String) throws -> NSData {
-        let asciiString = try string.asciiValue()
+        let asciiString = try self.asciiValue(string)
         let data = NSMutableData(data: asciiString.length.digitsInAscii())
             .andData(StringSizeDelimiterToken)
             .andData(asciiString)
         return data
     }
     
+    /**
+     Creates a BEncoded list and BEncodes each object in the list
+     
+     - parameter list: Array of items to be BEncoded and added to the resulting BEncode list
+     
+     - throws: Exception if any of the objects are not BEncode-able
+     
+     */
     public class func encodeList(list: [AnyObject]) throws -> NSData {
         let innerData = try encodeListInnerValues(list)
         return NSMutableData(data: ListStartToken).andData(innerData).andData(StructureEndToken)
@@ -88,7 +106,17 @@ public class BEncoder {
         }
     }
     
-    public class func encodeDictionary(dictionary: [NSData:AnyObject]) throws -> NSData {
+    /**
+     Creates a BEncoded dictionary and BEncodes each value.
+     The keys are BEncoded as byte strings
+     
+     - parameter list: Dictionary of items to be BEncoded and added to the resulting BEncode
+     dictionary. Keys should be data which will be BEncoded as a byte string.
+     
+     - throws: BEncoderException if any of the objects are not BEncode-able
+     
+     */
+    public class func encodeByteStringKeyedDictionary(dictionary: [NSData:AnyObject]) throws -> NSData {
         let innerData = try encodeDictionaryInnerValues(dictionary)
         return NSMutableData(data: DictinaryStartToken).andData(innerData).andData(StructureEndToken)
     }
@@ -104,7 +132,17 @@ public class BEncoder {
             return data
     }
     
-    
+    /**
+     Creates a BEncoded dictionary and BEncodes each value.
+     The keys are BEncoded as strings
+     
+     - parameter list: Dictionary of items to be BEncoded and added to the resulting BEncode 
+                       dictionary. Keys should be ASCII encodeable strings.
+     
+     - throws: BEncoderException if any of the objects are not BEncode-able.
+     BEncoderException.InvalidAscii is thrown if the keys cannot be encoded in ASCII
+
+     */
     public class func encodeDictionary(dictionary: [String:AnyObject]) throws -> NSData {
         let dictionaryWithEncodedKeys = try self.createDictionaryWithEncodedKeys(dictionary)
         let innerData = try self.encodeDictionaryInnerValues(dictionaryWithEncodedKeys)
@@ -114,9 +152,19 @@ public class BEncoder {
     private class func createDictionaryWithEncodedKeys(dictionary: [String:AnyObject]) throws -> [NSData:AnyObject] {
         var dictionaryWithEncodedKeys: [NSData: AnyObject] = [:]
         for (key, value) in dictionary {
-            dictionaryWithEncodedKeys[try key.asciiValue()] = value
+            let asciiKey = try self.asciiValue(key)
+            dictionaryWithEncodedKeys[asciiKey] = value
         }
         return dictionaryWithEncodedKeys
+    }
+    
+    private class func asciiValue(string: String) throws -> NSData {
+        do {
+            let asciiString = try string.asciiValue()
+            return asciiString
+        } catch _ {
+            throw BEncoderException.InvalidAscii
+        }
     }
 
 }

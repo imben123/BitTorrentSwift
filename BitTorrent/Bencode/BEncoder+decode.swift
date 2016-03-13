@@ -10,6 +10,17 @@ import Foundation
 
 public extension BEncoder {
     
+    /**
+     Decodes BEncoded data to swift objects
+     
+     - parameter byteStream: Any class implementing the ByteStream protocol that will feed the
+     decoder sequential bytes from BEncoded data.
+     
+     - throws: BEncoderException.InvalidBEncode if unable to decode the data
+     
+     - returns: An Int, String, NSData, Array or Dictionary depending on the type of the
+     BEncoded data
+     */
     public class func decode(byteStream: ByteStream) throws -> AnyObject {
         let firstByte = byteStream.nextByte()
         byteStream.advanceBy(-1)
@@ -25,6 +36,13 @@ public extension BEncoder {
         }
     }
     
+    /**
+     Convenience method to decode NSData.
+     */
+    public class func decode(data: NSData) throws -> AnyObject {
+        return try self.decode(NSDataByteStream(data: data))
+    }
+
     public class func decodeInteger(data: NSData) throws -> Int {
         return try self.decodeInteger(NSDataByteStream(data: data))
     }
@@ -88,7 +106,7 @@ public extension BEncoder {
     public class func decodeString(byteStream: ByteStream) throws -> String {
         let data = try self.decodeByteString(byteStream)
         guard let result = String(asciiData: data) else {
-            throw AsciiError.Invalid
+            throw BEncoderException.InvalidBEncode
         }
         return result
     }
@@ -99,8 +117,13 @@ public extension BEncoder {
     
     public class func decodeList(byteStream: ByteStream) throws -> [AnyObject] {
         var result: [AnyObject] = []
+        let firstByte = byteStream.nextByte()
+        
+        if firstByte != ascii_l {
+            throw BEncoderException.InvalidBEncode
+        }
+        
         var currentByte = byteStream.nextByte()
-        currentByte = byteStream.nextByte()
         while currentByte != ascii_e {
             byteStream.advanceBy(-1)
             let object = try self.decode(byteStream)
