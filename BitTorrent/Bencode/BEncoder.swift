@@ -27,6 +27,22 @@ public class BEncoder {
     static let ListStartToken:           NSData = try! Character("l").asciiValue()
     static let DictinaryStartToken:      NSData = try! Character("d").asciiValue()
     
+    public class func encode(object: AnyObject) throws -> NSData {
+        if object is Int {
+            return self.encodeInteger(object as! Int)
+        } else if object is String {
+            return try self.encodeString(object as! String)
+        } else if object is NSData {
+            return self.encodeByteString(object as! NSData)
+        } else if object is [AnyObject] {
+            return try self.encodeList(object as! [AnyObject])
+        } else if object is [NSData:AnyObject] {
+            return try self.encodeDictionary(object as! [NSData:AnyObject])
+        } else if object is [String:AnyObject] {
+            return try self.encodeDictionary(object as! [String:AnyObject])
+        }
+        return NSData()
+    }
 
     /**
      Creates BEncoded integer
@@ -51,79 +67,56 @@ public class BEncoder {
     /**
      Creates a BEncoded byte string with the ascii representation of the string
      */
-    public class func encodeString(string: String) -> NSData {
-        let stringUTF8 = string.utf8
-        let data = NSMutableData(data: stringUTF8.count.digitsInAscii())
+    public class func encodeString(string: String) throws -> NSData {
+        let asciiString = try string.asciiValue()
+        let data = NSMutableData(data: asciiString.length.digitsInAscii())
             .andData(StringSizeDelimiterToken)
-            .andData(try! string.asciiValue())
+            .andData(asciiString)
         return data
     }
     
-    /**
-     Creates a BEncoded list containing the BEncoded values given
-     
-     - parameter list: This should be an array of BEncoded values. Data passed to this parameter isn't
-     checked as valid BEncode so will result in bad BEncode being returned.
-     
-     */
-    public class func encodeList(list: [NSData]) -> NSData {
-        let innerData = encodeListInnerData(list)
+    public class func encodeList(list: [AnyObject]) throws -> NSData {
+        let innerData = try encodeListInnerValues(list)
         return NSMutableData(data: ListStartToken).andData(innerData).andData(StructureEndToken)
     }
     
-    private class func encodeListInnerData(list: [NSData]) -> NSData {
-        return list.reduce(NSMutableData()) { (result: NSMutableData, item: NSData) -> NSMutableData in
-            result.appendData(item)
+    private class func encodeListInnerValues(list: [AnyObject]) throws -> NSData {
+        return try list.reduce(NSMutableData()) { (result: NSMutableData, item: AnyObject) throws -> NSMutableData in
+            let encodedItem = try self.encode(item)
+            result.appendData(encodedItem)
             return result
         }
     }
     
-    /**
-     Creates a BEncoded dictionary. Containing the key/value pairs in the swift dictionary.
-     Keys will be encoded as BEncoded strings
-     
-     - parameter dictionary: This should be a dictionary of BEncoded values keyed using NSData objects
-     which will be encoded as BEncoded strings
-     
-     - throws: AsciiError.Invalid if the strings don't ascii encode
-    
-     */
-    public class func encodeDictionary(dictionary: [String:NSData]) throws -> NSData {
-        let dictionaryWithEncodedKeys = try self.createDictionaryWithEncodedKeys(dictionary)
-        return self.encodeDictionary(dictionaryWithEncodedKeys)
+    public class func encodeDictionary(dictionary: [NSData:AnyObject]) throws -> NSData {
+        let innerData = try encodeDictionaryInnerValues(dictionary)
+        return NSMutableData(data: DictinaryStartToken).andData(innerData).andData(StructureEndToken)
     }
     
-    private class func createDictionaryWithEncodedKeys(dictionary: [String:NSData]) throws -> [NSData:NSData] {
-        var dictionaryWithEncodedKeys: [NSData: NSData] = [:]
+    private class func encodeDictionaryInnerValues(dictionary: [NSData:AnyObject]) throws -> NSData {
+        return try dictionary.reduce(NSMutableData(), combine: self.appendKeyValuePairToDictionaryData)
+    }
+    
+    private class func appendKeyValuePairToDictionaryData(data: NSMutableData,
+        pair: (key: NSData, value: AnyObject)) throws -> NSMutableData {
+            data.appendData(self.encodeByteString(pair.key))
+            data.appendData(try self.encode(pair.value))
+            return data
+    }
+    
+    
+    public class func encodeDictionary(dictionary: [String:AnyObject]) throws -> NSData {
+        let dictionaryWithEncodedKeys = try self.createDictionaryWithEncodedKeys(dictionary)
+        let innerData = try self.encodeDictionaryInnerValues(dictionaryWithEncodedKeys)
+        return NSMutableData(data: DictinaryStartToken).andData(innerData).andData(StructureEndToken)
+    }
+    
+    private class func createDictionaryWithEncodedKeys(dictionary: [String:AnyObject]) throws -> [NSData:AnyObject] {
+        var dictionaryWithEncodedKeys: [NSData: AnyObject] = [:]
         for (key, value) in dictionary {
             dictionaryWithEncodedKeys[try key.asciiValue()] = value
         }
         return dictionaryWithEncodedKeys
     }
-    
-    /**
-     Creates a BEncoded dictionary. Containing the key/value pairs in the swift dictionary.
-     Keys will be encoded as BEncoded byte strings
-     
-     - parameter dictionary: This should be a dictionary of BEncoded values keyed using NSData objects
-     which will be encoded as BEncoded byte strings
-     
-     */
-    public class func encodeDictionary(dictionary: [NSData:NSData]) -> NSData {
-        let innerData = encodeDictionaryInnerValues(dictionary)
-        return NSMutableData(data: DictinaryStartToken).andData(innerData).andData(StructureEndToken)
-    }
-    
-    private class func encodeDictionaryInnerValues(dictionary: [NSData:NSData]) -> NSData {
-        return dictionary.reduce(NSMutableData()) { (result: NSMutableData, current: (NSData, NSData)) -> NSMutableData in
-            return self.appendKeyValuePairToDictionaryData(result, key: current.0, value: current.1)
-        }
-    }
-    
-    private class func appendKeyValuePairToDictionaryData(data: NSMutableData, key: NSData, value: NSData) -> NSMutableData {
-        data.appendData(self.encodeByteString(key))
-        data.appendData(value)
-        return data
-    }
-    
+
 }

@@ -113,23 +113,234 @@ class BEncoderDecodeTests: XCTestCase {
             .andData(NSData(byteArray: [ 1, 2, 3, 255]))
         
         assertExceptionThrown(BEncoderException.InvalidBEncode) {
-            let _ = try BEncoder.decodeByteString(shortInput)
+            let _ = try BEncoder.decodeByteString(shortInput)        
         }
 
     }
     
     func testDecodeEmptyString() {
         let emptyString = ""
-        let input = BEncoder.encodeString(emptyString)
+        let input = try! BEncoder.encode(emptyString)
         let result = try! BEncoder.decodeString(input)
         XCTAssertEqual(emptyString, result)
     }
     
     func testDecodeString() {
         let string = "A simple test string"
-        let input = BEncoder.encodeString(string)
+        let input = try! BEncoder.encode(string)
         let result = try! BEncoder.decodeString(input)
         XCTAssertEqual(string, result)
     }
+    
+    func testDecodeEmptyList() {
+        let input = try! BEncoder.encode([])
+        let result = try! BEncoder.decodeList(input)
+        XCTAssertEqual(result.count, 0)
+    }
+    
+    func testDecodeListWithInteger() {
+        let integer = 5
+        let input = try! BEncoder.encode([ integer ])
+        let result = try! BEncoder.decodeList(input)
+        XCTAssertEqual(result.count, 1)
+        XCTAssertEqual(result[0] as? Int, integer)
+    }
+    
+    func testDecodeListWith2Integers() {
+        let integer1 = 5
+        let integer2 = 999
+        let input = try! BEncoder.encode([
+            integer1,
+            integer2
+            ])
+        let result = try! BEncoder.decodeList(input)
+        XCTAssertEqual(result.count, 2)
+        XCTAssertEqual(result[0] as? Int, integer1)
+        XCTAssertEqual(result[1] as? Int, integer2)
+    }
+    
+    func testDecodeListWithMixedTypes() {
+        let integer = 5
+        let byteString = NSData(byteArray: [0,1,2,255])
+        let string = "string"
+        
+        let input = try! BEncoder.encode([
+            integer,
+            byteString,
+            string
+            ])
+        
+        let result = try! BEncoder.decodeList(input)
+        let decodedString = String(asciiData: result[2] as! NSData)
 
+        XCTAssertEqual(result.count, 3)
+        XCTAssertEqual(result[0] as? Int, integer)
+        XCTAssertEqual(result[1] as? NSData, byteString)
+        XCTAssertEqual(decodedString, string)
+    }
+
+    func testDecodeListWithNestedLists() {
+        let integer = 5
+        let byteString = NSData(byteArray: [0,1,2,255])
+        let string = "string"
+        
+        let nestedList = [
+            integer,
+            byteString,
+            string
+            ]
+        
+        let input = try! BEncoder.encode([
+            nestedList,
+            integer,
+            ])
+        
+        let result = try! BEncoder.decodeList(input)
+        let nestedResult = result[0] as! [AnyObject];
+        let decodedString = String(asciiData: nestedResult[2] as! NSData)
+
+        XCTAssertEqual(result.count, 2)
+        XCTAssertEqual(result[1] as? Int, integer)
+        XCTAssertEqual(nestedResult.count, 3)
+        XCTAssertEqual(nestedResult[0] as? Int, integer)
+        XCTAssertEqual(nestedResult[1] as? NSData, byteString)
+        XCTAssertEqual(decodedString, string)
+    }
+    
+    func testDecodeEmptyDictionary() {
+        let emptyDictionary: [NSData:NSData] = [:]
+        let input = try! BEncoder.encode(emptyDictionary)
+        let result = try! BEncoder.decodeDictionary(input)
+        XCTAssertEqual(result.count, 0)
+    }
+    
+    func testDecodeDictionaryWithInteger() {
+        let key = try! "key".asciiValue()
+        let integer = 5
+        let input = try! BEncoder.encode([ key : integer ])
+        let result = try! BEncoder.decodeDictionary(input)
+        XCTAssertEqual(result.count, 1)
+        XCTAssertEqual(result[key] as? Int, integer)
+    }
+    
+    func testDecodeDictionaryWithMultipleIntegers() {
+        let key1 = try! "key1".asciiValue()
+        let integer1 = 5
+        
+        let key2 = try! "key2".asciiValue()
+        let integer2 = 6
+        
+        let input = try! BEncoder.encode([
+            key1 : integer1,
+            key2 : integer2
+            ])
+        
+        let result = try! BEncoder.decodeDictionary(input)
+        XCTAssertEqual(result.count, 2)
+        XCTAssertEqual(result[key1] as? Int, integer1)
+        XCTAssertEqual(result[key2] as? Int, integer2)
+    }
+    
+    func testDecodeDictionaryWithMultipleTypes() {
+        let key1 = try! "key1".asciiValue()
+        let integer = 5
+        
+        let key2 = try! "key2".asciiValue()
+        let byteString = NSData(byteArray: [0,1,2,255])
+        
+        let input = try! BEncoder.encode([
+            key1 : integer,
+            key2 : byteString
+            ])
+        
+        let result = try! BEncoder.decodeDictionary(input)
+        XCTAssertEqual(result.count, 2)
+        XCTAssertEqual(result[key1] as? Int, integer)
+        XCTAssertEqual(result[key2] as? NSData, byteString)
+    }
+    
+    func testDecodeDictionaryWithDictionary() {
+        let key1 = try! "key1".asciiValue()
+        let integer = 5
+        
+        let key2 = try! "key2".asciiValue()
+        let byteString = NSData(byteArray: [0,1,2,255])
+        
+        let key3 = try! "key3".asciiValue()
+        let dictionary = [
+            key1 : integer,
+            key2 : byteString
+            ]
+        
+        let input = try! BEncoder.encode([
+            key1 : integer,
+            key3 : dictionary,
+            key2 : byteString
+            ])
+        
+        let result = try! BEncoder.decodeDictionary(input)
+        let decodedDictionary = result[key3] as! [NSData:AnyObject]
+        XCTAssertEqual(result.count, 3)
+        XCTAssertEqual(result[key1] as? Int, integer)
+        XCTAssertEqual(result[key2] as? NSData, byteString)
+        XCTAssertEqual(decodedDictionary.count, 2)
+        XCTAssertEqual(result[key1] as? Int, integer)
+        XCTAssertEqual(result[key2] as? NSData, byteString)
+    }
+    
+    func testDecodeDictionaryWithList() {
+        let key1 = try! "key1".asciiValue()
+        let integer = 5
+        
+        let key2 = try! "key2".asciiValue()
+        let byteString = NSData(byteArray: [0,1,2,255])
+        
+        let key3 = try! "key3".asciiValue()
+        let list = [ byteString, integer ]
+        
+        let input = try! BEncoder.encode([
+            key1 : integer,
+            key2 : byteString,
+            key3 : list,
+            ])
+        
+        let result = try! BEncoder.decodeDictionary(input)
+        let decodedList = result[key3] as! [AnyObject]
+        XCTAssertEqual(result.count, 3)
+        XCTAssertEqual(result[key1] as? Int, integer)
+        XCTAssertEqual(result[key2] as? NSData, byteString)
+        XCTAssertEqual(decodedList.count, 2)
+        XCTAssertEqual(decodedList[0] as? NSData, byteString)
+        XCTAssertEqual(decodedList[1] as? Int, integer)
+    }
+    
+    func testDecodeListWithDictionary() {
+        let key1 = try! "key1".asciiValue()
+        let integer = 5
+        
+        let key2 = try! "key2".asciiValue()
+        let byteString = NSData(byteArray: [0,1,2,255])
+        
+        let dictionary = [
+            key1 : integer,
+            key2 : byteString
+            ]
+        
+        let list = [
+            integer,
+            dictionary,
+            byteString
+        ]
+        
+        let input = try! BEncoder.encode(list)
+        let result = try! BEncoder.decodeList(input)
+        let decodedDictionary = result[1] as! [NSData:AnyObject]
+        
+        XCTAssertEqual(result.count, 3)
+        XCTAssertEqual(result[0] as? Int, integer)
+        XCTAssertEqual(decodedDictionary.count, 2)
+        XCTAssertEqual(result[2] as? NSData, byteString)
+        XCTAssertEqual(decodedDictionary[key1] as? Int, integer)
+        XCTAssertEqual(decodedDictionary[key2] as? NSData, byteString)
+    }
 }

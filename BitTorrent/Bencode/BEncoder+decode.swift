@@ -10,6 +10,21 @@ import Foundation
 
 public extension BEncoder {
     
+    public class func decode(byteStream: ByteStream) throws -> AnyObject {
+        let firstByte = byteStream.nextByte()
+        byteStream.advanceBy(-1)
+
+        if firstByte == ascii_i {
+            return try self.decodeInteger(byteStream)
+        } else if firstByte == ascii_l {
+            return try self.decodeList(byteStream)
+        } else if firstByte == ascii_d {
+            return try self.decodeDictionary(byteStream)
+        } else {
+            return try self.decodeByteString(byteStream)
+        }
+    }
+    
     public class func decodeInteger(data: NSData) throws -> Int {
         return try self.decodeInteger(NSDataByteStream(data: data))
     }
@@ -70,7 +85,7 @@ public extension BEncoder {
         return try self.decodeString(NSDataByteStream(data: data));
     }
 
-    class func decodeString(byteStream: ByteStream) throws -> String {
+    public class func decodeString(byteStream: ByteStream) throws -> String {
         let data = try self.decodeByteString(byteStream)
         guard let result = String(asciiData: data) else {
             throw AsciiError.Invalid
@@ -78,4 +93,47 @@ public extension BEncoder {
         return result
     }
     
+    public class func decodeList(data: NSData) throws -> [AnyObject] {
+        return try self.decodeList(NSDataByteStream(data: data))
+    }
+    
+    public class func decodeList(byteStream: ByteStream) throws -> [AnyObject] {
+        var result: [AnyObject] = []
+        var currentByte = byteStream.nextByte()
+        currentByte = byteStream.nextByte()
+        while currentByte != ascii_e {
+            byteStream.advanceBy(-1)
+            let object = try self.decode(byteStream)
+            result.append(object)
+            currentByte = byteStream.nextByte()
+        }
+        return result
+    }
+    
+    public class func decodeDictionary(data: NSData) throws -> [NSData: AnyObject] {
+        return try self.decodeDictionary(NSDataByteStream(data: data))
+    }
+
+    public class func decodeDictionary(byteStream: ByteStream) throws -> [NSData: AnyObject] {
+        
+        var result: [NSData:AnyObject] = [:]
+        
+        var currentByte = byteStream.nextByte()
+        currentByte = byteStream.nextByte()
+        
+        while currentByte != ascii_e {
+            
+            byteStream.advanceBy(-1)
+            
+            let key = try self.decodeByteString(byteStream)
+            let object = try self.decode(byteStream)
+            
+            result[key] = object
+            
+            currentByte = byteStream.nextByte()
+            
+        }
+        return result
+    }
+
 }
