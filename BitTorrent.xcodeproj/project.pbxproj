@@ -7,21 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		B52F1A331C41387C00041071 /* BEncoder+decode.swift in Sources */ = {isa = PBXBuildFile; fileRef = B52F1A321C41387C00041071 /* BEncoder+decode.swift */; };
-		B52F1A351C4138A800041071 /* BEncoderDecodeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B52F1A341C4138A800041071 /* BEncoderDecodeTests.swift */; };
-		B530A26A1C948F2A007AA788 /* ByteStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = B530A2691C948F2A007AA788 /* ByteStream.swift */; };
-		B530A26C1C948F43007AA788 /* NSDataByteStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = B530A26B1C948F43007AA788 /* NSDataByteStream.swift */; };
-		B530A26F1C948F81007AA788 /* NSDataByteStreamTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B530A26D1C948F61007AA788 /* NSDataByteStreamTests.swift */; };
-		B530A2721C9496E4007AA788 /* AsciiTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B530A2701C9496B5007AA788 /* AsciiTests.swift */; };
 		B56A8A071C83539300426AC8 /* TestHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = B56A8A061C83539300426AC8 /* TestHelpers.swift */; };
 		B585AB781C3833450093FA41 /* BitTorrent.h in Headers */ = {isa = PBXBuildFile; fileRef = B585AB771C3833450093FA41 /* BitTorrent.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		B585AB7F1C3833450093FA41 /* BitTorrent.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B585AB741C3833450093FA41 /* BitTorrent.framework */; };
 		B585AB841C3833450093FA41 /* BitTorrentTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B585AB831C3833450093FA41 /* BitTorrentTests.swift */; };
-		B585ABBD1C383E3A0093FA41 /* BEncoderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B585ABBC1C383E3A0093FA41 /* BEncoderTests.swift */; };
-		B585ABC01C383EDB0093FA41 /* BEncoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = B585ABBF1C383EDB0093FA41 /* BEncoder.swift */; };
-		B585ABC41C384BA60093FA41 /* BytesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B585ABC31C384BA60093FA41 /* BytesTests.swift */; };
-		B585ABC71C384C240093FA41 /* Bytes.swift in Sources */ = {isa = PBXBuildFile; fileRef = B585ABC61C384C240093FA41 /* Bytes.swift */; };
-		B585ABCA1C3850320093FA41 /* Ascii.swift in Sources */ = {isa = PBXBuildFile; fileRef = B585ABC91C3850320093FA41 /* Ascii.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -35,12 +24,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		B52F1A321C41387C00041071 /* BEncoder+decode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "BEncoder+decode.swift"; path = "Bencode/BEncoder+decode.swift"; sourceTree = "<group>"; };
-		B52F1A341C4138A800041071 /* BEncoderDecodeTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = BEncoderDecodeTests.swift; path = BitTorrentTests/Bencode/BEncoderDecodeTests.swift; sourceTree = SOURCE_ROOT; };
-		B530A2691C948F2A007AA788 /* ByteStream.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ByteStream.swift; path = Utilities/ByteStream.swift; sourceTree = "<group>"; };
-		B530A26B1C948F43007AA788 /* NSDataByteStream.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = NSDataByteStream.swift; path = Utilities/NSDataByteStream.swift; sourceTree = "<group>"; };
-		B530A26D1C948F61007AA788 /* NSDataByteStreamTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = NSDataByteStreamTests.swift; path = Utilities/NSDataByteStreamTests.swift; sourceTree = "<group>"; };
-		B530A2701C9496B5007AA788 /* AsciiTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AsciiTests.swift; path = Utilities/AsciiTests.swift; sourceTree = "<group>"; };
 		B56A8A061C83539300426AC8 /* TestHelpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TestHelpers.swift; path = Utilities/TestHelpers.swift; sourceTree = "<group>"; };
 		B585AB741C3833450093FA41 /* BitTorrent.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = BitTorrent.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B585AB771C3833450093FA41 /* BitTorrent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BitTorrent.h; sourceTree = "<group>"; };
@@ -48,11 +31,6 @@
 		B585AB7E1C3833450093FA41 /* BitTorrentTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BitTorrentTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		B585AB831C3833450093FA41 /* BitTorrentTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = BitTorrentTests.swift; path = BitTorrentTests/BitTorrentTests.swift; sourceTree = SOURCE_ROOT; };
 		B585AB851C3833450093FA41 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		B585ABBC1C383E3A0093FA41 /* BEncoderTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = BEncoderTests.swift; path = BitTorrentTests/Bencode/BEncoderTests.swift; sourceTree = SOURCE_ROOT; };
-		B585ABBF1C383EDB0093FA41 /* BEncoder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = BEncoder.swift; path = Bencode/BEncoder.swift; sourceTree = "<group>"; };
-		B585ABC31C384BA60093FA41 /* BytesTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = BytesTests.swift; path = BitTorrentTests/Utilities/BytesTests.swift; sourceTree = SOURCE_ROOT; };
-		B585ABC61C384C240093FA41 /* Bytes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Bytes.swift; path = Utilities/Bytes.swift; sourceTree = "<group>"; };
-		B585ABC91C3850320093FA41 /* Ascii.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Ascii.swift; path = Utilities/Ascii.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -97,8 +75,6 @@
 			children = (
 				B585AB771C3833450093FA41 /* BitTorrent.h */,
 				B585AB831C3833450093FA41 /* BitTorrentTests.swift */,
-				B585ABC81C384C270093FA41 /* Utilities */,
-				B585ABB91C3839030093FA41 /* Bencode */,
 				B585AB791C3833450093FA41 /* Info.plist */,
 			);
 			path = BitTorrent;
@@ -111,31 +87,6 @@
 				B56A8A061C83539300426AC8 /* TestHelpers.swift */,
 			);
 			path = BitTorrentTests;
-			sourceTree = "<group>";
-		};
-		B585ABB91C3839030093FA41 /* Bencode */ = {
-			isa = PBXGroup;
-			children = (
-				B585ABBF1C383EDB0093FA41 /* BEncoder.swift */,
-				B585ABBC1C383E3A0093FA41 /* BEncoderTests.swift */,
-				B52F1A321C41387C00041071 /* BEncoder+decode.swift */,
-				B52F1A341C4138A800041071 /* BEncoderDecodeTests.swift */,
-			);
-			name = Bencode;
-			sourceTree = "<group>";
-		};
-		B585ABC81C384C270093FA41 /* Utilities */ = {
-			isa = PBXGroup;
-			children = (
-				B585ABC61C384C240093FA41 /* Bytes.swift */,
-				B585ABC31C384BA60093FA41 /* BytesTests.swift */,
-				B585ABC91C3850320093FA41 /* Ascii.swift */,
-				B530A2701C9496B5007AA788 /* AsciiTests.swift */,
-				B530A2691C948F2A007AA788 /* ByteStream.swift */,
-				B530A26B1C948F43007AA788 /* NSDataByteStream.swift */,
-				B530A26D1C948F61007AA788 /* NSDataByteStreamTests.swift */,
-			);
-			name = Utilities;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -247,12 +198,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B530A26C1C948F43007AA788 /* NSDataByteStream.swift in Sources */,
-				B585ABC01C383EDB0093FA41 /* BEncoder.swift in Sources */,
-				B52F1A331C41387C00041071 /* BEncoder+decode.swift in Sources */,
-				B530A26A1C948F2A007AA788 /* ByteStream.swift in Sources */,
-				B585ABCA1C3850320093FA41 /* Ascii.swift in Sources */,
-				B585ABC71C384C240093FA41 /* Bytes.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -260,13 +205,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B530A26F1C948F81007AA788 /* NSDataByteStreamTests.swift in Sources */,
-				B585ABBD1C383E3A0093FA41 /* BEncoderTests.swift in Sources */,
-				B530A2721C9496E4007AA788 /* AsciiTests.swift in Sources */,
 				B56A8A071C83539300426AC8 /* TestHelpers.swift in Sources */,
-				B52F1A351C4138A800041071 /* BEncoderDecodeTests.swift in Sources */,
 				B585AB841C3833450093FA41 /* BitTorrentTests.swift in Sources */,
-				B585ABC41C384BA60093FA41 /* BytesTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
