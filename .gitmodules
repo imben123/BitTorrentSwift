@@ -1,0 +1,3 @@
+[submodule "Submodules/BEncodeSwift"]
+	path = Submodules/BEncodeSwift
+	url = git@github.com:imben123/BEncodeSwift.git

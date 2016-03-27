@@ -1,0 +1,11 @@
+//
+//  CommonCrypto.xcconfig
+//  BitTorrent
+//
+//  Created by Ben Davis on 25/03/2016.
+//  Copyright © 2016 Ben Davis. All rights reserved.
+//
+
+MODULEMAP_FILE[sdk=iphoneos*]        = $(SRCROOT)/CommonCrypto/iphoneos.modulemap
+MODULEMAP_FILE[sdk=iphonesimulator*] = $(SRCROOT)/CommonCrypto/iphonesimulator.modulemap
+MODULEMAP_FILE[sdk=macosx*]          = $(SRCROOT)/CommonCrypto/macosx.modulemap

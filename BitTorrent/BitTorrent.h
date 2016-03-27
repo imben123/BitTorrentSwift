@@ -15,5 +15,3 @@ FOUNDATION_EXPORT double BitTorrentVersionNumber;
 FOUNDATION_EXPORT const unsigned char BitTorrentVersionString[];
 
 // In this header, you should import all the public headers of your framework using statements like #import <BitTorrent/PublicHeader.h>
-
-
