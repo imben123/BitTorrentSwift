@@ -21,7 +21,6 @@ class TorrentMetaInfo {
 //    var createdBy: String?
 
     init?(data: NSData) {
-        print(try! BEncoder.decodeDictionaryKeysOnly(data)["info"]!)
         self.infoHash = try! BEncoder.decodeDictionaryKeysOnly(data)["info"]!.sha1()
         let decodedMetainfo = try! BEncoder.decodeStringKeyedDictionary(data)
         if let info = TorrentInfoDictionary(decodedMetainfo["info"] as! [String : AnyObject]) {
@@ -77,24 +76,19 @@ class TorrentInfoDictionary {
         
     }
     
-    private class func parseFilesAndLengthFromDictionary(dictionary: [ String : AnyObject ], parsedName name: String)
+    private class func parseFilesAndLengthFromDictionary(dictionary: [ String : AnyObject ],
+                                                         parsedName name: String)
         -> (files: [TorrentFileInfo], totalLength: Int)? {
             
             if let files = dictionary["files"] as? [ [ String : AnyObject ] ] {
                 
-                if let tuple = TorrentInfoDictionary.parseFilesDictionaries(files) {
-                    return tuple
-                } else {
-                    return nil
-                }
+                return TorrentInfoDictionary.parseFilesDictionaries(files)
                 
             } else if let length = dictionary["length"] as? Int {
                 
-                let md5sumData = dictionary["md5sum"] as? NSData
-                let md5sum = String(asciiData: md5sumData)
-                let files = [ TorrentFileInfo(path: name, length: length, md5sum: md5sum) ]
-                
-                return (files, length)
+                return TorrentInfoDictionary.parseSingleFileFromInfoDictionary(dictionary,
+                                                                               parsedName: name,
+                                                                               parsedLength: length)
                 
             } else {
                 
@@ -103,26 +97,36 @@ class TorrentInfoDictionary {
             }
     }
     
-    private class func parseFilesDictionaries(files: [ [ String : AnyObject ] ])
-        -> (files: [TorrentFileInfo], totalLength: Int)? {
+    private class func parseSingleFileFromInfoDictionary(dictionary: [ String : AnyObject ],
+                                                         parsedName name: String,
+                                                         parsedLength length: Int) -> ([TorrentFileInfo], Int) {
+        
+        let md5sumData = dictionary["md5sum"] as? NSData
+        let md5sum = String(asciiData: md5sumData)
+        let files = [ TorrentFileInfo(path: name, length: length, md5sum: md5sum) ]
+        
+        return (files, length)
+    }
+    
+    private class func parseFilesDictionaries(files: [ [ String : AnyObject ] ]) -> ([TorrentFileInfo], Int)? {
+        
+        var totalLength = 0
+        var result: [TorrentFileInfo] = []
+        
+        for fileDictionary in files {
             
-            var totalLength = 0
-            var result: [TorrentFileInfo] = []
-            
-            for fileDictionary in files {
+            if let file = TorrentFileInfo(dictionary: fileDictionary) {
                 
-                if let file = TorrentFileInfo(dictionary: fileDictionary) {
-                    
-                    totalLength += file.length
-                    result.append(file)
-                    
-                } else {
-                    return nil
-                }
+                totalLength += file.length
+                result.append(file)
                 
+            } else {
+                return nil
             }
             
-            return (files: result, totalLength: totalLength)
+        }
+        
+        return (files: result, totalLength: totalLength)
     }
     
     private class func seperatePieces(pieces: NSData) -> [NSData]? {
