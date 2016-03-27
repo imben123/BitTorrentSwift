@@ -8,28 +8,95 @@
 
 import Foundation
 import class BEncode.BEncoder
+import enum BEncode.AsciiError
 
 class TorrentMetaInfo {
     
-    var infoHash : NSData // this is the original bencoded dictionary, hashed
+    let infoHash : NSData // this is the original bencoded dictionary, hashed
 
-    var info: TorrentInfoDictionary
-//    var announce: String
-//    var announceList: [String]?
-//    var creationDate: NSDate?
-//    var comment: String?
-//    var createdBy: String?
+    let info: TorrentInfoDictionary
+    let announce: String
+    let announceList: [[String]]?
+    let creationDate: NSDate?
+    let comment: String?
+    let createdBy: String?
 
     init?(data: NSData) {
-        self.infoHash = try! BEncoder.decodeDictionaryKeysOnly(data)["info"]!.sha1()
+        
         let decodedMetainfo = try! BEncoder.decodeStringKeyedDictionary(data)
-        if let info = TorrentInfoDictionary(decodedMetainfo["info"] as! [String : AnyObject]) {
+        
+        if let infoDictionary = decodedMetainfo["info"] as? [String : AnyObject],
+            info = TorrentInfoDictionary(infoDictionary) {
+            self.infoHash = try! BEncoder.decodeDictionaryKeysOnly(data)["info"]!.sha1()
             self.info = info
         } else {
             return nil
         }
+        
+        if let announceData = decodedMetainfo["announce"] as? NSData, announceString = String(asciiData: announceData) {
+            self.announce = announceString
+        } else {
+            return nil
+        }
+        
+        if let announceListData = decodedMetainfo["announce-list"] as? [ [ NSData ] ] {
+            if let announceList = TorrentMetaInfo.parseAnnounceList(announceListData) {
+                self.announceList = announceList
+            } else {
+                return nil
+            }
+        } else {
+            self.announceList = nil
+        }
+        
+        if let creationDateInt = decodedMetainfo["creation date"] as? Int {
+            self.creationDate = NSDate(timeIntervalSince1970: Double(creationDateInt))
+        } else {
+            self.creationDate = nil
+        }
+        
+        if let commentString = String(asciiData: decodedMetainfo["comment"] as? NSData) {
+            self.comment = commentString
+        } else {
+            self.comment = nil
+        }
+        
+        if let createdBy = String(asciiData: decodedMetainfo["created by"] as? NSData) {
+            self.createdBy = createdBy
+        } else {
+            self.createdBy = nil
+        }
     }
     
+    private class func parseAnnounceList(announceListData: [ [ NSData ] ]) -> [[String]]? {
+        
+        var result: [[String]] = []
+        
+        for trackersArray in announceListData {
+            
+            var currentArray: [String] = []
+            for trackerData in trackersArray {
+                if let tracker = self.urlCompatibleStringFromAsciiData(trackerData) {
+                    currentArray.append(tracker)
+                } else {
+                    return nil
+                }
+            }
+            result.append(currentArray)
+        }
+        
+        return result
+    }
+    
+    private class func urlCompatibleStringFromAsciiData(asciiData: NSData) -> String? {
+        let result = String(asciiData: asciiData)
+        
+        if result == nil || NSURL(string: result!) == nil {
+            return nil
+        }
+        
+        return result
+    }
 }
 
 class TorrentInfoDictionary {

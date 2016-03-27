@@ -25,6 +25,12 @@ class TorrentMetaInfoTests: XCTestCase {
     let multipleFileLength2 = 115
     let multipleFilePath1 = "/test/path"
     let multipleFilePath2 = "/test/path2"
+    let announceString = "annouce string"
+    let announceList =  [ [ "tracker1", "tracker2" ], ["backup1"] ]
+    let creationDateInt: Int = 123456789
+    let creationDate = NSDate(timeIntervalSince1970: 123456789)
+    let comment = "Comment"
+    let createdBy = "Created By"
     
     override func setUp() {
         super.setUp()
@@ -81,15 +87,33 @@ class TorrentMetaInfoTests: XCTestCase {
     }
     
     func metaInfoDictionaryWithInfoDictionary(infoDictionary: [String : AnyObject]) -> NSData {
-        return try! BEncode.BEncoder.encode( [ "info" : infoDictionary ] )
+        return metaInfoDictionaryWithDictionary( unEncodedMetaInfoWithInfoDictionary(infoDictionary) )
+    }
+    
+    func metaInfoDictionaryWithDictionary(dictionary: [String : AnyObject]) -> NSData {
+        return try! BEncode.BEncoder.encode( dictionary )
+    }
+    
+    func unEncodedMetaInfoWithInfoDictionary(infoDictionary: [String : AnyObject]) -> [String : AnyObject] {
+        return [
+            "info" : infoDictionary,
+            "announce" : announceString,
+            "announce-list": announceList,
+            "creation date": creationDateInt,
+            "comment": comment,
+            "created by": createdBy,
+        ]
     }
     
     // MARK: -
 
     func testCanInitialiseWithDictionary() {
         let metaInfo = TorrentMetaInfo(data: self.exampleMetaInfoDictionary())!
-        let _ = metaInfo.infoHash
-        let _ = metaInfo.info
+        XCTAssertEqual(metaInfo.announce, announceString)
+        XCTAssertEqual(metaInfo.announceList!, announceList)
+        XCTAssertEqual(metaInfo.creationDate!, creationDate)
+        XCTAssertEqual(metaInfo.comment!, comment)
+        XCTAssertEqual(metaInfo.createdBy!, createdBy)
     }
     
     func testInfoDictionarySplitsPiecesInto20ByteChecksums() {
@@ -109,7 +133,24 @@ class TorrentMetaInfoTests: XCTestCase {
         
         XCTAssertEqual(hash, metaInfo.infoHash)
     }
-
+    
+    func testInitializerReturnsNilOnInvalidFields() {
+        var metainfoDictionary = self.unEncodedMetaInfoWithInfoDictionary(singleFileInfoDictionary())
+        metainfoDictionary.removeValueForKey("announce")
+        var metaInfo = TorrentMetaInfo(data: metaInfoDictionaryWithDictionary(metainfoDictionary))
+        XCTAssertNil(metaInfo)
+        
+        metainfoDictionary = self.unEncodedMetaInfoWithInfoDictionary(singleFileInfoDictionary())
+        metainfoDictionary.removeValueForKey("info")
+        metaInfo = TorrentMetaInfo(data: metaInfoDictionaryWithDictionary(metainfoDictionary))
+        XCTAssertNil(metaInfo)
+        
+        metainfoDictionary = self.unEncodedMetaInfoWithInfoDictionary(singleFileInfoDictionary())
+        metainfoDictionary.updateValue([[NSData(byteArray: [255])]], forKey: "announce-list")
+        metaInfo = TorrentMetaInfo(data: metaInfoDictionaryWithDictionary(metainfoDictionary))
+        XCTAssertNil(metaInfo)
+    }
+    
     // MARK: - Test info dictionary
     
     func testProducesCorrectCommonInfoDictionaryProperties() {
