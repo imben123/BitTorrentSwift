@@ -64,7 +64,7 @@ class TorrentMetaInfoTests: XCTestCase {
     }
     
     func createMultiplePieces() -> Data {
-        return singleFilePiece.andData(singleFilePiece)
+        return singleFilePiece + singleFilePiece
     }
     
     func multiFileInfoDictionary() -> [String:AnyObject] {
@@ -175,8 +175,8 @@ class TorrentMetaInfoTests: XCTestCase {
         XCTAssertEqual(info.pieceLength, filePieceLength)
         
         let piecesConcatenated = info.pieces!.reduce(Data()) {
-            (result: Data, item: Data) in
-            return result.andData(item)
+            (result, item) in
+            return result + item
         }
         XCTAssertEqual(piecesConcatenated, createMultiplePieces())
     }
