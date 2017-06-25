@@ -18,5 +18,4 @@ extension Data {
         let bytesPointer = UnsafeRawPointer(digest)
         return Data(bytes: bytesPointer, count: outputLength)
     }
-    
 }

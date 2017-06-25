@@ -12,7 +12,7 @@ import enum BEncode.AsciiError
 
 class TorrentMetaInfo {
     
-    let infoHash : Data // this is the original bencoded dictionary, hashed
+    let infoHash : Data // this is the original BEncoded dictionary, hashed
 
     let info: TorrentInfoDictionary
     let announce: String
@@ -25,7 +25,7 @@ class TorrentMetaInfo {
         
         let decodedMetainfo = try! BEncoder.decodeStringKeyedDictionary(data)
         
-        if let infoDictionary = decodedMetainfo["info"] as? [String : AnyObject],
+        if let infoDictionary = decodedMetainfo["info"] as? [String: AnyObject],
             let info = TorrentInfoDictionary(infoDictionary) {
             self.infoHash = try! BEncoder.decodeDictionaryKeysOnly(data)["info"]!.sha1()
             self.info = info
@@ -40,7 +40,7 @@ class TorrentMetaInfo {
             return nil
         }
         
-        if let announceListData = decodedMetainfo["announce-list"] as? [ [ Data ] ] {
+        if let announceListData = decodedMetainfo["announce-list"] as? [[Data]] {
             if let announceList = TorrentMetaInfo.parseAnnounceList(announceListData) {
                 self.announceList = announceList
             } else {
@@ -69,7 +69,7 @@ class TorrentMetaInfo {
         }
     }
     
-    fileprivate class func parseAnnounceList(_ announceListData: [ [ Data ] ]) -> [[String]]? {
+    fileprivate class func parseAnnounceList(_ announceListData: [[Data]]) -> [[String]]? {
         
         var result: [[String]] = []
         
@@ -77,7 +77,7 @@ class TorrentMetaInfo {
             
             var currentArray: [String] = []
             for trackerData in trackersArray {
-                if let tracker = self.urlCompatibleStringFromAsciiData(trackerData) {
+                if let tracker = urlCompatibleStringFromAsciiData(trackerData) {
                     currentArray.append(tracker)
                 } else {
                     return nil
@@ -144,8 +144,8 @@ class TorrentInfoDictionary {
         
     }
     
-    fileprivate class func parseFilesAndLengthFromDictionary(_ dictionary: [ String : AnyObject ],
-                                                         parsedName name: String)
+    fileprivate class func parseFilesAndLengthFromDictionary(_ dictionary: [String: AnyObject],
+                                                             parsedName name: String)
         -> (files: [TorrentFileInfo], totalLength: Int)? {
             
             if let files = dictionary["files"] as? [ [ String : AnyObject ] ] {
@@ -166,8 +166,8 @@ class TorrentInfoDictionary {
     }
     
     fileprivate class func parseSingleFileFromInfoDictionary(_ dictionary: [ String : AnyObject ],
-                                                         parsedName name: String,
-                                                         parsedLength length: Int) -> ([TorrentFileInfo], Int) {
+                                                             parsedName name: String,
+                                                             parsedLength length: Int) -> ([TorrentFileInfo], Int) {
         
         let md5sumData = dictionary["md5sum"] as? Data
         let md5sum = String(asciiData: md5sumData)

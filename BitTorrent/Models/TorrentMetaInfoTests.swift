@@ -282,7 +282,6 @@ class TorrentMetaInfoTests: XCTestCase {
         let file2 = info.files[1]
         XCTAssertEqual(file2.length, multipleFileLength2)
         XCTAssertEqual(file2.path, multipleFilePath2)
-        
     }
     
     func testInfoDictionaryContainsMD5ChecksumIfPresentInMultipleFiles() {
@@ -310,8 +309,6 @@ class TorrentMetaInfoTests: XCTestCase {
         
         XCTAssertNil(file1.md5sum)
         XCTAssertNil(file2.md5sum)
-        
-        
     }
     
     func testInitializerReturnsNilOnInvalidInfoDictionaryForMultipleFiles() {
@@ -334,8 +331,5 @@ class TorrentMetaInfoTests: XCTestCase {
             ])
         metaInfoDictionary = metaInfoDictionaryWithInfoDictionary(infoDictionary)
         XCTAssertNil(TorrentMetaInfo(data: metaInfoDictionary))
-
     }
-    
-    
 }
