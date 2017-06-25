@@ -8,12 +8,24 @@
 
 import XCTest
 @testable import BitTorrent
-import BEncode
+@testable import BEncode
+
+extension Array where Element: Equatable {
+    
+    static func ==(lhs: Array<Element>, rhs: Array<Element>) -> Bool {
+        for i in [0..<lhs.count] {
+            if lhs[i] != rhs[i] {
+                return false
+            }
+        }
+        return true
+    }
+}
 
 class TorrentMetaInfoTests: XCTestCase {
 
     let filePieceLength = 16384
-    let singleFilePiece = NSData(byteArray: [0x3f, 0x3f, 0x11, 0x09, 0x64, 0x07, 0x00, 0x3f, 0x42,
+    let singleFilePiece = Data(bytes: [0x3f, 0x3f, 0x11, 0x09, 0x64, 0x07, 0x00, 0x3f, 0x42,
         0x35, 0x3f, 0x3f, 0x59, 0x2e, 0x23, 0x13, 0x3f, 0x18, 0x23, 0x3e])
     let torrentName = "Torrent Name"
     let singleFileName = "test.txt"
@@ -26,9 +38,9 @@ class TorrentMetaInfoTests: XCTestCase {
     let multipleFilePath1 = "/test/path"
     let multipleFilePath2 = "/test/path2"
     let announceString = "annouce string"
-    let announceList =  [ [ "tracker1", "tracker2" ], ["backup1"] ]
+    let announceList: [[String]] =  [ [ "tracker1", "tracker2" ], ["backup1"] ]
     let creationDateInt: Int = 123456789
-    let creationDate = NSDate(timeIntervalSince1970: 123456789)
+    let creationDate = Date(timeIntervalSince1970: 123456789)
     let comment = "Comment"
     let createdBy = "Created By"
     
@@ -44,15 +56,15 @@ class TorrentMetaInfoTests: XCTestCase {
     
     func singleFileInfoDictionary() -> [String:AnyObject] {
         return [
-            "piece length" : filePieceLength,
-            "pieces" : createMultiplePieces(),
-            "name" : singleFileName,
-            "length" : singleFileLength,
+            "piece length" : filePieceLength as AnyObject,
+            "pieces" : createMultiplePieces() as AnyObject,
+            "name" : singleFileName as AnyObject,
+            "length" : singleFileLength as AnyObject,
         ]
     }
     
-    func createMultiplePieces() -> NSData {
-        return NSMutableData(data: singleFilePiece).andData(singleFilePiece)
+    func createMultiplePieces() -> Data {
+        return singleFilePiece.andData(singleFilePiece)
     }
     
     func multiFileInfoDictionary() -> [String:AnyObject] {
@@ -62,46 +74,46 @@ class TorrentMetaInfoTests: XCTestCase {
             ])
     }
     
-    func multiFileInfoDictionary(files: [ [ String : AnyObject ] ]) -> [String:AnyObject] {
+    func multiFileInfoDictionary(_ files: [ [ String : AnyObject ] ]) -> [String:AnyObject] {
         return [
-            "piece length" : filePieceLength,
-            "pieces" : createMultiplePieces(),
-            "name" : torrentName,
-            "files" : files,
+            "piece length" : filePieceLength as AnyObject,
+            "pieces" : createMultiplePieces() as AnyObject,
+            "name" : torrentName as AnyObject,
+            "files" : files as AnyObject,
         ]
     }
     
-    func testFileDictionary(length: Int, path: String, md5sum: String?) -> [ String : AnyObject ] {
+    func testFileDictionary(_ length: Int, path: String, md5sum: String?) -> [ String : AnyObject ] {
         var result: [ String : AnyObject ] = [
-            "length" : length,
-            "path" : path,
+            "length" : length as AnyObject,
+            "path" : path as AnyObject,
         ]
         if let md5sum = md5sum {
-            result.updateValue(md5sum, forKey:"md5sum")
+            result.updateValue(md5sum as AnyObject, forKey:"md5sum")
         }
         return result
     }
     
-    func exampleMetaInfoDictionary() -> NSData {
+    func exampleMetaInfoDictionary() -> Data {
         return self.metaInfoDictionaryWithInfoDictionary(singleFileInfoDictionary())
     }
     
-    func metaInfoDictionaryWithInfoDictionary(infoDictionary: [String : AnyObject]) -> NSData {
+    func metaInfoDictionaryWithInfoDictionary(_ infoDictionary: [String : AnyObject]) -> Data {
         return metaInfoDictionaryWithDictionary( unEncodedMetaInfoWithInfoDictionary(infoDictionary) )
     }
     
-    func metaInfoDictionaryWithDictionary(dictionary: [String : AnyObject]) -> NSData {
+    func metaInfoDictionaryWithDictionary(_ dictionary: [String : AnyObject]) -> Data {
         return try! BEncode.BEncoder.encode( dictionary )
     }
     
-    func unEncodedMetaInfoWithInfoDictionary(infoDictionary: [String : AnyObject]) -> [String : AnyObject] {
+    func unEncodedMetaInfoWithInfoDictionary(_ infoDictionary: [String : AnyObject]) -> [String : AnyObject] {
         return [
-            "info" : infoDictionary,
-            "announce" : announceString,
-            "announce-list": announceList,
-            "creation date": creationDateInt,
-            "comment": comment,
-            "created by": createdBy,
+            "info" : infoDictionary as AnyObject,
+            "announce" : announceString as AnyObject,
+            "announce-list": announceList as AnyObject,
+            "creation date": creationDateInt as AnyObject,
+            "comment": comment as AnyObject,
+            "created by": createdBy as AnyObject,
         ]
     }
     
@@ -110,7 +122,7 @@ class TorrentMetaInfoTests: XCTestCase {
     func testCanInitialiseWithDictionary() {
         let metaInfo = TorrentMetaInfo(data: self.exampleMetaInfoDictionary())!
         XCTAssertEqual(metaInfo.announce, announceString)
-        XCTAssertEqual(metaInfo.announceList!, announceList)
+        XCTAssertEqual(metaInfo.announceList! as NSArray, announceList as NSArray)
         XCTAssertEqual(metaInfo.creationDate!, creationDate)
         XCTAssertEqual(metaInfo.comment!, comment)
         XCTAssertEqual(metaInfo.createdBy!, createdBy)
@@ -124,11 +136,11 @@ class TorrentMetaInfoTests: XCTestCase {
     }
     
     func testProducesCorrectInfoHash() {
-        let path = NSBundle(forClass: self.dynamicType).pathForResource("TestText", ofType: "torrent")
-        let data = NSData(contentsOfFile: path!)!
+        let path = Bundle(for: type(of: self)).path(forResource: "TestText", ofType: "torrent")
+        let data = try! Data(contentsOf: URL(fileURLWithPath: path!))
         let metaInfo = TorrentMetaInfo(data: data)!
 
-        let hash = NSData(byteArray:[ 0xf0, 0xb8, 0x71, 0x98, 0x99, 0x53, 0x97, 0x3f, 0xbf, 0xa9, 0x4d,
+        let hash = Data(bytes:[ 0xf0, 0xb8, 0x71, 0x98, 0x99, 0x53, 0x97, 0x3f, 0xbf, 0xa9, 0x4d,
             0xc8, 0x14, 0x98, 0xee, 0x8d, 0x20, 0x5b, 0xb2, 0x23])
         
         XCTAssertEqual(hash, metaInfo.infoHash)
@@ -136,17 +148,18 @@ class TorrentMetaInfoTests: XCTestCase {
     
     func testInitializerReturnsNilOnInvalidFields() {
         var metainfoDictionary = self.unEncodedMetaInfoWithInfoDictionary(singleFileInfoDictionary())
-        metainfoDictionary.removeValueForKey("announce")
+        metainfoDictionary.removeValue(forKey: "announce")
         var metaInfo = TorrentMetaInfo(data: metaInfoDictionaryWithDictionary(metainfoDictionary))
         XCTAssertNil(metaInfo)
         
         metainfoDictionary = self.unEncodedMetaInfoWithInfoDictionary(singleFileInfoDictionary())
-        metainfoDictionary.removeValueForKey("info")
+        metainfoDictionary.removeValue(forKey: "info")
         metaInfo = TorrentMetaInfo(data: metaInfoDictionaryWithDictionary(metainfoDictionary))
         XCTAssertNil(metaInfo)
         
         metainfoDictionary = self.unEncodedMetaInfoWithInfoDictionary(singleFileInfoDictionary())
-        metainfoDictionary.updateValue([[NSData(byteArray: [255])]], forKey: "announce-list")
+        let exampleInvalidField = [[Data(bytes: [255])]]
+        metainfoDictionary.updateValue(exampleInvalidField as AnyObject, forKey: "announce-list")
         metaInfo = TorrentMetaInfo(data: metaInfoDictionaryWithDictionary(metainfoDictionary))
         XCTAssertNil(metaInfo)
     }
@@ -161,8 +174,8 @@ class TorrentMetaInfoTests: XCTestCase {
         
         XCTAssertEqual(info.pieceLength, filePieceLength)
         
-        let piecesConcatenated = info.pieces!.reduce(NSMutableData()) {
-            (result: NSMutableData, item: NSData) in
+        let piecesConcatenated = info.pieces!.reduce(Data()) {
+            (result: Data, item: Data) in
             return result.andData(item)
         }
         XCTAssertEqual(piecesConcatenated, createMultiplePieces())
@@ -171,15 +184,15 @@ class TorrentMetaInfoTests: XCTestCase {
     func testIsPrivateIffPrivateKeyIsPresentAnd1() {
         var infoDictionary = singleFileInfoDictionary()
         
-        infoDictionary.updateValue(1, forKey: "private")
+        infoDictionary.updateValue(1 as AnyObject, forKey: "private")
         var metainfo = TorrentMetaInfo(data: metaInfoDictionaryWithInfoDictionary(infoDictionary))!
         XCTAssertTrue(metainfo.info.isPrivate)
         
-        infoDictionary.updateValue(0, forKey: "private")
+        infoDictionary.updateValue(0 as AnyObject, forKey: "private")
         metainfo = TorrentMetaInfo(data: metaInfoDictionaryWithInfoDictionary(infoDictionary))!
         XCTAssertFalse(metainfo.info.isPrivate)
         
-        infoDictionary.removeValueForKey("private")
+        infoDictionary.removeValue(forKey: "private")
         metainfo = TorrentMetaInfo(data: metaInfoDictionaryWithInfoDictionary(infoDictionary))!
         XCTAssertFalse(metainfo.info.isPrivate)
     }
@@ -208,7 +221,7 @@ class TorrentMetaInfoTests: XCTestCase {
         XCTAssertNil(file.md5sum)
         
         
-        infoDictionary.updateValue(singleFileMD5, forKey: "md5sum")
+        infoDictionary.updateValue(singleFileMD5 as AnyObject, forKey: "md5sum")
         metaInfo = TorrentMetaInfo(data: metaInfoDictionaryWithInfoDictionary(infoDictionary))!
         file = metaInfo.info.files[0]
 
@@ -219,25 +232,26 @@ class TorrentMetaInfoTests: XCTestCase {
     func testInitializerReturnsNilOnInvalidInfoDictionaryForSingleFile() {
         
         var infoDictionary = singleFileInfoDictionary()
-        infoDictionary.removeValueForKey("name")
+        infoDictionary.removeValue(forKey: "name")
         var metaInfoDictionary = metaInfoDictionaryWithInfoDictionary(infoDictionary)
         
         XCTAssertNil(TorrentMetaInfo(data: metaInfoDictionary))
         
         infoDictionary = singleFileInfoDictionary()
-        infoDictionary.removeValueForKey("piece length")
+        infoDictionary.removeValue(forKey: "piece length")
         metaInfoDictionary = metaInfoDictionaryWithInfoDictionary(infoDictionary)
         
         XCTAssertNil(TorrentMetaInfo(data: metaInfoDictionary))
         
         infoDictionary = singleFileInfoDictionary()
-        infoDictionary.removeValueForKey("pieces")
+        infoDictionary.removeValue(forKey: "pieces")
         metaInfoDictionary = metaInfoDictionaryWithInfoDictionary(infoDictionary)
         
         XCTAssertNil(TorrentMetaInfo(data: metaInfoDictionary))
         
         infoDictionary = singleFileInfoDictionary()
-        infoDictionary.updateValue(NSData(byteArray: [1,2,3]), forKey: "pieces")
+        let exampleData = Data(bytes: [1,2,3])
+        infoDictionary.updateValue(exampleData as AnyObject, forKey: "pieces")
         metaInfoDictionary = metaInfoDictionaryWithInfoDictionary(infoDictionary)
         
         XCTAssertNil(TorrentMetaInfo(data: metaInfoDictionary))
@@ -283,11 +297,11 @@ class TorrentMetaInfoTests: XCTestCase {
         XCTAssertEqual(file2.md5sum, multipleFile2MD5)
         
         
-        infoDictionary.updateValue(multipleFile1MD5, forKey: "md5sum")
+        infoDictionary.updateValue(multipleFile1MD5 as AnyObject, forKey: "md5sum")
         
         infoDictionary = multiFileInfoDictionary([
-            [ "length" : multipleFileLength1, "path" : multipleFilePath1 ],
-            [ "length" : multipleFileLength2, "path" : multipleFilePath2 ],
+            [ "length" : multipleFileLength1 as AnyObject, "path" : multipleFilePath1 as AnyObject ],
+            [ "length" : multipleFileLength2 as AnyObject, "path" : multipleFilePath2 as AnyObject ],
             ])
         metaInfoDictionary = metaInfoDictionaryWithInfoDictionary(infoDictionary)
         metaInfo = TorrentMetaInfo(data: metaInfoDictionary)!
@@ -303,20 +317,20 @@ class TorrentMetaInfoTests: XCTestCase {
     func testInitializerReturnsNilOnInvalidInfoDictionaryForMultipleFiles() {
         
         var infoDictionary = multiFileInfoDictionary()
-        infoDictionary.removeValueForKey("files")
+        infoDictionary.removeValue(forKey: "files")
         var metaInfoDictionary = metaInfoDictionaryWithInfoDictionary(infoDictionary)
         XCTAssertNil(TorrentMetaInfo(data: metaInfoDictionary))
         
         infoDictionary = multiFileInfoDictionary([
-            [ "length" : multipleFileLength1, "path" : multipleFilePath1 ],
-            [ "length" : multipleFileLength2 ],
+            [ "length" : multipleFileLength1 as AnyObject, "path" : multipleFilePath1 as AnyObject ],
+            [ "length" : multipleFileLength2 as AnyObject ],
             ])
         metaInfoDictionary = metaInfoDictionaryWithInfoDictionary(infoDictionary)
         XCTAssertNil(TorrentMetaInfo(data: metaInfoDictionary))
         
         infoDictionary = multiFileInfoDictionary([
-            [ "length" : multipleFileLength1, "path" : multipleFilePath1 ],
-            [ "path" : multipleFilePath2 ],
+            [ "length" : multipleFileLength1 as AnyObject, "path" : multipleFilePath1 as AnyObject ],
+            [ "path" : multipleFilePath2 as AnyObject ],
             ])
         metaInfoDictionary = metaInfoDictionaryWithInfoDictionary(infoDictionary)
         XCTAssertNil(TorrentMetaInfo(data: metaInfoDictionary))

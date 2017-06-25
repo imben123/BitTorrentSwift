@@ -8,13 +8,13 @@
 
 import XCTest
 
-func assertExceptionThrown(exception: ErrorType?, dangerCode: ()throws->()) {
+func assertExceptionThrown(_ exception: Error?, dangerCode: ()throws->()) {
     var exceptionThrown = false
     do {
         try dangerCode()
     } catch let e {
-        if let exception = exception where
-            e.dynamicType != exception.dynamicType {
+        if let exception = exception,
+            type(of: e) != type(of: exception) {
                 XCTFail("Expected an exception of type \(exception) but got exception of type \(e)")
         }
         exceptionThrown = true
