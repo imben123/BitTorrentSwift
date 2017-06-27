@@ -15,12 +15,12 @@ class TorrentMetaInfo {
     let infoHash : Data // this is the original BEncoded dictionary, hashed
 
     let info: TorrentInfoDictionary
-    let announce: String
+    let announce: URL
     let announceList: [[String]]?
     let creationDate: Date?
     let comment: String?
     let createdBy: String?
-
+    
     init?(data: Data) {
         
         let decodedMetainfo = try! BEncoder.decodeStringKeyedDictionary(data)
@@ -34,8 +34,9 @@ class TorrentMetaInfo {
         }
         
         if let announceData = decodedMetainfo["announce"],
-            let announceString = String(asciiData: announceData as? Data) {
-            self.announce = announceString
+            let announceString = String(asciiData: announceData as? Data),
+            let announceURL = URL(string: announceString) {
+            self.announce = announceURL
         } else {
             return nil
         }

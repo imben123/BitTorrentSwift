@@ -14,7 +14,11 @@ extension String {
     static let asciiSpace: UInt8 = 32
     static let asciiPercentage: UInt8 = 37
     
-    static func urlEncode(_ data: Data) -> String {
+    init(urlEncodingData data: Data) {
+        self = String.urlEncode(data)
+    }
+    
+    private static func urlEncode(_ data: Data) -> String {
         let allowedCharacters = CharacterSet(charactersIn: "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ.-_~")
         let result = NSMutableString()
         

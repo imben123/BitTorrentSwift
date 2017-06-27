@@ -1,0 +1,27 @@
+PODS:
+  - Alamofire (4.5.0)
+  - OHHTTPStubs (6.0.0):
+    - OHHTTPStubs/Default (= 6.0.0)
+  - OHHTTPStubs/Core (6.0.0)
+  - OHHTTPStubs/Default (6.0.0):
+    - OHHTTPStubs/Core
+    - OHHTTPStubs/JSON
+    - OHHTTPStubs/NSURLSession
+    - OHHTTPStubs/OHPathHelpers
+  - OHHTTPStubs/JSON (6.0.0):
+    - OHHTTPStubs/Core
+  - OHHTTPStubs/NSURLSession (6.0.0):
+    - OHHTTPStubs/Core
+  - OHHTTPStubs/OHPathHelpers (6.0.0)
+
+DEPENDENCIES:
+  - Alamofire (= 4.5.0)
+  - OHHTTPStubs
+
+SPEC CHECKSUMS:
+  Alamofire: f28cdffd29de33a7bfa022cbd63ae95a27fae140
+  OHHTTPStubs: 752f9b11fd810a15162d50f11c06ff94f8e012eb
+
+PODFILE CHECKSUM: 9fe25bcdf8fe1b5a1322474e68acc83c6dfd666c
+
+COCOAPODS: 1.2.0

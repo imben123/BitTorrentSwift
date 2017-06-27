@@ -25,8 +25,8 @@ extension Array where Element: Equatable {
 class TorrentMetaInfoTests: XCTestCase {
 
     let filePieceLength = 16384
-    let singleFilePiece = Data(bytes: [0x3f, 0x3f, 0x11, 0x09, 0x64, 0x07, 0x00, 0x3f, 0x42,
-        0x35, 0x3f, 0x3f, 0x59, 0x2e, 0x23, 0x13, 0x3f, 0x18, 0x23, 0x3e])
+    let singleFilePiece = Data(bytes: [0x3f, 0x3f, 0x11, 0x09, 0x64, 0x07, 0x00, 0x3f, 0x42, 0x35,
+                                       0x3f, 0x3f, 0x59, 0x2e, 0x23, 0x13, 0x3f, 0x18, 0x23, 0x3e])
     let torrentName = "Torrent Name"
     let singleFileName = "test.txt"
     let singleFileLength = 117
@@ -37,7 +37,7 @@ class TorrentMetaInfoTests: XCTestCase {
     let multipleFileLength2 = 115
     let multipleFilePath1 = "/test/path"
     let multipleFilePath2 = "/test/path2"
-    let announceString = "annouce string"
+    let announceURL = URL(string: "announceURL.com")!
     let announceList: [[String]] =  [ [ "tracker1", "tracker2" ], ["backup1"] ]
     let creationDateInt: Int = 123456789
     let creationDate = Date(timeIntervalSince1970: 123456789)
@@ -109,7 +109,7 @@ class TorrentMetaInfoTests: XCTestCase {
     func unEncodedMetaInfoWithInfoDictionary(_ infoDictionary: [String : AnyObject]) -> [String : AnyObject] {
         return [
             "info" : infoDictionary as AnyObject,
-            "announce" : announceString as AnyObject,
+            "announce" : announceURL.absoluteString as AnyObject,
             "announce-list": announceList as AnyObject,
             "creation date": creationDateInt as AnyObject,
             "comment": comment as AnyObject,
@@ -121,7 +121,7 @@ class TorrentMetaInfoTests: XCTestCase {
 
     func testCanInitialiseWithDictionary() {
         let metaInfo = TorrentMetaInfo(data: self.exampleMetaInfoDictionary())!
-        XCTAssertEqual(metaInfo.announce, announceString)
+        XCTAssertEqual(metaInfo.announce, announceURL)
         XCTAssertEqual(metaInfo.announceList! as NSArray, announceList as NSArray)
         XCTAssertEqual(metaInfo.creationDate!, creationDate)
         XCTAssertEqual(metaInfo.comment!, comment)
@@ -140,8 +140,8 @@ class TorrentMetaInfoTests: XCTestCase {
         let data = try! Data(contentsOf: URL(fileURLWithPath: path!))
         let metaInfo = TorrentMetaInfo(data: data)!
 
-        let hash = Data(bytes:[ 0xf0, 0xb8, 0x71, 0x98, 0x99, 0x53, 0x97, 0x3f, 0xbf, 0xa9, 0x4d,
-            0xc8, 0x14, 0x98, 0xee, 0x8d, 0x20, 0x5b, 0xb2, 0x23])
+        let hash = Data(bytes:[ 0xf0, 0xb8, 0x71, 0x98, 0x99, 0x53, 0x97, 0x3f, 0xbf, 0xa9,
+                                0x4d, 0xc8, 0x14, 0x98, 0xee, 0x8d, 0x20, 0x5b, 0xb2, 0x23])
         
         XCTAssertEqual(hash, metaInfo.infoHash)
     }

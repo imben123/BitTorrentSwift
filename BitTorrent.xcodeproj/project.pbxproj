@@ -7,20 +7,52 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		093BCDB0AFF1213952AF9B78 /* Pods_BitTorrent_BitTorrentExample.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DC831BC41AD3DBDC243F2D31 /* Pods_BitTorrent_BitTorrentExample.framework */; };
+		8214C7DC09DE39DFD4A3A4D4 /* Pods_BitTorrentExample.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 38D46CB7DEC9C9D2E7BFCC79 /* Pods_BitTorrentExample.framework */; };
+		85A4C242C1CF7B2588181C55 /* Pods_BitTorrentTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4C9C10DE7DF23AC06671B75B /* Pods_BitTorrentTests.framework */; };
+		B537CF061F03148B0084089B /* HTTPConnectionStub.swift in Sources */ = {isa = PBXBuildFile; fileRef = B537CF051F03148B0084089B /* HTTPConnectionStub.swift */; };
+		B537CF461F031AD20084089B /* TestText.torrent in Resources */ = {isa = PBXBuildFile; fileRef = B5E9B0E31F02F9E700EF58E3 /* TestText.torrent */; };
+		B537CF491F031C3D0084089B /* BEncode.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B54D0C1A1CA53983004343BD /* BEncode.framework */; };
+		B537CF4A1F031C3D0084089B /* BEncode.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = B54D0C1A1CA53983004343BD /* BEncode.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		B537CF4D1F031C3D0084089B /* BitTorrent.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B585AB741C3833450093FA41 /* BitTorrent.framework */; };
+		B537CF4E1F031C3D0084089B /* BitTorrent.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = B585AB741C3833450093FA41 /* BitTorrent.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		B54D0C1F1CA53993004343BD /* BEncode.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B54D0C1A1CA53983004343BD /* BEncode.framework */; };
 		B54D0C271CA56ADB004343BD /* TorrentMetaInfoTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B54D0C261CA56ADB004343BD /* TorrentMetaInfoTests.swift */; };
 		B54D0C761CA58993004343BD /* CommonCrypto.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B54D0C581CA58722004343BD /* CommonCrypto.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		B54D0C7A1CA69FAD004343BD /* TorrentMetaInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = B54D0C231CA56A22004343BD /* TorrentMetaInfo.swift */; };
 		B54D0C7B1CA69FD8004343BD /* Data+sha1.swift in Sources */ = {isa = PBXBuildFile; fileRef = B54D0C2B1CA5787E004343BD /* Data+sha1.swift */; };
-		B55D3FC21CA81372005CBDFF /* TestText.torrent in Resources */ = {isa = PBXBuildFile; fileRef = B55D3FC11CA81372005CBDFF /* TestText.torrent */; };
+		B5530DB21F03063300F71CCD /* HTTPConnection.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5530DB11F03063300F71CCD /* HTTPConnection.swift */; };
+		B5530DB51F03063E00F71CCD /* HTTPConnectionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5530DB41F03063E00F71CCD /* HTTPConnectionTests.swift */; };
+		B55317DC1F02FC4D00909ADF /* TorrentHTTPTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = B55317DB1F02FC4D00909ADF /* TorrentHTTPTracker.swift */; };
+		B55317E01F02FE1500909ADF /* URLEncodeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B55317DF1F02FE1500909ADF /* URLEncodeTests.swift */; };
 		B56A8A071C83539300426AC8 /* TestHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = B56A8A061C83539300426AC8 /* TestHelpers.swift */; };
 		B585AB781C3833450093FA41 /* BitTorrent.h in Headers */ = {isa = PBXBuildFile; fileRef = B585AB771C3833450093FA41 /* BitTorrent.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		B585AB7F1C3833450093FA41 /* BitTorrent.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B585AB741C3833450093FA41 /* BitTorrent.framework */; };
 		B585AB841C3833450093FA41 /* BitTorrentTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B585AB831C3833450093FA41 /* BitTorrentTests.swift */; };
+		B5BD7FD61F03032400621BC2 /* TorrentHTTPTrackerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5BD7FD51F03032400621BC2 /* TorrentHTTPTrackerTests.swift */; };
 		B5E977961CAFB46B0038EBE7 /* String+URLEncode.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5E977951CAFB46B0038EBE7 /* String+URLEncode.swift */; };
+		B5E9B0D81F02E6F800EF58E3 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5E9B0D71F02E6F800EF58E3 /* AppDelegate.swift */; };
+		B5E9B0DA1F02E6F800EF58E3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B5E9B0D91F02E6F800EF58E3 /* Assets.xcassets */; };
+		B5E9B0DD1F02E6F800EF58E3 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B5E9B0DB1F02E6F800EF58E3 /* LaunchScreen.storyboard */; };
+		B5E9B0E51F02FAC600EF58E3 /* TestText.torrent in Resources */ = {isa = PBXBuildFile; fileRef = B5E9B0E31F02F9E700EF58E3 /* TestText.torrent */; };
+		F2A74A776590BB3F37116B02 /* Pods_BitTorrent.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9B95A5AC293A32B10DB4660E /* Pods_BitTorrent.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		B537CF471F031C2F0084089B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B585AB6B1C3833450093FA41 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = B585AB731C3833450093FA41;
+			remoteInfo = BitTorrent;
+		};
+		B537CF4B1F031C3D0084089B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B54D0C141CA53983004343BD /* BEncode.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = B54D0BDA1CA53299004343BD;
+			remoteInfo = BEncode;
+		};
 		B54D0C191CA53983004343BD /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = B54D0C141CA53983004343BD /* BEncode.xcodeproj */;
@@ -58,7 +90,31 @@
 		};
 /* End PBXContainerItemProxy section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		B537CF4F1F031C3D0084089B /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				B537CF4A1F031C3D0084089B /* BEncode.framework in Embed Frameworks */,
+				B537CF4E1F031C3D0084089B /* BitTorrent.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
+		38D46CB7DEC9C9D2E7BFCC79 /* Pods_BitTorrentExample.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BitTorrentExample.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		4B42EF97BEA586F1F3D322AF /* Pods-BitTorrentExample.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BitTorrentExample.release.xcconfig"; path = "Pods/Target Support Files/Pods-BitTorrentExample/Pods-BitTorrentExample.release.xcconfig"; sourceTree = "<group>"; };
+		4C9C10DE7DF23AC06671B75B /* Pods_BitTorrentTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BitTorrentTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		63B7D3BCB690B552A38F570E /* Pods-BitTorrent-BitTorrentExample.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BitTorrent-BitTorrentExample.debug.xcconfig"; path = "Pods/Target Support Files/Pods-BitTorrent-BitTorrentExample/Pods-BitTorrent-BitTorrentExample.debug.xcconfig"; sourceTree = "<group>"; };
+		935B3E651D3B45CEBF2BF84C /* Pods-BitTorrent.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BitTorrent.release.xcconfig"; path = "Pods/Target Support Files/Pods-BitTorrent/Pods-BitTorrent.release.xcconfig"; sourceTree = "<group>"; };
+		9B95A5AC293A32B10DB4660E /* Pods_BitTorrent.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BitTorrent.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		A40A9CCBA0D27D6AEF58A344 /* Pods-BitTorrentTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BitTorrentTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-BitTorrentTests/Pods-BitTorrentTests.release.xcconfig"; sourceTree = "<group>"; };
+		AB708F970D0B280193A6EB38 /* Pods-BitTorrentTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BitTorrentTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-BitTorrentTests/Pods-BitTorrentTests.debug.xcconfig"; sourceTree = "<group>"; };
+		B537CF051F03148B0084089B /* HTTPConnectionStub.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = HTTPConnectionStub.swift; path = "HTTP Networking/HTTPConnectionStub.swift"; sourceTree = "<group>"; };
 		B54D0C141CA53983004343BD /* BEncode.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = BEncode.xcodeproj; path = Submodules/BEncodeSwift/BEncode.xcodeproj; sourceTree = "<group>"; };
 		B54D0C231CA56A22004343BD /* TorrentMetaInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TorrentMetaInfo.swift; path = Models/TorrentMetaInfo.swift; sourceTree = "<group>"; };
 		B54D0C261CA56ADB004343BD /* TorrentMetaInfoTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TorrentMetaInfoTests.swift; path = Models/TorrentMetaInfoTests.swift; sourceTree = "<group>"; };
@@ -69,7 +125,10 @@
 		B54D0C721CA5879E004343BD /* iphoneos.modulemap */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.module-map"; path = iphoneos.modulemap; sourceTree = "<group>"; };
 		B54D0C731CA587A9004343BD /* iphonesimulator.modulemap */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = "sourcecode.module-map"; path = iphonesimulator.modulemap; sourceTree = "<group>"; };
 		B54D0C741CA587B5004343BD /* macosx.modulemap */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = "sourcecode.module-map"; path = macosx.modulemap; sourceTree = "<group>"; };
-		B55D3FC11CA81372005CBDFF /* TestText.torrent */ = {isa = PBXFileReference; lastKnownFileType = file; path = TestText.torrent; sourceTree = "<group>"; };
+		B5530DB11F03063300F71CCD /* HTTPConnection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = HTTPConnection.swift; path = "HTTP Networking/HTTPConnection.swift"; sourceTree = "<group>"; };
+		B5530DB41F03063E00F71CCD /* HTTPConnectionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = HTTPConnectionTests.swift; path = "HTTP Networking/HTTPConnectionTests.swift"; sourceTree = "<group>"; };
+		B55317DB1F02FC4D00909ADF /* TorrentHTTPTracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = TorrentHTTPTracker.swift; path = Tracker/TorrentHTTPTracker.swift; sourceTree = "<group>"; };
+		B55317DF1F02FE1500909ADF /* URLEncodeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = URLEncodeTests.swift; path = "HTTP Networking/URLEncodeTests.swift"; sourceTree = "<group>"; };
 		B56A8A061C83539300426AC8 /* TestHelpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TestHelpers.swift; path = Utilities/TestHelpers.swift; sourceTree = "<group>"; };
 		B585AB741C3833450093FA41 /* BitTorrent.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = BitTorrent.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B585AB771C3833450093FA41 /* BitTorrent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BitTorrent.h; sourceTree = "<group>"; };
@@ -77,7 +136,19 @@
 		B585AB7E1C3833450093FA41 /* BitTorrentTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BitTorrentTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		B585AB831C3833450093FA41 /* BitTorrentTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = BitTorrentTests.swift; path = BitTorrentTests/BitTorrentTests.swift; sourceTree = SOURCE_ROOT; };
 		B585AB851C3833450093FA41 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		B5BD7FD51F03032400621BC2 /* TorrentHTTPTrackerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = TorrentHTTPTrackerTests.swift; path = Tracker/TorrentHTTPTrackerTests.swift; sourceTree = "<group>"; };
 		B5E977951CAFB46B0038EBE7 /* String+URLEncode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "String+URLEncode.swift"; path = "HTTP Networking/String+URLEncode.swift"; sourceTree = "<group>"; };
+		B5E9B0D51F02E6F800EF58E3 /* BitTorrentExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BitTorrentExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		B5E9B0D71F02E6F800EF58E3 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		B5E9B0D91F02E6F800EF58E3 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		B5E9B0DC1F02E6F800EF58E3 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		B5E9B0DE1F02E6F800EF58E3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		B5E9B0E31F02F9E700EF58E3 /* TestText.torrent */ = {isa = PBXFileReference; lastKnownFileType = file; path = TestText.torrent; sourceTree = "<group>"; };
+		B5E9B0E41F02F9E700EF58E3 /* text.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = text.txt; sourceTree = "<group>"; };
+		BDA22A3943D47D6B2152CB15 /* Pods-BitTorrent.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BitTorrent.debug.xcconfig"; path = "Pods/Target Support Files/Pods-BitTorrent/Pods-BitTorrent.debug.xcconfig"; sourceTree = "<group>"; };
+		BFDACB202E071FF8247EC868 /* Pods-BitTorrentExample.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BitTorrentExample.debug.xcconfig"; path = "Pods/Target Support Files/Pods-BitTorrentExample/Pods-BitTorrentExample.debug.xcconfig"; sourceTree = "<group>"; };
+		C79B494173728B25AA5E2B62 /* Pods-BitTorrent-BitTorrentExample.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BitTorrent-BitTorrentExample.release.xcconfig"; path = "Pods/Target Support Files/Pods-BitTorrent-BitTorrentExample/Pods-BitTorrent-BitTorrentExample.release.xcconfig"; sourceTree = "<group>"; };
+		DC831BC41AD3DBDC243F2D31 /* Pods_BitTorrent_BitTorrentExample.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BitTorrent_BitTorrentExample.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -94,6 +165,7 @@
 			files = (
 				B54D0C761CA58993004343BD /* CommonCrypto.framework in Frameworks */,
 				B54D0C1F1CA53993004343BD /* BEncode.framework in Frameworks */,
+				F2A74A776590BB3F37116B02 /* Pods_BitTorrent.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -102,16 +174,47 @@
 			buildActionMask = 2147483647;
 			files = (
 				B585AB7F1C3833450093FA41 /* BitTorrent.framework in Frameworks */,
+				85A4C242C1CF7B2588181C55 /* Pods_BitTorrentTests.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B5E9B0D21F02E6F800EF58E3 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8214C7DC09DE39DFD4A3A4D4 /* Pods_BitTorrentExample.framework in Frameworks */,
+				B537CF491F031C3D0084089B /* BEncode.framework in Frameworks */,
+				B537CF4D1F031C3D0084089B /* BitTorrent.framework in Frameworks */,
+				093BCDB0AFF1213952AF9B78 /* Pods_BitTorrent_BitTorrentExample.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		78A2F0108F1BFA84BB97BD61 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				BDA22A3943D47D6B2152CB15 /* Pods-BitTorrent.debug.xcconfig */,
+				935B3E651D3B45CEBF2BF84C /* Pods-BitTorrent.release.xcconfig */,
+				BFDACB202E071FF8247EC868 /* Pods-BitTorrentExample.debug.xcconfig */,
+				4B42EF97BEA586F1F3D322AF /* Pods-BitTorrentExample.release.xcconfig */,
+				AB708F970D0B280193A6EB38 /* Pods-BitTorrentTests.debug.xcconfig */,
+				A40A9CCBA0D27D6AEF58A344 /* Pods-BitTorrentTests.release.xcconfig */,
+				63B7D3BCB690B552A38F570E /* Pods-BitTorrent-BitTorrentExample.debug.xcconfig */,
+				C79B494173728B25AA5E2B62 /* Pods-BitTorrent-BitTorrentExample.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
 		B54D0C131CA53979004343BD /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
 				B54D0C141CA53983004343BD /* BEncode.xcodeproj */,
+				9B95A5AC293A32B10DB4660E /* Pods_BitTorrent.framework */,
+				38D46CB7DEC9C9D2E7BFCC79 /* Pods_BitTorrentExample.framework */,
+				4C9C10DE7DF23AC06671B75B /* Pods_BitTorrentTests.framework */,
+				DC831BC41AD3DBDC243F2D31 /* Pods_BitTorrent_BitTorrentExample.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -125,12 +228,12 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		B54D0C211CA56619004343BD /* Torrents */ = {
+		B54D0C211CA56619004343BD /* Test Torrents */ = {
 			isa = PBXGroup;
 			children = (
-				B55D3FC11CA81372005CBDFF /* TestText.torrent */,
+				B5E9B0E21F02F9E700EF58E3 /* Single text file */,
 			);
-			name = Torrents;
+			path = "Test Torrents";
 			sourceTree = "<group>";
 		};
 		B54D0C251CA56A25004343BD /* Models */ = {
@@ -162,15 +265,26 @@
 			path = CommonCrypto;
 			sourceTree = "<group>";
 		};
+		B55317DA1F02FC3000909ADF /* Tracker */ = {
+			isa = PBXGroup;
+			children = (
+				B55317DB1F02FC4D00909ADF /* TorrentHTTPTracker.swift */,
+				B5BD7FD51F03032400621BC2 /* TorrentHTTPTrackerTests.swift */,
+			);
+			name = Tracker;
+			sourceTree = "<group>";
+		};
 		B585AB6A1C3833450093FA41 = {
 			isa = PBXGroup;
 			children = (
-				B54D0C211CA56619004343BD /* Torrents */,
+				B54D0C211CA56619004343BD /* Test Torrents */,
+				B5E9B0D61F02E6F800EF58E3 /* BitTorrentExample */,
 				B585AB761C3833450093FA41 /* BitTorrent */,
 				B585AB821C3833450093FA41 /* BitTorrentTests */,
 				B54D0C591CA58722004343BD /* CommonCrypto */,
 				B54D0C131CA53979004343BD /* Frameworks */,
 				B585AB751C3833450093FA41 /* Products */,
+				78A2F0108F1BFA84BB97BD61 /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
@@ -180,6 +294,7 @@
 				B585AB741C3833450093FA41 /* BitTorrent.framework */,
 				B585AB7E1C3833450093FA41 /* BitTorrentTests.xctest */,
 				B54D0C581CA58722004343BD /* CommonCrypto.framework */,
+				B5E9B0D51F02E6F800EF58E3 /* BitTorrentExample.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -189,6 +304,7 @@
 			children = (
 				B585AB771C3833450093FA41 /* BitTorrent.h */,
 				B585AB831C3833450093FA41 /* BitTorrentTests.swift */,
+				B55317DA1F02FC3000909ADF /* Tracker */,
 				B54D0C251CA56A25004343BD /* Models */,
 				B54D0C291CA5785F004343BD /* Utilities */,
 				B5E9778F1CAFB2090038EBE7 /* HTTP Networking */,
@@ -210,8 +326,32 @@
 			isa = PBXGroup;
 			children = (
 				B5E977951CAFB46B0038EBE7 /* String+URLEncode.swift */,
+				B55317DF1F02FE1500909ADF /* URLEncodeTests.swift */,
+				B5530DB11F03063300F71CCD /* HTTPConnection.swift */,
+				B537CF051F03148B0084089B /* HTTPConnectionStub.swift */,
+				B5530DB41F03063E00F71CCD /* HTTPConnectionTests.swift */,
 			);
 			name = "HTTP Networking";
+			sourceTree = "<group>";
+		};
+		B5E9B0D61F02E6F800EF58E3 /* BitTorrentExample */ = {
+			isa = PBXGroup;
+			children = (
+				B5E9B0D71F02E6F800EF58E3 /* AppDelegate.swift */,
+				B5E9B0D91F02E6F800EF58E3 /* Assets.xcassets */,
+				B5E9B0DB1F02E6F800EF58E3 /* LaunchScreen.storyboard */,
+				B5E9B0DE1F02E6F800EF58E3 /* Info.plist */,
+			);
+			path = BitTorrentExample;
+			sourceTree = "<group>";
+		};
+		B5E9B0E21F02F9E700EF58E3 /* Single text file */ = {
+			isa = PBXGroup;
+			children = (
+				B5E9B0E31F02F9E700EF58E3 /* TestText.torrent */,
+				B5E9B0E41F02F9E700EF58E3 /* text.txt */,
+			);
+			path = "Single text file";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -257,10 +397,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = B585AB881C3833450093FA41 /* Build configuration list for PBXNativeTarget "BitTorrent" */;
 			buildPhases = (
+				12AC90F633781EF3E22E6344 /* [CP] Check Pods Manifest.lock */,
 				B585AB6F1C3833450093FA41 /* Sources */,
 				B585AB701C3833450093FA41 /* Frameworks */,
 				B585AB711C3833450093FA41 /* Headers */,
 				B585AB721C3833450093FA41 /* Resources */,
+				675ADD5995C4967B1FDA8F34 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -277,9 +419,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = B585AB8B1C3833450093FA41 /* Build configuration list for PBXNativeTarget "BitTorrentTests" */;
 			buildPhases = (
+				794AC8207A2F6801357BF21C /* [CP] Check Pods Manifest.lock */,
 				B585AB7A1C3833450093FA41 /* Sources */,
 				B585AB7B1C3833450093FA41 /* Frameworks */,
 				B585AB7C1C3833450093FA41 /* Resources */,
+				9AD83819A2F4C07F5CB417AF /* [CP] Embed Pods Frameworks */,
+				BD00B85F3B0DA72D8440099C /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -291,6 +436,29 @@
 			productReference = B585AB7E1C3833450093FA41 /* BitTorrentTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
+		B5E9B0D41F02E6F800EF58E3 /* BitTorrentExample */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B5E9B0DF1F02E6F800EF58E3 /* Build configuration list for PBXNativeTarget "BitTorrentExample" */;
+			buildPhases = (
+				83D69C44459BE9615A543981 /* [CP] Check Pods Manifest.lock */,
+				B5E9B0D11F02E6F800EF58E3 /* Sources */,
+				B5E9B0D21F02E6F800EF58E3 /* Frameworks */,
+				B5E9B0D31F02E6F800EF58E3 /* Resources */,
+				452A0C5000B0F3E45AA9DBAD /* [CP] Embed Pods Frameworks */,
+				20B0019C02FBFB67DA726A29 /* [CP] Copy Pods Resources */,
+				B537CF4F1F031C3D0084089B /* Embed Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				B537CF481F031C2F0084089B /* PBXTargetDependency */,
+				B537CF4C1F031C3D0084089B /* PBXTargetDependency */,
+			);
+			name = BitTorrentExample;
+			productName = BitTorrentExample;
+			productReference = B5E9B0D51F02E6F800EF58E3 /* BitTorrentExample.app */;
+			productType = "com.apple.product-type.application";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -298,7 +466,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftMigration = 0720;
-				LastSwiftUpdateCheck = 0730;
+				LastSwiftUpdateCheck = 0900;
 				LastUpgradeCheck = 0900;
 				ORGANIZATIONNAME = "Ben Davis";
 				TargetAttributes = {
@@ -307,11 +475,16 @@
 					};
 					B585AB731C3833450093FA41 = {
 						CreatedOnToolsVersion = 7.2;
+						DevelopmentTeam = HT9AS2MWK9;
 						LastSwiftMigration = 0900;
 					};
 					B585AB7D1C3833450093FA41 = {
 						CreatedOnToolsVersion = 7.2;
 						LastSwiftMigration = 0900;
+					};
+					B5E9B0D41F02E6F800EF58E3 = {
+						CreatedOnToolsVersion = 9.0;
+						DevelopmentTeam = HT9AS2MWK9;
 					};
 				};
 			};
@@ -321,6 +494,7 @@
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
+				Base,
 			);
 			mainGroup = B585AB6A1C3833450093FA41;
 			productRefGroup = B585AB751C3833450093FA41 /* Products */;
@@ -333,6 +507,7 @@
 			);
 			projectRoot = "";
 			targets = (
+				B5E9B0D41F02E6F800EF58E3 /* BitTorrentExample */,
 				B585AB731C3833450093FA41 /* BitTorrent */,
 				B585AB7D1C3833450093FA41 /* BitTorrentTests */,
 				B54D0C571CA58722004343BD /* CommonCrypto */,
@@ -376,11 +551,144 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B55D3FC21CA81372005CBDFF /* TestText.torrent in Resources */,
+				B5E9B0E51F02FAC600EF58E3 /* TestText.torrent in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B5E9B0D31F02E6F800EF58E3 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B537CF461F031AD20084089B /* TestText.torrent in Resources */,
+				B5E9B0DA1F02E6F800EF58E3 /* Assets.xcassets in Resources */,
+				B5E9B0DD1F02E6F800EF58E3 /* LaunchScreen.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		12AC90F633781EF3E22E6344 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		20B0019C02FBFB67DA726A29 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-BitTorrent-BitTorrentExample/Pods-BitTorrent-BitTorrentExample-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		452A0C5000B0F3E45AA9DBAD /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-BitTorrent-BitTorrentExample/Pods-BitTorrent-BitTorrentExample-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		675ADD5995C4967B1FDA8F34 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-BitTorrent/Pods-BitTorrent-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		794AC8207A2F6801357BF21C /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		83D69C44459BE9615A543981 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		9AD83819A2F4C07F5CB417AF /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-BitTorrentTests/Pods-BitTorrentTests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		BD00B85F3B0DA72D8440099C /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-BitTorrentTests/Pods-BitTorrentTests-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		B54D0C531CA58722004343BD /* Sources */ = {
@@ -394,9 +702,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B55317DC1F02FC4D00909ADF /* TorrentHTTPTracker.swift in Sources */,
 				B5E977961CAFB46B0038EBE7 /* String+URLEncode.swift in Sources */,
 				B54D0C7A1CA69FAD004343BD /* TorrentMetaInfo.swift in Sources */,
 				B54D0C7B1CA69FD8004343BD /* Data+sha1.swift in Sources */,
+				B5530DB21F03063300F71CCD /* HTTPConnection.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -404,15 +714,37 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B537CF061F03148B0084089B /* HTTPConnectionStub.swift in Sources */,
+				B5BD7FD61F03032400621BC2 /* TorrentHTTPTrackerTests.swift in Sources */,
+				B5530DB51F03063E00F71CCD /* HTTPConnectionTests.swift in Sources */,
 				B56A8A071C83539300426AC8 /* TestHelpers.swift in Sources */,
 				B585AB841C3833450093FA41 /* BitTorrentTests.swift in Sources */,
 				B54D0C271CA56ADB004343BD /* TorrentMetaInfoTests.swift in Sources */,
+				B55317E01F02FE1500909ADF /* URLEncodeTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B5E9B0D11F02E6F800EF58E3 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B5E9B0D81F02E6F800EF58E3 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		B537CF481F031C2F0084089B /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = B585AB731C3833450093FA41 /* BitTorrent */;
+			targetProxy = B537CF471F031C2F0084089B /* PBXContainerItemProxy */;
+		};
+		B537CF4C1F031C3D0084089B /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = BEncode;
+			targetProxy = B537CF4B1F031C3D0084089B /* PBXContainerItemProxy */;
+		};
 		B54D0C1E1CA5398F004343BD /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = BEncode;
@@ -429,6 +761,17 @@
 			targetProxy = B585AB801C3833450093FA41 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		B5E9B0DB1F02E6F800EF58E3 /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				B5E9B0DC1F02E6F800EF58E3 /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		B54D0C6A1CA58722004343BD /* Debug */ = {
@@ -579,11 +922,14 @@
 		};
 		B585AB891C3833450093FA41 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = BDA22A3943D47D6B2152CB15 /* Pods-BitTorrent.debug.xcconfig */;
 			buildSettings = {
 				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = NO;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = HT9AS2MWK9;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
@@ -607,11 +953,14 @@
 		};
 		B585AB8A1C3833450093FA41 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 935B3E651D3B45CEBF2BF84C /* Pods-BitTorrent.release.xcconfig */;
 			buildSettings = {
 				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = NO;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = HT9AS2MWK9;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
@@ -634,6 +983,7 @@
 		};
 		B585AB8C1C3833450093FA41 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = AB708F970D0B280193A6EB38 /* Pods-BitTorrentTests.debug.xcconfig */;
 			buildSettings = {
 				INFOPLIST_FILE = BitTorrentTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
@@ -648,6 +998,7 @@
 		};
 		B585AB8D1C3833450093FA41 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = A40A9CCBA0D27D6AEF58A344 /* Pods-BitTorrentTests.release.xcconfig */;
 			buildSettings = {
 				INFOPLIST_FILE = BitTorrentTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
@@ -657,6 +1008,53 @@
 				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_SWIFT3_OBJC_INFERENCE = Off;
 				SWIFT_VERSION = 4.0;
+			};
+			name = Release;
+		};
+		B5E9B0E01F02E6F800EF58E3 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 63B7D3BCB690B552A38F570E /* Pods-BitTorrent-BitTorrentExample.debug.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				DEVELOPMENT_TEAM = HT9AS2MWK9;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				INFOPLIST_FILE = BitTorrentExample/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "uk.co.-bendavisapps.BitTorrentExample";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_VERSION = 4.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		B5E9B0E11F02E6F800EF58E3 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = C79B494173728B25AA5E2B62 /* Pods-BitTorrent-BitTorrentExample.release.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				DEVELOPMENT_TEAM = HT9AS2MWK9;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				INFOPLIST_FILE = BitTorrentExample/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "uk.co.-bendavisapps.BitTorrentExample";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 4.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
 		};
@@ -695,6 +1093,15 @@
 			buildConfigurations = (
 				B585AB8C1C3833450093FA41 /* Debug */,
 				B585AB8D1C3833450093FA41 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		B5E9B0DF1F02E6F800EF58E3 /* Build configuration list for PBXNativeTarget "BitTorrentExample" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B5E9B0E01F02E6F800EF58E3 /* Debug */,
+				B5E9B0E11F02E6F800EF58E3 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
