@@ -8,12 +8,75 @@
 
 import Foundation
 
-//tracker.announceClient(self.peerId,
-//                       port: 6881,
-//                       numberOfBytes: self.metaInfo.length,
-//                       infoHash: self.metaInfo.infoHash,
-//                       numwant: 20,
-//                       key: "-BD0000-bxa]N#IRKqv`");
+protocol TorrentTrackerDelegate: class {
+    func torrentTracker(_ sender: TorrentHTTPTracker, receivedResponse: TorrentHTTPTrackerResponse)
+    func torrentTracker(_ sender: TorrentHTTPTracker, receivedErrorMessage: String)
+}
+
+enum TorrentHTTPTrackerEvent {
+    case started, stopped, completed
+    
+    var name: String {
+        switch self {
+        case .started:
+            return "started"
+        case .stopped:
+            return "stopped"
+        case .completed:
+            return "completed"
+        }
+    }
+}
+
+class TorrentHTTPTracker {
+    
+    let metaInfo: TorrentMetaInfo
+    let connection: BasicHTTPConnection
+    
+    weak var delegate: TorrentTrackerDelegate?
+    
+    init(metaInfo: TorrentMetaInfo, connection: BasicHTTPConnection = HTTPConnection()) {
+        self.metaInfo = metaInfo
+        self.connection = connection
+    }
+    
+    func announceClient(with peerId: String,
+                        port: Int,
+                        event: TorrentHTTPTrackerEvent = .started,
+                        infoHash: Data,
+                        numberOfBytesRemaining: Int,
+                        numberOfBytesUploaded: Int,
+                        numberOfBytesDownloaded: Int,
+                        numberOfPeersToFetch: Int) {
+        
+        let urlParameters = [
+            "info_hash" : String(urlEncodingData: metaInfo.infoHash),
+            "peer_id" : "\(peerId)",
+            "port" : "\(port)",
+            "uploaded" : "\(numberOfBytesUploaded)",
+            "downloaded" : "\(numberOfBytesDownloaded)",
+            "left" : "\(numberOfBytesRemaining)",
+            "compact" : "1",
+            "event" : event.name,
+            "numwant" : "\(numberOfPeersToFetch)"
+        ]
+        
+        connection.makeRequest(url: metaInfo.announce, urlParameters: urlParameters) { [weak self] response in
+            
+            guard self != nil else {
+                return
+            }
+            
+            if let data = response.responseData {
+                if let result = TorrentHTTPTrackerResponse(data: data) {
+                    self!.delegate?.torrentTracker(self!, receivedResponse: result)
+                } else if let errorMessage = TorrentHTTPTrackerResponse.errorMessage(fromResponseData: data) {
+                    self!.delegate?.torrentTracker(self!, receivedErrorMessage: errorMessage)
+                }
+            }
+        }
+    }
+}
 
 //func makePeerId() -> String {
 //    var peerId = "-BD0000-"
@@ -30,43 +93,3 @@ import Foundation
 //
 //    return peerId
 //}
-
-class TorrentHTTPTracker {
-    
-    let metaInfo: TorrentMetaInfo
-    let connection: BasicHTTPConnection
-    
-    init(metaInfo: TorrentMetaInfo, connection: BasicHTTPConnection = HTTPConnection()) {
-        self.metaInfo = metaInfo
-        self.connection = connection
-    }
-    
-    func announceClient(with peerId: String,
-                        port: Int,
-                        numberOfBytesRemaining: Int,
-                        infoHash: Data,
-                        numberOfPeersToFetch: Int,
-                        peerKey: String) {
-        
-        let urlParameters = [
-            "info_hash" : String(urlEncodingData: metaInfo.infoHash),
-            "peer_id" : "\(peerId)",
-            "port" : "\(port)",
-            "uploaded" : "0",
-            "downloaded" : "0",
-            "left" : "\(numberOfBytesRemaining)",
-            "compact" : "1",
-            "event" : "started",
-            "numwant" : "\(numberOfPeersToFetch)",
-            "key" : peerKey,
-        ]
-        
-        connection.makeRequest(url: metaInfo.announce, urlParameters: urlParameters) { response in
-            
-            if let data = response.responseData, let utf8Text = String(data: data, encoding: .utf8) {
-                print("Data: \(utf8Text)")
-            }
-        }
-    }
-    
-}

@@ -31,11 +31,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         tracker.announceClient(with: "-BD0000-bxa]N#IRKqv`",
                                port: 6881,
-                               numberOfBytesRemaining: 117,
-                               infoHash: Data(bytes:[ 0xf0, 0xb8, 0x71, 0x98, 0x99, 0x53, 0x97, 0x3f, 0xbf, 0xa9,
-                                                      0x4d, 0xc8, 0x14, 0x98, 0xee, 0x8d, 0x20, 0x5b, 0xb2, 0x23]),
-                               numberOfPeersToFetch: 50,
-                               peerKey: "key")
+                               event: .started,
+                               infoHash: metaInfo.infoHash,
+                               numberOfBytesRemaining: metaInfo.info.length,
+                               numberOfBytesUploaded: 0,
+                               numberOfBytesDownloaded: 0,
+                               numberOfPeersToFetch: 50)
         
         return true
     }
