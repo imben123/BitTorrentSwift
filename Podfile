@@ -1,8 +1,11 @@
+inhibit_all_warnings!
+
 target 'BitTorrent' do
   use_frameworks!
 
   pod 'Alamofire', '4.5.0'
-
+  pod 'BlueSocket'
+  
   target 'BitTorrentTests' do
     inherit! :search_paths
     

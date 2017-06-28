@@ -8,6 +8,7 @@
 
 import UIKit
 @testable import BitTorrent
+import BlueSocket
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -23,20 +24,23 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         window!.makeKeyAndVisible()
         
         
-        let path = Bundle(for: type(of: self)).path(forResource: "TestText", ofType: "torrent")
-        let data = try! Data(contentsOf: URL(fileURLWithPath: path!))
-        let metaInfo = TorrentMetaInfo(data: data)!
+//        let path = Bundle(for: type(of: self)).path(forResource: "TestText", ofType: "torrent")
+//        let data = try! Data(contentsOf: URL(fileURLWithPath: path!))
+//        let metaInfo = TorrentMetaInfo(data: data)!
+//
+//        tracker = TorrentHTTPTracker(metaInfo: metaInfo)
+//
+//        tracker.announceClient(with: "-BD0000-bxa]N#IRKqv`",
+//                               port: 6881,
+//                               event: .started,
+//                               infoHash: metaInfo.infoHash,
+//                               numberOfBytesRemaining: metaInfo.info.length,
+//                               numberOfBytesUploaded: 0,
+//                               numberOfBytesDownloaded: 0,
+//                               numberOfPeersToFetch: 50)
         
-        tracker = TorrentHTTPTracker(metaInfo: metaInfo)
-        
-        tracker.announceClient(with: "-BD0000-bxa]N#IRKqv`",
-                               port: 6881,
-                               event: .started,
-                               infoHash: metaInfo.infoHash,
-                               numberOfBytesRemaining: metaInfo.info.length,
-                               numberOfBytesUploaded: 0,
-                               numberOfBytesDownloaded: 0,
-                               numberOfPeersToFetch: 50)
+        let mySocket = try! Socket.create()
+        print(mySocket)
         
         return true
     }

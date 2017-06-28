@@ -1,5 +1,6 @@
 PODS:
   - Alamofire (4.5.0)
+  - BlueSocket (0.12.16)
   - OHHTTPStubs (6.0.0):
     - OHHTTPStubs/Default (= 6.0.0)
   - OHHTTPStubs/Core (6.0.0)
@@ -16,12 +17,14 @@ PODS:
 
 DEPENDENCIES:
   - Alamofire (= 4.5.0)
+  - BlueSocket
   - OHHTTPStubs
 
 SPEC CHECKSUMS:
   Alamofire: f28cdffd29de33a7bfa022cbd63ae95a27fae140
+  BlueSocket: 13bf1daf94a316e9efe93aa125cc33b8c3dd6c35
   OHHTTPStubs: 752f9b11fd810a15162d50f11c06ff94f8e012eb
 
-PODFILE CHECKSUM: 9fe25bcdf8fe1b5a1322474e68acc83c6dfd666c
+PODFILE CHECKSUM: 0d38beb67a05d0be9e85d2555a9fbc44ecf5e80c
 
 COCOAPODS: 1.2.0
