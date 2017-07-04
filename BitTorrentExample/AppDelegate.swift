@@ -8,14 +8,14 @@
 
 import UIKit
 @testable import BitTorrent
-import BlueSocket
 
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate {
+class AppDelegate: UIResponder, UIApplicationDelegate, UDPConnectionDelegate {
     
     var window: UIWindow?
     
     var tracker: TorrentHTTPTracker!
+    var udpConnection: UDPConnection!
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         window = UIWindow(frame: UIScreen.main.bounds)
@@ -39,10 +39,26 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 //                               numberOfBytesDownloaded: 0,
 //                               numberOfPeersToFetch: 50)
         
-        let mySocket = try! Socket.create()
-        print(mySocket)
+//        let mySocket = try! Socket.create()
+//        print(mySocket)
+        
+        udpConnection = UDPConnection()
+        udpConnection.delegate = self
+        
+        udpConnection.startListening(on: 59740)
+        
+        let data = "Hello, world!".data(using: .utf8)!
+        udpConnection.send(data, toHost: "127.0.0.1", port: 31337, timeout: 10000)
         
         return true
     }
     
+}
+
+extension UDPConnectionDelegate {
+    
+    func udpConnection(_ sender: UDPConnection, receivedData data: Data, fromHost host: String) {
+        print(sender, data, host)
+        print(data == "Hello, world!".data(using: .utf8)! ? "Success" : "Fail")
+    }
 }

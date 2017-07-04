@@ -4,7 +4,7 @@ target 'BitTorrent' do
   use_frameworks!
 
   pod 'Alamofire', '4.5.0'
-  pod 'BlueSocket'
+  pod 'CocoaAsyncSocket'
   
   target 'BitTorrentTests' do
     inherit! :search_paths
@@ -15,7 +15,7 @@ target 'BitTorrent' do
   
   target 'BitTorrentExample' do
       use_frameworks!
-            
+      
   end
 
 end

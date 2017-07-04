@@ -10,6 +10,8 @@
 		0434EAB818A3C318E433338A /* Pods_BitTorrentTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A8680B0EA21B5A20E03DEE6D /* Pods_BitTorrentTests.framework */; };
 		34D4082D0E0A2C899857DC89 /* Pods_BitTorrent.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8B47AE52A67ECE61259FCDAD /* Pods_BitTorrent.framework */; };
 		867491B4C409A91D4D72CCE7 /* Pods_BitTorrent_BitTorrentExample.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D97F9FB9F74204574FF6840B /* Pods_BitTorrent_BitTorrentExample.framework */; };
+		B50B24F71F0A553F00C23E7C /* UDPConnectionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B50B24F61F0A553B00C23E7C /* UDPConnectionTests.swift */; };
+		B50B24F91F0A554A00C23E7C /* UDPConnection.swift in Sources */ = {isa = PBXBuildFile; fileRef = B50B24F81F0A554A00C23E7C /* UDPConnection.swift */; };
 		B537CF061F03148B0084089B /* HTTPConnectionStub.swift in Sources */ = {isa = PBXBuildFile; fileRef = B537CF051F03148B0084089B /* HTTPConnectionStub.swift */; };
 		B537CF461F031AD20084089B /* TestText.torrent in Resources */ = {isa = PBXBuildFile; fileRef = B5E9B0E31F02F9E700EF58E3 /* TestText.torrent */; };
 		B537CF491F031C3D0084089B /* BEncode.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B54D0C1A1CA53983004343BD /* BEncode.framework */; };
@@ -25,6 +27,9 @@
 		B5530DB51F03063E00F71CCD /* HTTPConnectionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5530DB41F03063E00F71CCD /* HTTPConnectionTests.swift */; };
 		B55317DC1F02FC4D00909ADF /* TorrentHTTPTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = B55317DB1F02FC4D00909ADF /* TorrentHTTPTracker.swift */; };
 		B55317E01F02FE1500909ADF /* URLEncodeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B55317DF1F02FE1500909ADF /* URLEncodeTests.swift */; };
+		B556D5AE1F0BA1FD00277B8D /* GCDAsyncUdpSocketStub.swift in Sources */ = {isa = PBXBuildFile; fileRef = B551C9541F0B9D3D004115CB /* GCDAsyncUdpSocketStub.swift */; };
+		B558F4831F0A647D00438BB4 /* InternetProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = B558F4821F0A647D00438BB4 /* InternetProtocol.swift */; };
+		B558F4851F0A73D000438BB4 /* InternetProtocolTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B558F4841F0A73D000438BB4 /* InternetProtocolTests.swift */; };
 		B56A8A071C83539300426AC8 /* TestHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = B56A8A061C83539300426AC8 /* TestHelpers.swift */; };
 		B585AB781C3833450093FA41 /* BitTorrent.h in Headers */ = {isa = PBXBuildFile; fileRef = B585AB771C3833450093FA41 /* BitTorrent.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		B585AB7F1C3833450093FA41 /* BitTorrent.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B585AB741C3833450093FA41 /* BitTorrent.framework */; };
@@ -112,6 +117,8 @@
 		8B47AE52A67ECE61259FCDAD /* Pods_BitTorrent.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BitTorrent.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		99A91AD4708288B297A8B700 /* Pods-BitTorrentTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BitTorrentTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-BitTorrentTests/Pods-BitTorrentTests.debug.xcconfig"; sourceTree = "<group>"; };
 		A8680B0EA21B5A20E03DEE6D /* Pods_BitTorrentTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BitTorrentTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		B50B24F61F0A553B00C23E7C /* UDPConnectionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UDPConnectionTests.swift; sourceTree = "<group>"; };
+		B50B24F81F0A554A00C23E7C /* UDPConnection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UDPConnection.swift; sourceTree = "<group>"; };
 		B537CF051F03148B0084089B /* HTTPConnectionStub.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = HTTPConnectionStub.swift; path = "HTTP Networking/HTTPConnectionStub.swift"; sourceTree = "<group>"; };
 		B54D0C141CA53983004343BD /* BEncode.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = BEncode.xcodeproj; path = Submodules/BEncodeSwift/BEncode.xcodeproj; sourceTree = "<group>"; };
 		B54D0C231CA56A22004343BD /* TorrentMetaInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TorrentMetaInfo.swift; path = Models/TorrentMetaInfo.swift; sourceTree = "<group>"; };
@@ -123,10 +130,13 @@
 		B54D0C721CA5879E004343BD /* iphoneos.modulemap */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.module-map"; path = iphoneos.modulemap; sourceTree = "<group>"; };
 		B54D0C731CA587A9004343BD /* iphonesimulator.modulemap */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = "sourcecode.module-map"; path = iphonesimulator.modulemap; sourceTree = "<group>"; };
 		B54D0C741CA587B5004343BD /* macosx.modulemap */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = "sourcecode.module-map"; path = macosx.modulemap; sourceTree = "<group>"; };
+		B551C9541F0B9D3D004115CB /* GCDAsyncUdpSocketStub.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GCDAsyncUdpSocketStub.swift; sourceTree = "<group>"; };
 		B5530DB11F03063300F71CCD /* HTTPConnection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = HTTPConnection.swift; path = "HTTP Networking/HTTPConnection.swift"; sourceTree = "<group>"; };
 		B5530DB41F03063E00F71CCD /* HTTPConnectionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = HTTPConnectionTests.swift; path = "HTTP Networking/HTTPConnectionTests.swift"; sourceTree = "<group>"; };
 		B55317DB1F02FC4D00909ADF /* TorrentHTTPTracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = TorrentHTTPTracker.swift; path = Tracker/TorrentHTTPTracker.swift; sourceTree = "<group>"; };
 		B55317DF1F02FE1500909ADF /* URLEncodeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = URLEncodeTests.swift; path = "HTTP Networking/URLEncodeTests.swift"; sourceTree = "<group>"; };
+		B558F4821F0A647D00438BB4 /* InternetProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InternetProtocol.swift; sourceTree = "<group>"; };
+		B558F4841F0A73D000438BB4 /* InternetProtocolTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InternetProtocolTests.swift; sourceTree = "<group>"; };
 		B56A8A061C83539300426AC8 /* TestHelpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TestHelpers.swift; path = Utilities/TestHelpers.swift; sourceTree = "<group>"; };
 		B585AB741C3833450093FA41 /* BitTorrent.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = BitTorrent.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B585AB771C3833450093FA41 /* BitTorrent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BitTorrent.h; sourceTree = "<group>"; };
@@ -202,6 +212,18 @@
 				32E29DAEC223A2B23A2DEE93 /* Pods-BitTorrentTests.release.xcconfig */,
 			);
 			name = Pods;
+			sourceTree = "<group>";
+		};
+		B50B24F01F0A54C100C23E7C /* UDP Networking */ = {
+			isa = PBXGroup;
+			children = (
+				B558F4821F0A647D00438BB4 /* InternetProtocol.swift */,
+				B558F4841F0A73D000438BB4 /* InternetProtocolTests.swift */,
+				B50B24F81F0A554A00C23E7C /* UDPConnection.swift */,
+				B551C9541F0B9D3D004115CB /* GCDAsyncUdpSocketStub.swift */,
+				B50B24F61F0A553B00C23E7C /* UDPConnectionTests.swift */,
+			);
+			path = "UDP Networking";
 			sourceTree = "<group>";
 		};
 		B54D0C131CA53979004343BD /* Frameworks */ = {
@@ -306,6 +328,7 @@
 				B54D0C251CA56A25004343BD /* Models */,
 				B54D0C291CA5785F004343BD /* Utilities */,
 				B5E9778F1CAFB2090038EBE7 /* HTTP Networking */,
+				B50B24F01F0A54C100C23E7C /* UDP Networking */,
 				B585AB791C3833450093FA41 /* Info.plist */,
 			);
 			path = BitTorrent;
@@ -712,10 +735,12 @@
 				B5F81E491F0436D600B25C70 /* TorrentPeer.swift in Sources */,
 				B55317DC1F02FC4D00909ADF /* TorrentHTTPTracker.swift in Sources */,
 				B5E977961CAFB46B0038EBE7 /* String+URLEncode.swift in Sources */,
+				B558F4831F0A647D00438BB4 /* InternetProtocol.swift in Sources */,
 				B54D0C7A1CA69FAD004343BD /* TorrentMetaInfo.swift in Sources */,
 				B5F81E4B1F04399800B25C70 /* TorrentTrackerResponse.swift in Sources */,
 				B54D0C7B1CA69FD8004343BD /* Data+sha1.swift in Sources */,
 				B5530DB21F03063300F71CCD /* HTTPConnection.swift in Sources */,
+				B50B24F91F0A554A00C23E7C /* UDPConnection.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -725,11 +750,14 @@
 			files = (
 				B537CF061F03148B0084089B /* HTTPConnectionStub.swift in Sources */,
 				B5BD7FD61F03032400621BC2 /* TorrentHTTPTrackerTests.swift in Sources */,
+				B556D5AE1F0BA1FD00277B8D /* GCDAsyncUdpSocketStub.swift in Sources */,
 				B5530DB51F03063E00F71CCD /* HTTPConnectionTests.swift in Sources */,
 				B56A8A071C83539300426AC8 /* TestHelpers.swift in Sources */,
 				B585AB841C3833450093FA41 /* BitTorrentTests.swift in Sources */,
 				B54D0C271CA56ADB004343BD /* TorrentMetaInfoTests.swift in Sources */,
 				B55317E01F02FE1500909ADF /* URLEncodeTests.swift in Sources */,
+				B558F4851F0A73D000438BB4 /* InternetProtocolTests.swift in Sources */,
+				B50B24F71F0A553F00C23E7C /* UDPConnectionTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
