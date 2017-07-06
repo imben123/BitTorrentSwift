@@ -10,13 +10,13 @@ import Foundation
 
 class TorrentHTTPTracker {
     
-    let metaInfo: TorrentMetaInfo
+    let announceURL: URL
     let connection: BasicHTTPConnection
     
     weak var delegate: TorrentTrackerDelegate?
     
-    init(metaInfo: TorrentMetaInfo, connection: BasicHTTPConnection = HTTPConnection()) {
-        self.metaInfo = metaInfo
+    init(announceURL: URL, connection: BasicHTTPConnection = HTTPConnection()) {
+        self.announceURL = announceURL
         self.connection = connection
     }
     
@@ -30,7 +30,7 @@ class TorrentHTTPTracker {
                         numberOfPeersToFetch: Int) {
         
         let urlParameters = [
-            "info_hash" : String(urlEncodingData: metaInfo.infoHash),
+            "info_hash" : String(urlEncodingData: infoHash),
             "peer_id" : "\(peerId)",
             "port" : "\(port)",
             "uploaded" : "\(numberOfBytesUploaded)",
@@ -41,7 +41,7 @@ class TorrentHTTPTracker {
             "numwant" : "\(numberOfPeersToFetch)"
         ]
         
-        connection.makeRequest(url: metaInfo.announce, urlParameters: urlParameters) { [weak self] response in
+        connection.makeRequest(url: announceURL, urlParameters: urlParameters) { [weak self] response in
             
             guard self != nil else {
                 return

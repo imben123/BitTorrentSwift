@@ -1,5 +1,5 @@
 //
-//  TorrentPeer.swift
+//  TorrentPeerInfo.swift
 //  BitTorrent
 //
 //  Created by Ben Davis on 28/06/2017.

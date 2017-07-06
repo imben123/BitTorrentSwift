@@ -43,7 +43,7 @@
 		B5E9B0DA1F02E6F800EF58E3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B5E9B0D91F02E6F800EF58E3 /* Assets.xcassets */; };
 		B5E9B0DD1F02E6F800EF58E3 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B5E9B0DB1F02E6F800EF58E3 /* LaunchScreen.storyboard */; };
 		B5E9B0E51F02FAC600EF58E3 /* TestText.torrent in Resources */ = {isa = PBXBuildFile; fileRef = B5E9B0E31F02F9E700EF58E3 /* TestText.torrent */; };
-		B5F81E491F0436D600B25C70 /* TorrentPeer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5F81E481F0436D600B25C70 /* TorrentPeer.swift */; };
+		B5F81E491F0436D600B25C70 /* TorrentPeerInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5F81E481F0436D600B25C70 /* TorrentPeerInfo.swift */; };
 		B5F81E4B1F04399800B25C70 /* TorrentTrackerResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5F81E4A1F04399800B25C70 /* TorrentTrackerResponse.swift */; };
 /* End PBXBuildFile section */
 
@@ -159,7 +159,7 @@
 		B5E9B0DE1F02E6F800EF58E3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B5E9B0E31F02F9E700EF58E3 /* TestText.torrent */ = {isa = PBXFileReference; lastKnownFileType = file; path = TestText.torrent; sourceTree = "<group>"; };
 		B5E9B0E41F02F9E700EF58E3 /* text.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = text.txt; sourceTree = "<group>"; };
-		B5F81E481F0436D600B25C70 /* TorrentPeer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TorrentPeer.swift; sourceTree = "<group>"; };
+		B5F81E481F0436D600B25C70 /* TorrentPeerInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TorrentPeerInfo.swift; sourceTree = "<group>"; };
 		B5F81E4A1F04399800B25C70 /* TorrentTrackerResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TorrentTrackerResponse.swift; sourceTree = "<group>"; };
 		D437CE230D6B283EED6C1A3E /* Pods-BitTorrent.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BitTorrent.debug.xcconfig"; path = "Pods/Target Support Files/Pods-BitTorrent/Pods-BitTorrent.debug.xcconfig"; sourceTree = "<group>"; };
 		D97F9FB9F74204574FF6840B /* Pods_BitTorrent_BitTorrentExample.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BitTorrent_BitTorrentExample.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -387,7 +387,7 @@
 		B5F81E461F0436CC00B25C70 /* Peer */ = {
 			isa = PBXGroup;
 			children = (
-				B5F81E481F0436D600B25C70 /* TorrentPeer.swift */,
+				B5F81E481F0436D600B25C70 /* TorrentPeerInfo.swift */,
 			);
 			path = Peer;
 			sourceTree = "<group>";
@@ -741,7 +741,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B5F81E491F0436D600B25C70 /* TorrentPeer.swift in Sources */,
+				B5F81E491F0436D600B25C70 /* TorrentPeerInfo.swift in Sources */,
 				B55317DC1F02FC4D00909ADF /* TorrentHTTPTracker.swift in Sources */,
 				B5E977961CAFB46B0038EBE7 /* String+URLEncode.swift in Sources */,
 				B558F4831F0A647D00438BB4 /* InternetProtocol.swift in Sources */,

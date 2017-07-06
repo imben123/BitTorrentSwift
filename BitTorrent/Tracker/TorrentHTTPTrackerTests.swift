@@ -36,7 +36,7 @@ class TorrentHTTPTrackerTests: XCTestCase {
     var delegateSpy: TorrentTrackerDelegateSpy!
     
     let expectedURLParameters: [String: String] = [
-        "info_hash": "%F0%B8q%98%99S%97%3F%BF%A9M%C8%14%98%EE%8D%20%5B%B2%23",
+        "info_hash": "%07%08%09",
         "peer_id" : "peerId",
         "port" : "123",
         "uploaded" : "1234",
@@ -52,12 +52,9 @@ class TorrentHTTPTrackerTests: XCTestCase {
     override func setUp() {
         super.setUp()
         
-        let path = Bundle(for: type(of: self)).path(forResource: "TestText", ofType: "torrent")
-        let data = try! Data(contentsOf: URL(fileURLWithPath: path!))
-        let metaInfo = TorrentMetaInfo(data: data)!
-        
         connectionStub = HTTPConnectionStub()
-        sut = TorrentHTTPTracker(metaInfo: metaInfo, connection: connectionStub)
+        let url = URL(string: "http://127.0.0.1:53420/announce")!
+        sut = TorrentHTTPTracker(announceURL: url, connection: connectionStub)
         
         delegateSpy = TorrentTrackerDelegateSpy()
         sut.delegate = delegateSpy
