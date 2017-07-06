@@ -16,7 +16,7 @@ class TorrentMetaInfo {
 
     let info: TorrentInfoDictionary
     let announce: URL
-    let announceList: [[String]]?
+    let announceList: [[URL]]?
     let creationDate: Date?
     let comment: String?
     let createdBy: String?
@@ -70,15 +70,15 @@ class TorrentMetaInfo {
         }
     }
     
-    fileprivate class func parseAnnounceList(_ announceListData: [[Data]]) -> [[String]]? {
+    fileprivate class func parseAnnounceList(_ announceListData: [[Data]]) -> [[URL]]? {
         
-        var result: [[String]] = []
+        var result: [[URL]] = []
         
         for trackersArray in announceListData {
             
-            var currentArray: [String] = []
+            var currentArray: [URL] = []
             for trackerData in trackersArray {
-                if let tracker = urlCompatibleStringFromAsciiData(trackerData) {
+                if let tracker = urlFromAsciiData(trackerData) {
                     currentArray.append(tracker)
                 } else {
                     return nil
@@ -90,14 +90,9 @@ class TorrentMetaInfo {
         return result
     }
     
-    fileprivate class func urlCompatibleStringFromAsciiData(_ asciiData: Data) -> String? {
-        let result = String(asciiData: asciiData)
-        
-        if result == nil || URL(string: result!) == nil {
-            return nil
-        }
-        
-        return result
+    fileprivate class func urlFromAsciiData(_ asciiData: Data) -> URL? {
+        guard let result = String(asciiData: asciiData) else { return nil }
+        return URL(string: result)
     }
 }
 
@@ -224,20 +219,17 @@ class TorrentFileInfo {
     
     convenience init?(dictionary: [ String : AnyObject ]) {
         
-        let pathData = dictionary["path"] as? Data
-        let path = String(asciiData: pathData)
-        
-        let length = dictionary["length"] as? Int
-        
-        if let length = length, let path = path {
-            
-            let md5sumData = dictionary["md5sum"] as? Data
-            let md5sum = String(asciiData: md5sumData)
-            
-            self.init(path: path, length: length, md5sum: md5sum)
-            
-        } else {
-            return nil
+        guard let length = dictionary["length"] as? Int,
+            let pathData = dictionary["path"] as? [Data],
+            let pathComponents = pathData.map(String.init(asciiData:)) as? [String] else {
+                return nil
         }
+        
+        let path = pathComponents.reduce("") { $0.count == 0 ? $1 : $0 + "/" + $1 }
+        
+        let md5sumData = dictionary["md5sum"] as? Data
+        let md5sum = String(asciiData: md5sumData)
+        
+        self.init(path: path, length: length, md5sum: md5sum)
     }
 }
