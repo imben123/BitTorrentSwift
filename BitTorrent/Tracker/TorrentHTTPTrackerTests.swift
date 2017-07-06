@@ -12,17 +12,17 @@ import XCTest
 class TorrentTrackerDelegateSpy: TorrentTrackerDelegate {
     
     var receivedResponseCalled = false
-    var receivedResponseParameter: TorrentHTTPTrackerResponse? = nil
+    var receivedResponseParameter: TorrentTrackerResponse? = nil
     
     var receivedErrorMessageCalled = false
     var receivedErrorMessageParameter: String? = nil
     
-    func torrentTracker(_ sender: TorrentHTTPTracker, receivedResponse response: TorrentHTTPTrackerResponse) {
+    func torrentTracker(_ sender: Any, receivedResponse response: TorrentTrackerResponse) {
         receivedResponseCalled = true
         receivedResponseParameter = response
     }
     
-    func torrentTracker(_ sender: TorrentHTTPTracker, receivedErrorMessage errorMessage: String) {
+    func torrentTracker(_ sender: Any, receivedErrorMessage errorMessage: String) {
         receivedErrorMessageCalled = true
         receivedErrorMessageParameter = errorMessage
     }
@@ -63,7 +63,7 @@ class TorrentHTTPTrackerTests: XCTestCase {
         sut.delegate = delegateSpy
     }
     
-    func performAnnounce(withEvent event: TorrentHTTPTrackerEvent) {
+    func performAnnounce(withEvent event: TorrentTrackerEvent) {
         sut.announceClient(with: "peerId",
                            port: 123,
                            event: event,

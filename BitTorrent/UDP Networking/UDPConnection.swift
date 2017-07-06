@@ -9,30 +9,30 @@
 import Foundation
 import CocoaAsyncSocket
 
+protocol UDPConnectionProtocol: class {
+    weak var delegate: UDPConnectionDelegate? { set get }
+    func startListening(on port: UInt16)
+    func send(_ data: Data, toHost host: String, port: UInt16, timeout: TimeInterval)
+}
+
 protocol UDPConnectionDelegate: class {
-    func udpConnection(_ sender: UDPConnection, receivedData data: Data, fromHost host: String)
+    func udpConnection(_ sender: UDPConnectionProtocol, receivedData data: Data, fromHost host: String)
 }
 
 /// This class is a thin wrapper around the socket library to protect against changes
 /// in its interface, and to allow me to replace CocoaAsyncSocket with a swift framework
 /// one day.
-class UDPConnection: NSObject {
+class UDPConnection: NSObject, UDPConnectionProtocol {
     
     weak var delegate: UDPConnectionDelegate?
     
     private let socket: GCDAsyncUdpSocket
     
-    // Designated init for testing
-    init(socket: GCDAsyncUdpSocket) {
+    init(socket: GCDAsyncUdpSocket = GCDAsyncUdpSocket()) {
         self.socket = socket
         super.init()
         socket.setDelegate(self)
         socket.synchronouslySetDelegateQueue(.main)
-    }
-    
-    // Useful init which should be used
-    override convenience init() {
-        self.init(socket: GCDAsyncUdpSocket())
     }
     
     deinit {
@@ -56,7 +56,7 @@ extension UDPConnection: GCDAsyncUdpSocketDelegate {
                    fromAddress address: Data,
                    withFilterContext filterContext: Any?) {
         
-        let hostString = ipAddress(fromSockAddrData: address)!
+        let hostString = InternetProtocol.ipAddress(fromSockAddrData: address)!
         delegate?.udpConnection(self, receivedData: data, fromHost: hostString)
     }
 }

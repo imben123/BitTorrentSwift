@@ -9,7 +9,42 @@
 import Foundation
 import BEncode
 
-struct TorrentHTTPTrackerResponse {
+protocol TorrentTrackerDelegate: class {
+    func torrentTracker(_ sender: Any, receivedResponse response: TorrentTrackerResponse)
+    func torrentTracker(_ sender: Any, receivedErrorMessage errorMessage: String)
+}
+
+enum TorrentTrackerEvent {
+    case none, started, stopped, completed
+    
+    var name: String {
+        switch self {
+        case .none:
+            return "none"
+        case .started:
+            return "started"
+        case .stopped:
+            return "stopped"
+        case .completed:
+            return "completed"
+        }
+    }
+    
+    var udpDataRepresentation: Data {
+        switch self {
+        case .none:
+            return UInt32(0).toData()
+        case .started:
+            return UInt32(2).toData()
+        case .stopped:
+            return UInt32(3).toData()
+        case .completed:
+            return UInt32(1).toData()
+        }
+    }
+}
+
+struct TorrentTrackerResponse {
     
     let peers: [TorrentPeerInfo]
     let numberOfPeersComplete: Int // Seeders
@@ -40,9 +75,9 @@ struct TorrentHTTPTrackerResponse {
     }
 }
 
-extension TorrentHTTPTrackerResponse {
+extension TorrentTrackerResponse {
     
-    init?(data: Data) {
+    init?(bencode data: Data) {
         let bencode: [String: Any]
         do {
             bencode = try BEncoder.decodeStringKeyedDictionary(data)
@@ -79,7 +114,7 @@ extension TorrentHTTPTrackerResponse {
     }
 }
 
-extension TorrentHTTPTrackerResponse {
+extension TorrentTrackerResponse {
     
     static func errorMessage(fromResponseData data: Data) -> String? {
         

@@ -46,9 +46,7 @@ struct TorrentPeerInfo {
                 $0.pointee
             }
             let port = Int(portu16)
-            
-            print("Found peer: \(ip1).\(ip2).\(ip3).\(ip4):\(port)")
-            
+                        
             let peer = TorrentPeerInfo(ip: "\(ip1).\(ip2).\(ip3).\(ip4)", port: port, peerId: nil)
             result.append(peer)
         }

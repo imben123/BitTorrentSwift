@@ -8,26 +8,6 @@
 
 import Foundation
 
-protocol TorrentTrackerDelegate: class {
-    func torrentTracker(_ sender: TorrentHTTPTracker, receivedResponse: TorrentHTTPTrackerResponse)
-    func torrentTracker(_ sender: TorrentHTTPTracker, receivedErrorMessage: String)
-}
-
-enum TorrentHTTPTrackerEvent {
-    case started, stopped, completed
-    
-    var name: String {
-        switch self {
-        case .started:
-            return "started"
-        case .stopped:
-            return "stopped"
-        case .completed:
-            return "completed"
-        }
-    }
-}
-
 class TorrentHTTPTracker {
     
     let metaInfo: TorrentMetaInfo
@@ -42,7 +22,7 @@ class TorrentHTTPTracker {
     
     func announceClient(with peerId: String,
                         port: Int,
-                        event: TorrentHTTPTrackerEvent = .started,
+                        event: TorrentTrackerEvent = .started,
                         infoHash: Data,
                         numberOfBytesRemaining: Int,
                         numberOfBytesUploaded: Int,
@@ -68,9 +48,9 @@ class TorrentHTTPTracker {
             }
             
             if let data = response.responseData {
-                if let result = TorrentHTTPTrackerResponse(data: data) {
+                if let result = TorrentTrackerResponse(bencode: data) {
                     self!.delegate?.torrentTracker(self!, receivedResponse: result)
-                } else if let errorMessage = TorrentHTTPTrackerResponse.errorMessage(fromResponseData: data) {
+                } else if let errorMessage = TorrentTrackerResponse.errorMessage(fromResponseData: data) {
                     self!.delegate?.torrentTracker(self!, receivedErrorMessage: errorMessage)
                 }
             }

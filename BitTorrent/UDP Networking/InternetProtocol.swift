@@ -8,111 +8,93 @@
 
 import Foundation
 
-let IOS_CELLULAR_INTERFACE_NAME = "pdp_ip0"
-let IOS_WIFI_INTERFACE_NAME = "en0"
-let IP_ADDR_IPv4_INTERFACE_NAME = "ipv4"
-let IP_ADDR_IPv6_INTERFACE_NAME = "ipv6"
-
-func ipAddress(fromSockAddrData data: Data) -> String? {
-    let socketAddress = data.withUnsafeBytes() { (pointer: UnsafePointer<sockaddr_in>) in
-        return pointer.pointee
-    }
-    guard let resultCString = inet_ntoa(socketAddress.sin_addr) else {
-        return nil
-    }
-    return String(cString: resultCString)
-}
-
-func port(fromSockAddrData data: Data) -> UInt16 {
-    let socketAddress = data.withUnsafeBytes() { (pointer: UnsafePointer<sockaddr_in>) in
-        return pointer.pointee
-    }
-    return socketAddress.sin_port
-}
-
-//    + (NSString*)ipAddressFromSockAddrData:(NSData*)data {
-//        struct sockaddr_in * socketAddress = (struct sockaddr_in *)data.bytes;
-//        struct    in_addr ipAsStruct = ((struct sockaddr_in)*(socketAddress)).sin_addr;
-//        char *buff;
-//        buff = inet_ntoa(ipAsStruct);
-//        NSString *ip = [NSString stringWithUTF8String:buff];
-//        return ip;
-//        }
-//
-//        + (uint16_t)portFromSockAddrData:(NSData*)data {
-//            struct sockaddr_in * socketAddressPtr = (struct sockaddr_in *)data.bytes;
-//            struct sockaddr_in socketAddress = ((struct sockaddr_in)*(socketAddressPtr));
-//            return socketAddress.sin_port;
-//}
-
-func getIPAddress(of hostname: String) -> String? {
+struct InternetProtocol {
     
-    guard let hostnameCString = hostname.cString(using: .ascii),
-        let hostEntry = gethostbyname(hostnameCString)?.pointee,
-        let hostAddressList = hostEntry.h_addr_list?.pointee else {
-        return nil
-    }
+    static let IOS_CELLULAR_INTERFACE_NAME = "pdp_ip0"
+    static let IOS_WIFI_INTERFACE_NAME = "en0"
+    static let IP_ADDR_IPv4_INTERFACE_NAME = "ipv4"
+    static let IP_ADDR_IPv6_INTERFACE_NAME = "ipv6"
     
-    let firstHostAddress = hostAddressList.withMemoryRebound(to: in_addr.self, capacity: 1) { $0.pointee }
-    let firstHostAddressCString = inet_ntoa(firstHostAddress)!
-    return String(cString: firstHostAddressCString)
-}
-
-func getLocalIPAddress(preferIPv4: Bool = true) -> String? {
-    
-    // Prefer wifi over cellular
-    let searchArray = preferIPv4 ?
-        [
-            IOS_WIFI_INTERFACE_NAME + "/" + IP_ADDR_IPv4_INTERFACE_NAME,
-            IOS_WIFI_INTERFACE_NAME + "/" + IP_ADDR_IPv6_INTERFACE_NAME,
-            IOS_CELLULAR_INTERFACE_NAME + "/" + IP_ADDR_IPv4_INTERFACE_NAME,
-            IOS_CELLULAR_INTERFACE_NAME + "/" + IP_ADDR_IPv6_INTERFACE_NAME,
-        ] :
-        [
-            IOS_WIFI_INTERFACE_NAME + "/" + IP_ADDR_IPv6_INTERFACE_NAME,
-            IOS_WIFI_INTERFACE_NAME + "/" + IP_ADDR_IPv4_INTERFACE_NAME,
-            IOS_CELLULAR_INTERFACE_NAME + "/" + IP_ADDR_IPv6_INTERFACE_NAME,
-            IOS_CELLULAR_INTERFACE_NAME + "/" + IP_ADDR_IPv4_INTERFACE_NAME,
-        ]
-    
-    let addresses = getLocalIPAddresses()
-    
-    for searchItem in searchArray {
-        if let result = addresses[searchItem] {
-            return result
+    static func ipAddress(fromSockAddrData data: Data) -> String? {
+        let socketAddress = data.withUnsafeBytes() { (pointer: UnsafePointer<sockaddr_in>) in
+            return pointer.pointee
         }
+        guard let resultCString = inet_ntoa(socketAddress.sin_addr) else {
+            return nil
+        }
+        return String(cString: resultCString)
     }
     
-    return nil
-}
-
-func getLocalIPAddresses() -> [String: String] {
-    
-    var addresses: [String: String] = [:]
-    
-    // Get list of all network interfaces on the local machine:
-    var ifaddrsPointer : UnsafeMutablePointer<ifaddrs>?
-    guard getifaddrs(&ifaddrsPointer) == 0, let ifaddrsList = ifaddrsPointer?.pointee else {
-        return [:]
+    static func port(fromSockAddrData data: Data) -> UInt16 {
+        let socketAddress = data.withUnsafeBytes() { (pointer: UnsafePointer<sockaddr_in>) in
+            return pointer.pointee
+        }
+        return socketAddress.sin_port
     }
     
-    // For each network interface ...
-    for ifaddrs in ifaddrsList {
-        if !ifaddrs.isUpAndRunning || ifaddrs.isLoopbackNet {
-            continue
+    static func getIPAddress(of hostname: String) -> String? {
+        
+        guard let hostnameCString = hostname.cString(using: .ascii),
+            let hostEntry = gethostbyname(hostnameCString)?.pointee,
+            let hostAddressList = hostEntry.h_addr_list?.pointee else {
+                return nil
         }
         
-        if ifaddrs.isIpv4 || ifaddrs.isIpv6 {
-            if let addressString = ifaddrs.convertToIPString(), let name = ifaddrs.nameAndTypeString() {
-                addresses[name] = addressString
-            }
-        }
+        let firstHostAddress = hostAddressList.withMemoryRebound(to: in_addr.self, capacity: 1) { $0.pointee }
+        let firstHostAddressCString = inet_ntoa(firstHostAddress)!
+        return String(cString: firstHostAddressCString)
     }
     
-    freeifaddrs(ifaddrsPointer)
+    static func getLocalIPAddress(preferIPv4: Bool = true) -> String? {
+        
+        // Prefer wifi over cellular
+        let searchArray = [
+            ifaddrs.nameAndTypeString(from: IOS_WIFI_INTERFACE_NAME, isIpv4: preferIPv4),
+            ifaddrs.nameAndTypeString(from: IOS_WIFI_INTERFACE_NAME, isIpv4: !preferIPv4),
+            ifaddrs.nameAndTypeString(from: IOS_CELLULAR_INTERFACE_NAME, isIpv4: preferIPv4),
+            ifaddrs.nameAndTypeString(from: IOS_CELLULAR_INTERFACE_NAME, isIpv4: !preferIPv4),
+            ]
+        
+        let addresses = getLocalIPAddresses()
+        
+        for searchItem in searchArray {
+            if let result = addresses[searchItem] {
+                return result
+            }
+        }
+        
+        return nil
+    }
     
-    return addresses
+    static func getLocalIPAddresses() -> [String: String] {
+        
+        var addresses: [String: String] = [:]
+        
+        // Get list of all network interfaces on the local machine:
+        var ifaddrsPointer : UnsafeMutablePointer<ifaddrs>?
+        guard getifaddrs(&ifaddrsPointer) == 0, let ifaddrsList = ifaddrsPointer?.pointee else {
+            return [:]
+        }
+        
+        // For each network interface ...
+        for ifaddrs in ifaddrsList {
+            if !ifaddrs.isUpAndRunning || ifaddrs.isLoopbackNet {
+                continue
+            }
+            
+            if ifaddrs.isIpv4 || ifaddrs.isIpv6 {
+                if let addressString = ifaddrs.convertToIPString(), let name = ifaddrs.nameAndTypeString() {
+                    addresses[name] = addressString
+                }
+            }
+        }
+        
+        freeifaddrs(ifaddrsPointer)
+        
+        return addresses
+    }
 }
+
 
 public class ifaddrsIterator: IteratorProtocol {
     public typealias Element = ifaddrs
@@ -173,7 +155,13 @@ extension ifaddrs {
             return nil
         }
         
-        return "\(name) - " + (isIpv4 ? IP_ADDR_IPv4_INTERFACE_NAME : IP_ADDR_IPv6_INTERFACE_NAME)
+        return ifaddrs.nameAndTypeString(from: name, isIpv4: isIpv4)
+    }
+    
+    static func nameAndTypeString(from name: String, isIpv4: Bool) -> String {
+        return name + "/" + (isIpv4 ?
+            InternetProtocol.IP_ADDR_IPv4_INTERFACE_NAME :
+            InternetProtocol.IP_ADDR_IPv6_INTERFACE_NAME)
     }
 }
 

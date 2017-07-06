@@ -13,8 +13,8 @@ import CocoaAsyncSocket
 class UDPConnectionDelegateTestingStub: UDPConnectionDelegate {
     
     var receivedDataCalled = false
-    var receivedDataParameters: (sender: UDPConnection, data: Data, host: String)?
-    func udpConnection(_ sender: UDPConnection, receivedData data: Data, fromHost host: String) {
+    var receivedDataParameters: (sender: UDPConnectionProtocol, data: Data, host: String)?
+    func udpConnection(_ sender: UDPConnectionProtocol, receivedData data: Data, fromHost host: String) {
         receivedDataCalled = true
         receivedDataParameters = (sender, data, host)
     }
@@ -66,7 +66,7 @@ class UDPConnectionTests: XCTestCase {
         sut.udpSocket(socket, didReceive: packetData, fromAddress: addressData, withFilterContext: nil)
         
         XCTAssert(delegate.receivedDataCalled)
-        XCTAssertEqual(delegate.receivedDataParameters?.sender, sut)
+        XCTAssert(delegate.receivedDataParameters?.sender as AnyObject === sut)
         XCTAssertEqual(delegate.receivedDataParameters?.data, packetData)
         XCTAssertEqual(delegate.receivedDataParameters?.host, "127.0.0.1")
     }
