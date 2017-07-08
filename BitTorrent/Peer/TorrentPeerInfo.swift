@@ -10,10 +10,10 @@ import Foundation
 
 struct TorrentPeerInfo {
     let ip: String
-    let port: Int
+    let port: UInt16
     let peerId: Data?
     
-    init(ip: String, port: Int, peerId: Data?) {
+    init(ip: String, port: UInt16, peerId: Data?) {
         self.ip = ip
         self.port = port
         self.peerId = peerId
@@ -28,7 +28,7 @@ struct TorrentPeerInfo {
         }
         
         self.ip = ip
-        self.port = port
+        self.port = UInt16(port)
         self.peerId = dictionary["peer id"] as? Data
     }
     
@@ -42,11 +42,10 @@ struct TorrentPeerInfo {
             let ip4 = Int(data[i*6 + 3])
             let portBytes = [data[i*6 + 5], data[i*6 + 4]]
             
-            let portu16 = UnsafePointer(portBytes).withMemoryRebound(to: UInt16.self, capacity: 1) {
+            let port = UnsafePointer(portBytes).withMemoryRebound(to: UInt16.self, capacity: 1) {
                 $0.pointee
             }
-            let port = Int(portu16)
-                        
+            
             let peer = TorrentPeerInfo(ip: "\(ip1).\(ip2).\(ip3).\(ip4)", port: port, peerId: nil)
             result.append(peer)
         }

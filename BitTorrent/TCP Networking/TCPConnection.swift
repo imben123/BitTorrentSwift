@@ -9,6 +9,19 @@
 import Foundation
 import CocoaAsyncSocket
 
+protocol TCPConnectionProtocol {
+    weak var delegate: TCPConnectionDelegate? { set get }
+    
+    var connectedHost: String? { get }
+    var connectedPort: UInt16? { get }
+    
+    func connect(to host: String, onPort port: UInt16) throws
+    func disconnect()
+    
+    func readData(withTimeout timeout: TimeInterval, tag: Int)
+    func write(_ data: Data, withTimeout timeout: TimeInterval, tag: Int)
+}
+
 protocol TCPConnectionDelegate: class {
     func tcpConnection(_ sender: TCPConnection, didConnectToHost host: String, port: UInt16)
     func tcpConnection(_ sender: TCPConnection, didRead data: Data, withTag tag: Int)
@@ -19,7 +32,7 @@ protocol TCPConnectionDelegate: class {
 /// This class is a thin wrapper around the socket library to protect against changes
 /// in its interface, and to allow me to replace CocoaAsyncSocket with a swift framework
 /// one day.
-class TCPConnection: NSObject {
+class TCPConnection: NSObject, TCPConnectionProtocol {
     
     weak var delegate: TCPConnectionDelegate?
     
@@ -47,13 +60,13 @@ class TCPConnection: NSObject {
         try socket.connect(toHost: host, onPort: port)
     }
     
-    func readData(withTimeout timout: TimeInterval, tag: Int) {
-        socket.readData(withTimeout: timout, tag: tag)
-    }
-    
     func disconnect() {
         socket.delegate = nil
         socket.disconnect()
+    }
+    
+    func readData(withTimeout timeout: TimeInterval, tag: Int) {
+        socket.readData(withTimeout: timeout, tag: tag)
     }
     
     func write(_ data: Data, withTimeout timeout: TimeInterval, tag: Int) {

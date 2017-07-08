@@ -68,7 +68,7 @@ class TCPConnectionTests: XCTestCase {
         // Issue with solution: Cannot call delegate methods using this protocol as parameter
         //                      (delegate methods are defined as taking the concrete class)
         
-        // For now just assert they are both nil
+        // TODO: Test properly. For now just assert they are both nil
         XCTAssertNil(sut.connectedHost)
         XCTAssertNil(sut.connectedPort)
     }

@@ -162,10 +162,10 @@ class TorrentHTTPTrackerTests: XCTestCase {
         
         let peer1Id = "peerId1-------------"
         let peer1IP = "127.0.0.1"
-        let peer1Port = 15383
+        let peer1Port: UInt16 = 15383
         let peer2Id = "peerId2-------------"
         let peer2IP = "127.0.0.1"
-        let peer2Port = 6881
+        let peer2Port: UInt16 = 6881
         
         let peer1 = "d7:peer id20:\(peer1Id)2:ip9:\(peer1IP)4:porti\(peer1Port)ee"
         let peer2 = "d7:peer id20:\(peer2Id)2:ip9:\(peer2IP)4:porti\(peer2Port)ee"

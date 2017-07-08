@@ -27,10 +27,11 @@ class InternetProtocolTests: XCTestCase {
         XCTAssertNil(result)
     }
     
-    func test_canDecodeGoogle() {
-        let result = InternetProtocol.getIPAddress(of: "google.com")
-        XCTAssertNotNil(result)
-    }
+    // Bad Test
+//    func test_canDecodeGoogle() {
+//        let result = InternetProtocol.getIPAddress(of: "google.com")
+//        XCTAssertNotNil(result)
+//    }
     
     func test_canDecodeIPv4AddressFromData() {
         let data = Data(bytes: [16,2,122,105,127,0,0,1,0,0,0,0,0,0,0,0])
