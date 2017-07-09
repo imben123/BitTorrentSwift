@@ -302,6 +302,7 @@
 		B54D0C251CA56A25004343BD /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				B5F81E481F0436D600B25C70 /* TorrentPeerInfo.swift */,
 				B54D0C231CA56A22004343BD /* TorrentMetaInfo.swift */,
 				B54D0C261CA56ADB004343BD /* TorrentMetaInfoTests.swift */,
 				B535533D1F11261200A6DCBE /* BitField.swift */,
@@ -403,7 +404,7 @@
 				B53553441F1250E300A6DCBE /* TorrentPeerCommunicatorDelegateStub.swift */,
 				B5D643B81F12A9AB006B45B3 /* Message Buffers */,
 			);
-			name = Communicator;
+			path = Communicator;
 			sourceTree = "<group>";
 		};
 		B5D643B81F12A9AB006B45B3 /* Message Buffers */ = {
@@ -452,7 +453,6 @@
 		B5F81E461F0436CC00B25C70 /* Peer */ = {
 			isa = PBXGroup;
 			children = (
-				B5F81E481F0436D600B25C70 /* TorrentPeerInfo.swift */,
 				B5C06F101F12C2ED005730B3 /* Communicator */,
 			);
 			path = Peer;
