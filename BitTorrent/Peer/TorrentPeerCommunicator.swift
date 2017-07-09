@@ -70,7 +70,7 @@ class TorrentPeerCommunicator {
         try connection.connect(to: peerInfo.ip, onPort: peerInfo.port)
     }
     
-    func sendHandshake(for infoHash: Data, clientId: Data) {
+    func sendHandshake(for infoHash: Data, clientId: Data, _ completion: (()->Void)? = nil) {
         
         let protocolString = "BitTorrent protocol"
         let protocolStringLength = UInt8(protocolString.count)
@@ -82,66 +82,66 @@ class TorrentPeerCommunicator {
             infoHash +                              // info_hash
             clientId                                // peer_id of the current user
         
-        connection.write(payload, withTimeout: defaultTimeout, tag: 0)
+        connection.write(payload, withTimeout: defaultTimeout, completion: completion)
     }
     
     private let keepAlivePayload = Data(bytes: [0, 0, 0, 0]) // 0 length message
     
-    func sendKeepAlive() {
-        connection.write(keepAlivePayload, withTimeout: defaultTimeout, tag: 0)
+    func sendKeepAlive(_ completion: (()->Void)? = nil) {
+        connection.write(keepAlivePayload, withTimeout: defaultTimeout, completion: completion)
     }
     
-    func sendChoke() {
+    func sendChoke(_ completion: (()->Void)? = nil) {
         let payload = makePayload(forMessage: .choke)
-        connection.write(payload, withTimeout: defaultTimeout, tag: 0)
+        connection.write(payload, withTimeout: defaultTimeout, completion: completion)
     }
     
-    func sendUnchoke() {
+    func sendUnchoke(_ completion: (()->Void)? = nil) {
         let payload = makePayload(forMessage: .unchoke)
-        connection.write(payload, withTimeout: defaultTimeout, tag: 0)
+        connection.write(payload, withTimeout: defaultTimeout, completion: completion)
     }
     
-    func sendInterested() {
+    func sendInterested(_ completion: (()->Void)? = nil) {
         let payload = makePayload(forMessage: .interested)
-        connection.write(payload, withTimeout: defaultTimeout, tag: 0)
+        connection.write(payload, withTimeout: defaultTimeout, completion: completion)
     }
     
-    func sendNotInterested() {
+    func sendNotInterested(_ completion: (()->Void)? = nil) {
         let payload = makePayload(forMessage: .notInterested)
-        connection.write(payload, withTimeout: defaultTimeout, tag: 0)
+        connection.write(payload, withTimeout: defaultTimeout, completion: completion)
     }
     
-    func sendHavePiece(at index: Int) {
+    func sendHavePiece(at index: Int, _ completion: (()->Void)? = nil) {
         let data = UInt32(index).toData()
         let payload = makePayload(forMessage: .have, data: data)
-        connection.write(payload, withTimeout: defaultTimeout, tag: 0)
+        connection.write(payload, withTimeout: defaultTimeout, completion: completion)
     }
     
-    func sendBitField(_ bitField: BitField) {
+    func sendBitField(_ bitField: BitField, _ completion: (()->Void)? = nil) {
         let data = bitField.toData()
         let payload = makePayload(forMessage: .bitfield, data: data)
-        connection.write(payload, withTimeout: defaultTimeout, tag: 0)
+        connection.write(payload, withTimeout: defaultTimeout, completion: completion)
     }
     
-    func sendRequest(fromPieceAtIndex index: Int, begin: Int, length: Int) {
+    func sendRequest(fromPieceAtIndex index: Int, begin: Int, length: Int, _ completion: (()->Void)? = nil) {
         let data = UInt32(index).toData() + UInt32(begin).toData() + UInt32(length).toData()
         let payload = makePayload(forMessage: .request, data: data)
-        connection.write(payload, withTimeout: defaultTimeout, tag: 0)
+        connection.write(payload, withTimeout: defaultTimeout, completion: completion)
     }
     
-    func sendPiece(fromPieceAtIndex index: Int, begin: Int, block: Data) {
+    func sendPiece(fromPieceAtIndex index: Int, begin: Int, block: Data, _ completion: (()->Void)? = nil) {
         let data = UInt32(index).toData() + UInt32(begin).toData() + block
         let payload = makePayload(forMessage: .piece, data: data)
-        connection.write(payload, withTimeout: defaultTimeout, tag: 0)
+        connection.write(payload, withTimeout: defaultTimeout, completion: completion)
     }
     
-    func sendCancel(forPieceAtIndex index: Int, begin: Int, length: Int) {
+    func sendCancel(forPieceAtIndex index: Int, begin: Int, length: Int, _ completion: (()->Void)? = nil) {
         let data = UInt32(index).toData() + UInt32(begin).toData() + UInt32(length).toData()
         let payload = makePayload(forMessage: .cancel, data: data)
-        connection.write(payload, withTimeout: defaultTimeout, tag: 0)
+        connection.write(payload, withTimeout: defaultTimeout, completion: completion)
     }
     
-    func sendPort(_ listenPort: UInt16) {
+    func sendPort(_ listenPort: UInt16, _ completion: (()->Void)? = nil) {
         // TODO: implement with DHT peer discovery
     }
     

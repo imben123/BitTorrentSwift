@@ -20,6 +20,7 @@ protocol TCPConnectionProtocol: class {
     
     func readData(withTimeout timeout: TimeInterval, tag: Int)
     func write(_ data: Data, withTimeout timeout: TimeInterval, tag: Int)
+    func write(_ data: Data, withTimeout timeout: TimeInterval, completion: (()->Void)?)
 }
 
 protocol TCPConnectionDelegate: class {
@@ -37,6 +38,9 @@ class TCPConnection: NSObject, TCPConnectionProtocol {
     weak var delegate: TCPConnectionDelegate?
     
     private let socket: GCDAsyncSocket
+    
+    private var currentTag: Int = 1000 // This class will use tags above 1000 incrementally
+    private var completionBlocks: [Int: ()->Void] = [:]
     
     var connectedHost: String? {
         return socket.connectedHost
@@ -70,7 +74,23 @@ class TCPConnection: NSObject, TCPConnectionProtocol {
     }
     
     func write(_ data: Data, withTimeout timeout: TimeInterval, tag: Int) {
+        write(data, withTimeout: timeout, tag: tag, completion: nil)
+    }
+    
+    func write(_ data: Data, withTimeout timeout: TimeInterval, completion: (() -> Void)?) {
+        write(data, withTimeout: timeout, tag: nil, completion: completion)
+    }
+    
+    func write(_ data: Data, withTimeout timeout: TimeInterval, tag: Int? = nil, completion: (()->Void)? = nil) {
+        let tag = tag ?? nextTag()
+        completionBlocks[tag] = completion
         socket.write(data, withTimeout: timeout, tag: tag)
+    }
+    
+    func nextTag() -> Int {
+        let result = currentTag
+        currentTag += 1
+        return result
     }
 }
 
@@ -85,6 +105,8 @@ extension TCPConnection: GCDAsyncSocketDelegate {
     }
     
     func socket(_ sock: GCDAsyncSocket, didWriteDataWithTag tag: Int) {
+        completionBlocks[tag]?()
+        completionBlocks[tag] = nil
         delegate?.tcpConnection(self, didWriteDataWithTag: tag)
     }
     

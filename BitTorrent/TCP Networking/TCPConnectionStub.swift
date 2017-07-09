@@ -36,10 +36,16 @@ class TCPConnectionStub: TCPConnectionProtocol {
     }
     
     var writeDataCalled = false
-    var writeDataParameters: (data: Data, timeout: TimeInterval, tag: Int)?
+    var writeDataParameters: (data: Data, timeout: TimeInterval, tag: Int?)?
+    
     func write(_ data: Data, withTimeout timeout: TimeInterval, tag: Int) {
         writeDataCalled = true
         writeDataParameters = (data, timeout, tag)
+    }
+    
+    func write(_ data: Data, withTimeout timeout: TimeInterval, completion: (() -> Void)?) {
+        writeDataCalled = true
+        writeDataParameters = (data, timeout, nil)
     }
     
 }

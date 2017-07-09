@@ -120,6 +120,36 @@ class TCPConnectionTests: XCTestCase {
         XCTAssertEqual(socket.writeParameters?.tag, tag)
     }
     
+    func test_writeDataCompletionBlock() {
+        let data = Data(bytes: [3,2,1])
+        let timeout: TimeInterval = 123
+        
+        var blockEnvoked = false
+        sut.write(data, withTimeout: timeout) {
+            blockEnvoked = true
+        }
+        
+        if let tag = socket.writeParameters?.tag {
+            sut.socket(socket, didWriteDataWithTag: tag)
+        }
+        XCTAssert(blockEnvoked)
+    }
+    
+    func test_writeDataCompletionNotEnvokedIfDifferentWriteOperationCompletes() {
+        let data = Data(bytes: [3,2,1])
+        let timeout: TimeInterval = 123
+        
+        var blockEnvoked = false
+        sut.write(data, withTimeout: timeout) {
+            blockEnvoked = true
+        }
+        
+        if let tag = socket.writeParameters?.tag {
+            sut.socket(socket, didWriteDataWithTag: tag+1)
+        }
+        XCTAssertFalse(blockEnvoked)
+    }
+    
     func test_didConnectToHostPassedToDelegate() {
         let host = "127.0.0.1"
         let port: UInt16 = 123
