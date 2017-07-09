@@ -8,13 +8,31 @@
 
 import Foundation
 
-struct BitField {
+struct BitField: Equatable {
     let size: Int
     var value: [Bool]
     
     init(size: Int) {
         self.size = size
         self.value = Array(repeating: false, count: size)
+    }
+    
+    init(data: Data) {
+        self.init(size: data.count*8)
+        for byteIndex in 0 ..< data.count {
+            let byte = data[byteIndex]
+            for i in 0 ..< 8 {
+                if isNthBitSet(byte, n: i) {
+                    set(at: byteIndex*8 + i)
+                }
+            }
+        }
+    }
+    
+    fileprivate func isNthBitSet(_ byte: UInt8, n: Int) -> Bool {
+        let mask: [UInt8] = [128, 64, 32, 16, 8, 4, 2, 1]
+        let maskN: UInt8 = mask[n]
+        return (byte & maskN) != 0
     }
     
     mutating func set(at index: Int) {
@@ -60,5 +78,9 @@ struct BitField {
         }
         
         return Data(bytes: bytes)
+    }
+    
+    static func ==(_ lhs: BitField, _ rhs: BitField) -> Bool {
+        return lhs.value == rhs.value
     }
 }

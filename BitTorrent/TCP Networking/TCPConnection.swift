@@ -9,7 +9,7 @@
 import Foundation
 import CocoaAsyncSocket
 
-protocol TCPConnectionProtocol {
+protocol TCPConnectionProtocol: class {
     weak var delegate: TCPConnectionDelegate? { set get }
     
     var connectedHost: String? { get }
@@ -23,10 +23,10 @@ protocol TCPConnectionProtocol {
 }
 
 protocol TCPConnectionDelegate: class {
-    func tcpConnection(_ sender: TCPConnection, didConnectToHost host: String, port: UInt16)
-    func tcpConnection(_ sender: TCPConnection, didRead data: Data, withTag tag: Int)
-    func tcpConnection(_ sender: TCPConnection, didWriteDataWithTag tag: Int)
-    func tcpConnection(_ sender: TCPConnection, disconnectedWithError error: Error?)
+    func tcpConnection(_ sender: TCPConnectionProtocol, didConnectToHost host: String, port: UInt16)
+    func tcpConnection(_ sender: TCPConnectionProtocol, didRead data: Data, withTag tag: Int)
+    func tcpConnection(_ sender: TCPConnectionProtocol, didWriteDataWithTag tag: Int)
+    func tcpConnection(_ sender: TCPConnectionProtocol, disconnectedWithError error: Error?)
 }
 
 /// This class is a thin wrapper around the socket library to protect against changes

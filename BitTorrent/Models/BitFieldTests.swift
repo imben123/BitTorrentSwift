@@ -57,4 +57,15 @@ class BitFieldTests: XCTestCase {
         let result = sut.toData()
         XCTAssertEqual(result, Data(bytes:[16]))
     }
+    
+    func test_canInitWithData() {
+        var example = BitField(size: 16)
+        example.set(at: 7)
+        example.set(at: 15)
+        example.set(at: 14)
+        
+        let data = example.toData()
+        let result = BitField(data: data)
+        XCTAssertEqual(result, example)
+    }
 }

@@ -9,32 +9,36 @@
 import XCTest
 @testable import BitTorrent
 
+func XCTAssertEqual(_ lhs: TCPConnectionProtocol?, _ rhs: TCPConnectionProtocol?) {
+    XCTAssert(lhs === rhs)
+}
+
 class TCPConnectionDelegateStub: TCPConnectionDelegate {
     
     var didConnectToHostCalled = false
-    var didConnectToHostParameters: (sender: TCPConnection, host: String, port: UInt16)?
-    func tcpConnection(_ sender: TCPConnection, didConnectToHost host: String, port: UInt16) {
+    var didConnectToHostParameters: (sender: TCPConnectionProtocol, host: String, port: UInt16)?
+    func tcpConnection(_ sender: TCPConnectionProtocol, didConnectToHost host: String, port: UInt16) {
         didConnectToHostCalled = true
         didConnectToHostParameters = (sender, host, port)
     }
     
     var didReadDataCalled = false
-    var didReadDataParameters: (sender: TCPConnection, data: Data, tag: Int)?
-    func tcpConnection(_ sender: TCPConnection, didRead data: Data, withTag tag: Int) {
+    var didReadDataParameters: (sender: TCPConnectionProtocol, data: Data, tag: Int)?
+    func tcpConnection(_ sender: TCPConnectionProtocol, didRead data: Data, withTag tag: Int) {
         didReadDataCalled = true
         didReadDataParameters = (sender, data, tag)
     }
     
     var didWriteDataCalled = false
-    var didWriteDataParameters: (sender: TCPConnection, tag: Int)?
-    func tcpConnection(_ sender: TCPConnection, didWriteDataWithTag tag: Int) {
+    var didWriteDataParameters: (sender: TCPConnectionProtocol, tag: Int)?
+    func tcpConnection(_ sender: TCPConnectionProtocol, didWriteDataWithTag tag: Int) {
         didWriteDataCalled = true
         didWriteDataParameters = (sender, tag)
     }
     
     var disconnectedWithErrorCalled = false
-    var disconnectedWithErrorParameters: (sender: TCPConnection, error: Error?)?
-    func tcpConnection(_ sender: TCPConnection, disconnectedWithError error: Error?) {
+    var disconnectedWithErrorParameters: (sender: TCPConnectionProtocol, error: Error?)?
+    func tcpConnection(_ sender: TCPConnectionProtocol, disconnectedWithError error: Error?) {
         disconnectedWithErrorCalled = true
         disconnectedWithErrorParameters = (sender, error)
     }
