@@ -115,6 +115,18 @@ class TorrentPeerComminicatorTests: XCTestCase {
         XCTAssertEqual(tcpConnection.connectParameters?.port, port)
     }
     
+    func test_tcpConnectionIsConstantlyReadingNewData() {
+        XCTAssert(tcpConnection.readDataCalled)
+        XCTAssertEqual(tcpConnection.readDataParameters?.timeout, -1)
+        
+        if let tag = tcpConnection.readDataParameters?.tag {
+            tcpConnection.readDataCalled = false
+            sut.tcpConnection(tcpConnection, didRead: Data(), withTag: tag)
+            XCTAssert(tcpConnection.readDataCalled)
+            XCTAssertEqual(tcpConnection.readDataParameters?.timeout, -1)
+        }
+    }
+    
     func test_sendHandshake() {
         sut.sendHandshake(for: infoHash, clientId: peerId)
         assertDataSent(handshakePayload)

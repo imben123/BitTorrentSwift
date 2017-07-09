@@ -64,11 +64,18 @@ class TorrentPeerCommunicator {
         self.connection.delegate = self
         self.handshakeMessageBuffer.delegate = self
         self.messageBuffer.delegate = self
+        
+        self.connection.readData(withTimeout: -1, tag: 0)
     }
     
     func connect() throws {
         try connection.connect(to: peerInfo.ip, onPort: peerInfo.port)
     }
+}
+
+// MARK: - Writing messages
+
+extension TorrentPeerCommunicator {
     
     func sendHandshake(for infoHash: Data, clientId: Data, _ completion: (()->Void)? = nil) {
         
@@ -85,9 +92,8 @@ class TorrentPeerCommunicator {
         connection.write(payload, withTimeout: defaultTimeout, completion: completion)
     }
     
-    private let keepAlivePayload = Data(bytes: [0, 0, 0, 0]) // 0 length message
-    
     func sendKeepAlive(_ completion: (()->Void)? = nil) {
+        let keepAlivePayload = Data(bytes: [0, 0, 0, 0]) // 0 length message
         connection.write(keepAlivePayload, withTimeout: defaultTimeout, completion: completion)
     }
     
@@ -154,7 +160,7 @@ class TorrentPeerCommunicator {
     }
 }
 
-// MARK: -
+// MARK: - Reading messages
 
 extension TorrentPeerCommunicator: TCPConnectionDelegate {
     
@@ -169,6 +175,8 @@ extension TorrentPeerCommunicator: TCPConnectionDelegate {
         } else {
             messageBuffer.appendData(data)
         }
+        
+        connection.readData(withTimeout: -1, tag: 0)
     }
     
     func tcpConnection(_ sender: TCPConnectionProtocol, didWriteDataWithTag tag: Int) {
