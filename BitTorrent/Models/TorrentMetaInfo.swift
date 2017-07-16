@@ -102,7 +102,7 @@ class TorrentInfoDictionary {
     let pieceLength : Int
     let isPrivate : Bool
     let files: [TorrentFileInfo]
-    let pieces : [Data]?
+    let pieces : [Data]
     let length: Int
 
     init?(_ dictionary: [String : AnyObject]) {

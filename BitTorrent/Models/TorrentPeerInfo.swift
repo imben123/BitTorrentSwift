@@ -52,3 +52,10 @@ struct TorrentPeerInfo {
         return result
     }
 }
+
+extension TorrentPeerInfo: Equatable {
+    static func ==(_ lhs: TorrentPeerInfo, _ rhs: TorrentPeerInfo) -> Bool {
+        let peerIdsMatch = (lhs.peerId == nil || rhs.peerId == nil || lhs.peerId == rhs.peerId)
+        return (lhs.ip == rhs.ip && lhs.port == rhs.port && peerIdsMatch)
+    }
+}

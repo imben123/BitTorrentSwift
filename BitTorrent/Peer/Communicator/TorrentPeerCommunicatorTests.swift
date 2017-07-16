@@ -15,6 +15,8 @@ class TorrentPeerComminicatorTests: XCTestCase {
     var delegate: TorrentPeerCommunicatorDelegateStub!
     var sut: TorrentPeerCommunicator!
     
+    // MARK: - Models and example data
+    
     let ip = "127.0.0.1"
     let port: UInt16 = 123
     let peerId = "-BD0000-bxa]N#IRKqv`".data(using: .ascii)!
@@ -94,6 +96,8 @@ class TorrentPeerComminicatorTests: XCTestCase {
             UInt32(length).toData()         // length
     }
     
+    // MARK: - Setup
+    
     override func setUp() {
         super.setUp()
         
@@ -106,6 +110,8 @@ class TorrentPeerComminicatorTests: XCTestCase {
                                       tcpConnection: tcpConnection)
         sut.delegate = delegate
     }
+    
+    // Mark - Tests
     
     func test_canConnect() {
         try! sut.connect()
@@ -128,7 +134,7 @@ class TorrentPeerComminicatorTests: XCTestCase {
     }
     
     func test_sendHandshake() {
-        sut.sendHandshake(for: infoHash, clientId: peerId)
+        sut.sendHandshake(for: peerId)
         assertDataSent(handshakePayload)
     }
     

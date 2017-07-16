@@ -31,6 +31,8 @@ protocol TorrentPeerCommunicatorDelegate: class {
 /// Responsible for sending and recieving messages in the Peer Wire Protocol
 class TorrentPeerCommunicator {
     
+    var enableLogging = false
+    
     enum Message: UInt8 {
         case choke = 0
         case unchoke = 1
@@ -42,6 +44,31 @@ class TorrentPeerCommunicator {
         case piece = 7
         case cancel = 8
         case port = 9
+        
+        var stringValue: String {
+            switch self {
+            case .choke:
+                return "choke"
+            case .unchoke:
+                return "unchoke"
+            case .interested:
+                return "interested"
+            case .notInterested:
+                return "notInterested"
+            case .have:
+                return "have"
+            case .bitfield:
+                return "bitfield"
+            case .request:
+                return "request"
+            case .piece:
+                return "piece"
+            case .cancel:
+                return "cancel"
+            case .port:
+                return "port"
+            }
+        }
     }
     
     let defaultTimeout: TimeInterval = 10
@@ -51,13 +78,16 @@ class TorrentPeerCommunicator {
     private let peerInfo: TorrentPeerInfo
     private let connection: TCPConnectionProtocol
     
-    var handshakeReceived = false
+    fileprivate let infoHash: Data
+    
+    fileprivate var handshakeReceived = false
     fileprivate let handshakeMessageBuffer: TorrentPeerHandshakeMessageBuffer
     fileprivate let messageBuffer: TorrentPeerMessageBuffer
     
     init(peerInfo: TorrentPeerInfo, infoHash: Data, tcpConnection: TCPConnectionProtocol = TCPConnection()) {
         self.peerInfo = peerInfo
         self.connection = tcpConnection
+        self.infoHash = infoHash
         self.handshakeMessageBuffer = TorrentPeerHandshakeMessageBuffer(infoHash: infoHash, peerId: peerInfo.peerId)
         self.messageBuffer = TorrentPeerMessageBuffer()
         
@@ -71,13 +101,12 @@ class TorrentPeerCommunicator {
     func connect() throws {
         try connection.connect(to: peerInfo.ip, onPort: peerInfo.port)
     }
-}
-
-// MARK: - Writing messages
-
-extension TorrentPeerCommunicator {
     
-    func sendHandshake(for infoHash: Data, clientId: Data, _ completion: (()->Void)? = nil) {
+    // MARK: - Writing messages
+
+    func sendHandshake(for clientId: Data, _ completion: (()->Void)? = nil) {
+        
+        if enableLogging { print("Send handshake") }
         
         let protocolString = "BitTorrent protocol"
         let protocolStringLength = UInt8(protocolString.count)
@@ -93,55 +122,85 @@ extension TorrentPeerCommunicator {
     }
     
     func sendKeepAlive(_ completion: (()->Void)? = nil) {
+        
+        if enableLogging { print("sendKeepAlive") }
+        
         let keepAlivePayload = Data(bytes: [0, 0, 0, 0]) // 0 length message
         connection.write(keepAlivePayload, withTimeout: defaultTimeout, completion: completion)
     }
     
     func sendChoke(_ completion: (()->Void)? = nil) {
+        
+        if enableLogging { print("Send choke") }
+        
         let payload = makePayload(forMessage: .choke)
         connection.write(payload, withTimeout: defaultTimeout, completion: completion)
     }
     
     func sendUnchoke(_ completion: (()->Void)? = nil) {
+        
+        if enableLogging { print("Send Unchoke") }
+        
         let payload = makePayload(forMessage: .unchoke)
         connection.write(payload, withTimeout: defaultTimeout, completion: completion)
     }
     
     func sendInterested(_ completion: (()->Void)? = nil) {
+        
+        if enableLogging { print("Send Interested") }
+        
         let payload = makePayload(forMessage: .interested)
         connection.write(payload, withTimeout: defaultTimeout, completion: completion)
     }
     
     func sendNotInterested(_ completion: (()->Void)? = nil) {
+        
+        if enableLogging { print("Send not interested") }
+        
         let payload = makePayload(forMessage: .notInterested)
         connection.write(payload, withTimeout: defaultTimeout, completion: completion)
     }
     
     func sendHavePiece(at index: Int, _ completion: (()->Void)? = nil) {
+        
+        if enableLogging { print("Send have piece") }
+        
         let data = UInt32(index).toData()
         let payload = makePayload(forMessage: .have, data: data)
         connection.write(payload, withTimeout: defaultTimeout, completion: completion)
     }
     
     func sendBitField(_ bitField: BitField, _ completion: (()->Void)? = nil) {
+        
+        if enableLogging { print("Send Bit Field") }
+        
         let data = bitField.toData()
         let payload = makePayload(forMessage: .bitfield, data: data)
         connection.write(payload, withTimeout: defaultTimeout, completion: completion)
     }
     
     func sendRequest(fromPieceAtIndex index: Int, begin: Int, length: Int, _ completion: (()->Void)? = nil) {
+        
+        if enableLogging { print("Send Request for piece at index: \(index) begin: \(begin)") }
+        
         let data = UInt32(index).toData() + UInt32(begin).toData() + UInt32(length).toData()
         let payload = makePayload(forMessage: .request, data: data)
         connection.write(payload, withTimeout: defaultTimeout, completion: completion)
     }
     
     func sendPiece(fromPieceAtIndex index: Int, begin: Int, block: Data, _ completion: (()->Void)? = nil) {
+        
+        if enableLogging { print("Send Piece index: \(index) begin: \(begin)") }
+        
         let data = UInt32(index).toData() + UInt32(begin).toData() + block
         let payload = makePayload(forMessage: .piece, data: data)
         connection.write(payload, withTimeout: defaultTimeout, completion: completion)
     }
     
     func sendCancel(forPieceAtIndex index: Int, begin: Int, length: Int, _ completion: (()->Void)? = nil) {
+        
+        if enableLogging { print("Send Cancel for piece at index: \(index) begin: \(begin)") }
+        
         let data = UInt32(index).toData() + UInt32(begin).toData() + UInt32(length).toData()
         let payload = makePayload(forMessage: .cancel, data: data)
         connection.write(payload, withTimeout: defaultTimeout, completion: completion)
@@ -211,7 +270,6 @@ extension TorrentPeerCommunicator: TorrentPeerHandshakeDelegate {
     }
 }
 
-// TODO: test can send handshake + message
 extension TorrentPeerCommunicator: TorrentPeerMessageBufferDelegate {
     
     func peerMessageBuffer(_ sender: TorrentPeerMessageBuffer, gotMessage data: Data) {
@@ -225,6 +283,8 @@ extension TorrentPeerCommunicator: TorrentPeerMessageBufferDelegate {
             delegate?.peerSentMalformedMessage(self)
             return
         }
+        
+        if enableLogging { print("Got Message from peer \(message.stringValue)") }
         
         switch message {
             
