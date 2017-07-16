@@ -225,6 +225,7 @@ extension TorrentPeerCommunicator: TCPConnectionDelegate {
     
     func tcpConnection(_ sender: TCPConnectionProtocol, didConnectToHost host: String, port: UInt16) {
         delegate?.peerConnected(self)
+        connection.readData(withTimeout: -1, tag: 0)
     }
     
     func tcpConnection(_ sender: TCPConnectionProtocol, didRead data: Data, withTag tag: Int) {
