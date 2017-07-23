@@ -10,7 +10,7 @@ import Foundation
 import class BEncode.BEncoder
 import enum BEncode.AsciiError
 
-class TorrentMetaInfo {
+public class TorrentMetaInfo {
     
     let infoHash : Data // this is the original BEncoded dictionary, hashed
 
@@ -21,7 +21,7 @@ class TorrentMetaInfo {
     let comment: String?
     let createdBy: String?
     
-    init?(data: Data) {
+    public init?(data: Data) {
         
         let decodedMetainfo = try! BEncoder.decodeStringKeyedDictionary(data)
         
@@ -140,6 +140,14 @@ class TorrentInfoDictionary {
         
     }
     
+    func lengthOfPiece(at index: Int) -> Int {
+        if index == pieces.count-1 {
+            return length % pieceLength
+        } else {
+            return pieceLength
+        }
+    }
+    
     fileprivate class func parseFilesAndLengthFromDictionary(_ dictionary: [String: AnyObject],
                                                              parsedName name: String)
         -> (files: [TorrentFileInfo], totalLength: Int)? {
@@ -206,30 +214,26 @@ class TorrentInfoDictionary {
     }
 }
 
-class TorrentFileInfo {
-    let path: String
-    let length: Int
-    let md5sum: String?
-
-    init(path: String, length: Int, md5sum: String?) {
-        self.path = path
-        self.length = length
-        self.md5sum = md5sum
+extension TorrentMetaInfo {
+    
+    func sensibleDownloadDirectoryName() -> String {
+        if info.files.count > 1 {
+            return info.name
+        } else {
+            let url = URL(fileURLWithPath: info.name, isDirectory: false).deletingPathExtension()
+            return url.path
+        }
     }
     
-    convenience init?(dictionary: [ String : AnyObject ]) {
-        
-        guard let length = dictionary["length"] as? Int,
-            let pathData = dictionary["path"] as? [Data],
-            let pathComponents = pathData.map(String.init(asciiData:)) as? [String] else {
-                return nil
+}
+
+extension TorrentMetaInfo {
+    
+    public convenience init?(named name: String) {
+        let path = Bundle.main.path(forResource: name, ofType: "torrent")
+        guard let data = try? Data(contentsOf: URL(fileURLWithPath: path!)) else {
+            return nil
         }
-        
-        let path = pathComponents.reduce("") { $0.count == 0 ? $1 : $0 + "/" + $1 }
-        
-        let md5sumData = dictionary["md5sum"] as? Data
-        let md5sum = String(asciiData: md5sumData)
-        
-        self.init(path: path, length: length, md5sum: md5sum)
+        self.init(data: data)
     }
 }

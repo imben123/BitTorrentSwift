@@ -9,7 +9,7 @@
 import Foundation
 import BEncode
 
-private let PROTOCOL_ID = UInt64(0x41727101980).toData() // magic constant (protocol_id)
+private let PROTOCOL_ID = (0x41727101980 as UInt64).toData() // magic constant (protocol_id)
 
 private let CONNECTION_ACTION = UInt32(0).toData()
 private let ANNOUNCE_ACTION = UInt32(1).toData()

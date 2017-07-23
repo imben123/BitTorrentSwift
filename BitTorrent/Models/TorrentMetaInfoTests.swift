@@ -137,8 +137,8 @@ class TorrentMetaInfoTests: XCTestCase {
     func testInfoDictionarySplitsPiecesInto20ByteChecksums() {
         let metaInfo = TorrentMetaInfo(data: exampleMetaInfoDictionary())!
         let info = metaInfo.info
-        XCTAssertEqual(info.pieces![0], singleFilePiece)
-        XCTAssertEqual(info.pieces![1], singleFilePiece)
+        XCTAssertEqual(info.pieces[0], singleFilePiece)
+        XCTAssertEqual(info.pieces[1], singleFilePiece)
     }
     
     func testProducesCorrectInfoHash() {
@@ -180,7 +180,7 @@ class TorrentMetaInfoTests: XCTestCase {
         
         XCTAssertEqual(info.pieceLength, filePieceLength)
         
-        let piecesConcatenated = info.pieces!.reduce(Data()) {
+        let piecesConcatenated = info.pieces.reduce(Data()) {
             (result, item) in
             return result + item
         }

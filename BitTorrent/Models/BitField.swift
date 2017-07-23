@@ -10,7 +10,7 @@ import Foundation
 
 struct BitField: Equatable {
     let size: Int
-    var value: [Bool]
+    private(set) var value: [Bool]
     
     init(size: Int) {
         self.size = size
@@ -33,6 +33,10 @@ struct BitField: Equatable {
         let mask: [UInt8] = [128, 64, 32, 16, 8, 4, 2, 1]
         let maskN: UInt8 = mask[n]
         return (byte & maskN) != 0
+    }
+    
+    func isSet(at index: Int) -> Bool {
+        return value[index]
     }
     
     mutating func set(at index: Int) {

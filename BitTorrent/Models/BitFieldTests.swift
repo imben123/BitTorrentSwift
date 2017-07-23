@@ -34,6 +34,17 @@ class BitFieldTests: XCTestCase {
         XCTAssertEqual(sut.value, [true, false, true, false, false])
     }
     
+    func test_canTestAtIndex() {
+        var sut = BitField(size: 5)
+        sut.set(at: 0)
+        sut.set(at: 2)
+        XCTAssertTrue(sut.isSet(at: 0))
+        XCTAssertFalse(sut.isSet(at: 1))
+        XCTAssertTrue(sut.isSet(at: 2))
+        XCTAssertFalse(sut.isSet(at: 3))
+        XCTAssertFalse(sut.isSet(at: 4))
+    }
+    
     func test_canConvertToData_bitsAlignToBytes() {
         var sut = BitField(size: 16)
         sut.set(at: 7)

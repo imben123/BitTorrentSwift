@@ -31,18 +31,11 @@ class TorrentPeer {
     private let communicator: TorrentPeerCommunicator
     
     // Peer state
-    var peerChoked: Bool { return _peerChoked }
-    var peerInterested: Bool { return _peerInterested }
-    var amChokedToPeer: Bool { return _amChokedToPeer }
-    var amInterestedInPeer: Bool { return _amInterestedInPeer }
-    var currentProgress: BitField { return _currentProgress }
-    
-    // Private state
-    private var _peerChoked: Bool = true
-    private var _peerInterested: Bool = false
-    private var _amChokedToPeer: Bool = true
-    private var _amInterestedInPeer: Bool = false
-    private var _currentProgress: BitField
+    private(set) var peerChoked: Bool = true
+    private(set) var peerInterested: Bool = false
+    private(set) var amChokedToPeer: Bool = true
+    private(set) var amInterestedInPeer: Bool = false
+    private(set) var currentProgress: BitField
     
     private var downloadPieceRequests: [Int: TorrentPieceDownloadBuffer] = [:]
     private var numberOfPendingRequests = 0
@@ -50,7 +43,7 @@ class TorrentPeer {
     init(peerInfo: TorrentPeerInfo, bitFieldSize: Int, communicator: TorrentPeerCommunicator) {
         self.peerInfo = peerInfo
         self.communicator = communicator
-        self._currentProgress = BitField(size: bitFieldSize)
+        self.currentProgress = BitField(size: bitFieldSize)
         communicator.delegate = self
     }
     
@@ -72,7 +65,7 @@ class TorrentPeer {
         downloadPieceRequests[index] = downloadBuffer
         
         if !amInterestedInPeer {
-            _amInterestedInPeer = true
+            amInterestedInPeer = true
             communicator.sendInterested()
         }
         
@@ -131,29 +124,29 @@ extension TorrentPeer: TorrentPeerCommunicatorDelegate {
     }
     
     func peerBecameChoked(_ sender: TorrentPeerCommunicator) {
-        _peerChoked = true
+        peerChoked = true
         killAllDownloads()
     }
     
     func peerBecameUnchoked(_ sender: TorrentPeerCommunicator) {
-        _peerChoked = false
+        peerChoked = false
         requestNextBlock()
     }
     
     func peerBecameInterested(_ sender: TorrentPeerCommunicator) {
-        _peerInterested = true
+        peerInterested = true
     }
     
     func peerBecameUninterested(_ sender: TorrentPeerCommunicator) {
-        _peerInterested = false
+        peerInterested = false
     }
     
     func peer(_ sender: TorrentPeerCommunicator, hasPiece piece: Int) {
-        _currentProgress.set(at: piece)
+        currentProgress.set(at: piece)
     }
     
     func peer(_ sender: TorrentPeerCommunicator, hasBitField bitField: BitField) {
-        _currentProgress = bitField
+        currentProgress = bitField
     }
     
     func peer(_ sender: TorrentPeerCommunicator, requestedPiece index: Int, begin: Int, length: Int) {
@@ -180,5 +173,22 @@ extension TorrentPeer: TorrentPeerCommunicatorDelegate {
     
     func peerSentMalformedMessage(_ sender: TorrentPeerCommunicator) {
         
+    }
+}
+
+extension TorrentPeer {
+    
+    class func makePeerId() -> Data {
+        var peerId = "-BD0000-"
+        
+        for _ in 0...11 {
+            let asciiCharacters = [" ", "!", "\"", "#", "$", "%", "&", "'", "(", ")", "*", "+", ",", "-", ".", "/", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", ":", ";", "<", "=", ">", "?", "@", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "[", "\\", "]", "^", "_", "`", "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "{", "|", "}", "~"]
+            let numberOfAscii = asciiCharacters.count
+            let randomIndex = arc4random() % UInt32(numberOfAscii)
+            let random = asciiCharacters[Int(randomIndex)]
+            peerId += random
+        }
+        
+        return peerId.data(using: .utf8)!
     }
 }
