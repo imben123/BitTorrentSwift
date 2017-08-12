@@ -72,6 +72,8 @@
 		B5E9B0E51F02FAC600EF58E3 /* TestText.torrent in Resources */ = {isa = PBXBuildFile; fileRef = B5E9B0E31F02F9E700EF58E3 /* TestText.torrent */; };
 		B5F27C5D1F3F7BDD0040589C /* TorrentPeerManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5F27C5C1F3F7BDD0040589C /* TorrentPeerManager.swift */; };
 		B5F27C5F1F3F7BFD0040589C /* TorrentPeerManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5F27C5E1F3F7BFD0040589C /* TorrentPeerManagerTests.swift */; };
+		B5F27C621F3F93AC0040589C /* TorrentProgressManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5F27C611F3F93AC0040589C /* TorrentProgressManager.swift */; };
+		B5F27C641F3F93C20040589C /* TorrentProgressManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5F27C631F3F93C20040589C /* TorrentProgressManagerTests.swift */; };
 		B5F81E491F0436D600B25C70 /* TorrentPeerInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5F81E481F0436D600B25C70 /* TorrentPeerInfo.swift */; };
 		B5F81E4B1F04399800B25C70 /* TorrentTrackerResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5F81E4A1F04399800B25C70 /* TorrentTrackerResponse.swift */; };
 /* End PBXBuildFile section */
@@ -217,6 +219,8 @@
 		B5E9B0E41F02F9E700EF58E3 /* text.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = text.txt; sourceTree = "<group>"; };
 		B5F27C5C1F3F7BDD0040589C /* TorrentPeerManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TorrentPeerManager.swift; sourceTree = "<group>"; };
 		B5F27C5E1F3F7BFD0040589C /* TorrentPeerManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TorrentPeerManagerTests.swift; sourceTree = "<group>"; };
+		B5F27C611F3F93AC0040589C /* TorrentProgressManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TorrentProgressManager.swift; sourceTree = "<group>"; };
+		B5F27C631F3F93C20040589C /* TorrentProgressManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TorrentProgressManagerTests.swift; sourceTree = "<group>"; };
 		B5F81E481F0436D600B25C70 /* TorrentPeerInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TorrentPeerInfo.swift; sourceTree = "<group>"; };
 		B5F81E4A1F04399800B25C70 /* TorrentTrackerResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TorrentTrackerResponse.swift; sourceTree = "<group>"; };
 		D437CE230D6B283EED6C1A3E /* Pods-BitTorrent.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BitTorrent.debug.xcconfig"; path = "Pods/Target Support Files/Pods-BitTorrent/Pods-BitTorrent.debug.xcconfig"; sourceTree = "<group>"; };
@@ -420,10 +424,11 @@
 			isa = PBXGroup;
 			children = (
 				B585AB771C3833450093FA41 /* BitTorrent.h */,
-				B5F27C5B1F3F7BC30040589C /* Peer Manager */,
 				B527F62F1F1BF2EB001F06AF /* Torrent Client */,
+				B5F27C601F3F93950040589C /* Progress Manager */,
 				B5C5F96A1F250CF2007623B2 /* File Manager */,
 				B5C5F96C1F250D0B007623B2 /* Torrent Progress */,
+				B5F27C5B1F3F7BC30040589C /* Peer Manager */,
 				B5F81E461F0436CC00B25C70 /* Peer */,
 				B55317DA1F02FC3000909ADF /* Tracker */,
 				B54D0C251CA56A25004343BD /* Models */,
@@ -529,6 +534,15 @@
 				B5F27C5E1F3F7BFD0040589C /* TorrentPeerManagerTests.swift */,
 			);
 			path = "Peer Manager";
+			sourceTree = "<group>";
+		};
+		B5F27C601F3F93950040589C /* Progress Manager */ = {
+			isa = PBXGroup;
+			children = (
+				B5F27C611F3F93AC0040589C /* TorrentProgressManager.swift */,
+				B5F27C631F3F93C20040589C /* TorrentProgressManagerTests.swift */,
+			);
+			path = "Progress Manager";
 			sourceTree = "<group>";
 		};
 		B5F81E461F0436CC00B25C70 /* Peer */ = {
@@ -897,6 +911,7 @@
 				B527F6311F1BF30E001F06AF /* TorrentClient.swift in Sources */,
 				B55317DC1F02FC4D00909ADF /* TorrentHTTPTracker.swift in Sources */,
 				B52EE3401F129CA200AC22D6 /* TorrentPeerHandshakeMessageBuffer.swift in Sources */,
+				B5F27C621F3F93AC0040589C /* TorrentProgressManager.swift in Sources */,
 				B5E977961CAFB46B0038EBE7 /* String+URLEncode.swift in Sources */,
 				B558F4831F0A647D00438BB4 /* InternetProtocol.swift in Sources */,
 				B527F62B1F1BD5FA001F06AF /* TorrentPieceDownloadBuffer.swift in Sources */,
@@ -941,6 +956,7 @@
 				B56A8A071C83539300426AC8 /* TestHelpers.swift in Sources */,
 				B53553401F112BDB00A6DCBE /* BitFieldTests.swift in Sources */,
 				B54D0C271CA56ADB004343BD /* TorrentMetaInfoTests.swift in Sources */,
+				B5F27C641F3F93C20040589C /* TorrentProgressManagerTests.swift in Sources */,
 				B527F62D1F1BD64D001F06AF /* TorrentPieceDownloadBufferTests.swift in Sources */,
 				B5F27C5F1F3F7BFD0040589C /* TorrentPeerManagerTests.swift in Sources */,
 				B51638951F0EEAA4009E563E /* TCPConnectionTests.swift in Sources */,

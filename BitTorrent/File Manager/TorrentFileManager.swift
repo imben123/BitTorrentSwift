@@ -19,10 +19,14 @@ class TorrentFileManager {
     
     fileprivate let fileHandle: MultiFileHandle
     
-    init(metaInfo: TorrentMetaInfo, rootDirectory: String) {
+    convenience init(metaInfo: TorrentMetaInfo, rootDirectory: String) {
+        let fileHandles = TorrentFileManager.createFileHandles(for: metaInfo, in: rootDirectory)
+        self.init(metaInfo: metaInfo, rootDirectory: rootDirectory, fileHandles: fileHandles)
+    }
+    
+    init(metaInfo: TorrentMetaInfo, rootDirectory: String, fileHandles: [FileHandleProtocol]) {
         self.metaInfo = metaInfo
         self.rootDirectory = rootDirectory
-        let fileHandles = TorrentFileManager.createFileHandles(for: metaInfo, in: rootDirectory)
         self.fileHandle = MultiFileHandle(fileHandles: fileHandles)
     }
     

@@ -26,7 +26,9 @@ class TorrentPeerManager {
     
     var enableLogging = false {
         didSet {
-            
+            for peer in peers {
+                peer.enableLogging = enableLogging
+            }
         }
     }
     
@@ -53,7 +55,11 @@ class TorrentPeerManager {
     var peerFactory = TorrentPeer.init(peerInfo: infoHash: bitFieldSize:)
     
     func addPeers(withInfo peerInfos: [TorrentPeerInfo]) {
-        let newPeers = peerInfos.map { peerFactory($0, infoHash, bitFieldSize) }
+        let newPeers = peerInfos.map { (peerInfo: TorrentPeerInfo) -> TorrentPeer in
+            let result = peerFactory(peerInfo, infoHash, bitFieldSize)
+            result.enableLogging = self.enableLogging
+            return result
+        }
         peers.append(contentsOf: newPeers)
         connectToPeersIfNeeded(peers: newPeers)
     }
