@@ -37,6 +37,8 @@ class TorrentPeer {
     private(set) var amInterestedInPeer: Bool = false
     private(set) var currentProgress: BitField
     
+    var connected: Bool = false
+    
     private var downloadPieceRequests: [Int: TorrentPieceDownloadBuffer] = [:]
     private var numberOfPendingRequests = 0
     
@@ -57,6 +59,7 @@ class TorrentPeer {
     func connect(withHandshakeData handshakeData:(clientId: Data, bitField: BitField)) throws {
         self.handshakeData = handshakeData
         try communicator.connect()
+        connected = true
     }
     
     func downloadPiece(atIndex index: Int, size: Int) {
@@ -113,6 +116,7 @@ extension TorrentPeer: TorrentPeerCommunicatorDelegate {
     func peerLost(_ sender: TorrentPeerCommunicator) {
         killAllDownloads()
         delegate?.peerLost(self)
+        connected = false
     }
     
     func peerSentHandshake(_ sender: TorrentPeerCommunicator, sentHandshakeWithPeerId peerId: Data, onDHT: Bool) {

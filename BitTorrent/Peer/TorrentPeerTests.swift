@@ -273,4 +273,15 @@ class TorrentPeerTests: XCTestCase {
     }
     
     // MARK: -
+    
+    func test_connectedFlag() {
+        
+        XCTAssertFalse(sut.connected)
+        
+        try! sut.connect(withHandshakeData: (clientId, bitField))
+        XCTAssertTrue(sut.connected)
+        
+        sut.peerLost(communicator)
+        XCTAssertFalse(sut.connected)
+    }
 }

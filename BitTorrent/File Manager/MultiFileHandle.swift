@@ -18,7 +18,6 @@ protocol FileHandleProtocol {
     func seekToEndOfFile() -> UInt64
     func synchronizeFile()
 }
-
 extension FileHandle: FileHandleProtocol {}
 
 class MultiFileHandle: FileHandleProtocol {
@@ -34,10 +33,6 @@ class MultiFileHandle: FileHandleProtocol {
     private var currentFile: File { return files[fileIndex] }
     private var remainingInCurrentFile: UInt64 { return currentFile.offset + currentFile.length - offsetInFile }
     
-    private init(fileHandles: [FileHandleProtocol], fileLengths: [UInt64]) {
-        self.files = MultiFileHandle.createFiles(fileHandles: fileHandles, fileLengths: fileLengths)
-    }
-    
     convenience init(fileHandles: [FileHandleProtocol]) {
         var fileLengths: [UInt64] = []
         for handle in fileHandles {
@@ -46,6 +41,10 @@ class MultiFileHandle: FileHandleProtocol {
             fileLengths.append(length)
         }
         self.init(fileHandles: fileHandles, fileLengths: fileLengths)
+    }
+    
+    private init(fileHandles: [FileHandleProtocol], fileLengths: [UInt64]) {
+        self.files = MultiFileHandle.createFiles(fileHandles: fileHandles, fileLengths: fileLengths)
     }
     
     private static func createFiles(fileHandles: [FileHandleProtocol], fileLengths: [UInt64]) -> [File] {
