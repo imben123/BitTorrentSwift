@@ -8,10 +8,10 @@
 
 import Foundation
 
-class TorrentFileInfo {
-    let path: String
-    let length: Int
-    let md5sum: String?
+public class TorrentFileInfo {
+    public let path: String
+    public let length: Int
+    public let md5sum: String?
     
     init(path: String, length: Int, md5sum: String?) {
         self.path = path

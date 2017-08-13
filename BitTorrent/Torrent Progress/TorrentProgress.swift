@@ -8,16 +8,20 @@
 
 import Foundation
 
-struct TorrentProgress {
+public struct TorrentProgress {
     
-    private(set) var bitField: BitField
+    public private(set) var bitField: BitField
     private var piecesBeingDownloaded: [Int] = []
     
-    private(set) var uploaded: Int = 0
-    private(set) var downloaded: Int = 0
+    public private(set) var uploaded: Int = 0
+    public private(set) var downloaded: Int = 0
     
-    var complete: Bool {
+    public var complete: Bool {
         return downloaded == bitField.size
+    }
+    
+    public var percentageComplete: Float {
+        return Float(downloaded) / Float(bitField.size)
     }
     
     init(size: Int) {

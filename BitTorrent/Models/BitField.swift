@@ -8,9 +8,9 @@
 
 import Foundation
 
-struct BitField: Equatable {
-    let size: Int
-    private(set) var value: [Bool]
+public struct BitField: Equatable {
+    public let size: Int
+    public private(set) var value: [Bool]
     
     init(size: Int) {
         self.size = size
@@ -35,7 +35,7 @@ struct BitField: Equatable {
         return (byte & maskN) != 0
     }
     
-    func isSet(at index: Int) -> Bool {
+    public func isSet(at index: Int) -> Bool {
         return value[index]
     }
     
@@ -84,13 +84,13 @@ struct BitField: Equatable {
         return Data(bytes: bytes)
     }
     
-    static func ==(_ lhs: BitField, _ rhs: BitField) -> Bool {
+    public static func ==(_ lhs: BitField, _ rhs: BitField) -> Bool {
         return lhs.value == rhs.value
     }
 }
 
 extension BitField: Sequence {
-    func makeIterator() -> AnyIterator<(Int, Bool)> {
+    public func makeIterator() -> AnyIterator<(Int, Bool)> {
         var index = 0
         return AnyIterator {
             guard index < self.size else { return nil }

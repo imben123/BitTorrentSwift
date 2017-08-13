@@ -10,6 +10,7 @@ import Foundation
 import CocoaAsyncSocket
 
 protocol UDPConnectionProtocol: class {
+    var port: UInt16 { get }
     weak var delegate: UDPConnectionDelegate? { set get }
     func startListening(on port: UInt16)
     func send(_ data: Data, toHost host: String, port: UInt16, timeout: TimeInterval)
@@ -23,6 +24,10 @@ protocol UDPConnectionDelegate: class {
 /// in its interface, and to allow me to replace CocoaAsyncSocket with a swift framework
 /// one day.
 class UDPConnection: NSObject, UDPConnectionProtocol {
+    
+    var port: UInt16 {
+        return socket.localPort()
+    }
     
     weak var delegate: UDPConnectionDelegate?
     

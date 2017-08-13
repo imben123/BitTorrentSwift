@@ -10,7 +10,29 @@ import Foundation
 
 public class TorrentClient {
     
-    let metaInfo: TorrentMetaInfo
+    public enum Status {
+        case stopped, started, completed
+        
+        public var toString: String {
+            switch self {
+            case .stopped:
+                return "Stopped"
+            case .started:
+                return "Started"
+            case .completed:
+                return "Completed"
+            }
+        }
+    }
+    
+    public let metaInfo: TorrentMetaInfo
+    
+    public var progress: TorrentProgress {
+        return progressManager.progress
+    }
+    
+    public private(set) var status: Status = .stopped
+    
     let progressManager: TorrentProgressManager
     let peerManager: TorrentPeerManager
     let trackerManager: TorrentTrackerManager
@@ -35,6 +57,7 @@ public class TorrentClient {
     
     public func start() {
         trackerManager.start()
+        status = .started
     }
 }
 
@@ -63,6 +86,7 @@ extension TorrentClient: TorrentPeerManagerDelegate {
         progressManager.setDownloadedPiece(piece, pieceIndex: pieceIndex)
         if progressManager.progress.complete {
             print("Torrent complete!")
+            status = .completed
         }
     }
     

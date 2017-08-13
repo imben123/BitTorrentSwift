@@ -70,4 +70,18 @@ class TorrentProgressTests: XCTestCase {
         
         XCTAssertTrue(result.complete)
     }
+    
+    func test_percentageComplete() {
+        var progress = TorrentProgress(size: 5)
+        
+        XCTAssertEqual(progress.percentageComplete, 0)
+        
+        progress.setCurrentlyDownloading(piece: 0)
+        progress.finishedDownloading(piece: 0)
+        XCTAssertEqual(Int(progress.percentageComplete * 100), 20)
+        
+        progress.setCurrentlyDownloading(piece: 1)
+        progress.finishedDownloading(piece: 1)
+        XCTAssertEqual(Int(progress.percentageComplete * 100), 40)
+    }
 }

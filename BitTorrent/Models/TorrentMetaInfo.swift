@@ -14,7 +14,7 @@ public class TorrentMetaInfo {
     
     let infoHash : Data // this is the original BEncoded dictionary, hashed
 
-    let info: TorrentInfoDictionary
+    public let info: TorrentInfoDictionary
     let announce: URL
     let announceList: [[URL]]?
     let creationDate: Date?
@@ -96,14 +96,14 @@ public class TorrentMetaInfo {
     }
 }
 
-class TorrentInfoDictionary {
+public class TorrentInfoDictionary {
     
-    let name : String
-    let pieceLength : Int
-    let isPrivate : Bool
-    let files: [TorrentFileInfo]
-    let pieces : [Data]
-    let length: Int
+    public let name : String
+    public let pieceLength : Int
+    public let isPrivate : Bool
+    public let files: [TorrentFileInfo]
+    public let pieces : [Data]
+    public let length: Int
 
     init?(_ dictionary: [String : AnyObject]) {
         
