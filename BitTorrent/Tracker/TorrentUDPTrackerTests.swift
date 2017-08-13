@@ -12,6 +12,8 @@ import BEncode
 
 class UDPConnectionStub: UDPConnectionProtocol {
     
+    var port: UInt16 = 0
+    
     weak var delegate: UDPConnectionDelegate?
     
     var startListeningCalled = false

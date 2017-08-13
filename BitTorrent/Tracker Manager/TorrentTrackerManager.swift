@@ -41,20 +41,35 @@ class TorrentTrackerManager {
         }
     }
     
+    // For testing
+    init(metaInfo: TorrentMetaInfo, clientId: Data, port: Int, trackers: [TorrentTracker]) {
+        self.metaInfo = metaInfo
+        self.clientId = String(data: clientId, encoding: .utf8)!
+        self.port = port
+        self.trackers = trackers
+    }
+    
     private static func createTrackers(from metaInfo: TorrentMetaInfo) -> [TorrentTracker] {
         
         let announceList = metaInfo.announceList?.first ?? [metaInfo.announce]
         
         var lastPortNumberUsed: UInt16 = 3475
         var result: [TorrentTracker] = []
+        
         for url in announceList {
+            
             if url.scheme == "http" {
+                
                 let tracker = TorrentHTTPTracker(announceURL: url)
                 result.append(tracker)
+                
             } else if url.scheme == "udp" {
+                
                 let tracker = TorrentUDPTracker(announceURL: url, port: lastPortNumberUsed)
-                lastPortNumberUsed += 1
                 result.append(tracker)
+                
+                // TODO: Support sharing the listening port for all udp trackers
+                lastPortNumberUsed += 1
             }
         }
         return result

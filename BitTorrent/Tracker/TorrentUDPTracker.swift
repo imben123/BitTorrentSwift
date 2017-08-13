@@ -21,7 +21,11 @@ class TorrentUDPTracker: TorrentTracker {
     
     weak var delegate: TorrentTrackerDelegate?
     
-    private let announceURL: URL
+    let announceURL: URL
+    var port: UInt16 {
+        return udpConnection.port
+    }
+    
     private var discoveredHostIpAddress: String?
     private let udpConnection: UDPConnectionProtocol
     
