@@ -8,7 +8,7 @@
 
 import Foundation
 
-class TorrentHTTPTracker {
+class TorrentHTTPTracker: TorrentTracker {
     
     let announceURL: URL
     let connection: BasicHTTPConnection
@@ -57,19 +57,3 @@ class TorrentHTTPTracker {
         }
     }
 }
-
-//func makePeerId() -> String {
-//    var peerId = "-BD0000-"
-//
-//    for _ in 0...11 {
-//        let asciiCharacters = " !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~"
-//        let numberOfAscii = asciiCharacters.characters.count
-//        let randomIndex = arc4random() % UInt32(numberOfAscii)
-//        let random = asciiCharacters[Int(randomIndex)]
-//        peerId += random
-//    }
-//
-//    if (GENERAL_DEBUG_LOG) { print("Client Peer ID: \(peerId)") }
-//
-//    return peerId
-//}

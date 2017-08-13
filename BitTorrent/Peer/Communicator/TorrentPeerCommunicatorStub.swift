@@ -43,4 +43,11 @@ class TorrentPeerCommunicatorStub: TorrentPeerCommunicator {
         sendRequestParameters.append((index, begin, length, completion))
     }
     
+    var sendKeepAliveCalled = false
+    var onSendKeepAliveCalled: (()->Void)?
+    override func sendKeepAlive(_ completion: (() -> Void)?) {
+        sendKeepAliveCalled = true
+        onSendKeepAliveCalled?()
+    }
+    
 }

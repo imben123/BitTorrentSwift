@@ -96,6 +96,20 @@ class TorrentPeerTests: XCTestCase {
         XCTAssert(delegate.peerCompletedHandshakeParameter === sut)
     }
     
+    func test_delegateNotifiedAfterBitField() {
+        communicator.delegate?.peer(communicator, hasBitField: bitField)
+        
+        XCTAssert(delegate.peerHasNewAvailablePiecesCalled)
+        XCTAssert(delegate.peerHasNewAvailablePiecesParameter === sut)
+    }
+    
+    func test_delegateNotifiedAfterHaveMessage() {
+        communicator.delegate?.peer(communicator, hasPiece: 0)
+        
+        XCTAssert(delegate.peerHasNewAvailablePiecesCalled)
+        XCTAssert(delegate.peerHasNewAvailablePiecesParameter === sut)
+    }
+    
     // MARK: - Tracking peer status
     
     func test_bitFieldRecorded() {
@@ -283,5 +297,59 @@ class TorrentPeerTests: XCTestCase {
         
         sut.peerLost(communicator)
         XCTAssertFalse(sut.connected)
+    }
+    
+    func test_sendsKeepAlive() {
+        
+        // Given
+        sut.keepAliveFrequency = 0
+        try! sut.connect(withHandshakeData: (clientId, bitField))
+        
+        // When
+        communicator.delegate?.peerSentHandshake(communicator, sentHandshakeWithPeerId: peerId, onDHT: false)
+
+        // Then
+        let e = expectation(description: "Keep alive sent")
+        communicator.onSendKeepAliveCalled = {
+            self.communicator.onSendKeepAliveCalled = nil
+            e.fulfill()
+        }
+        waitForExpectations(timeout: 0.1)
+    }
+    
+    func test_disconnectsIfNoKeepAlive() {
+        // Given
+        sut.keepAliveTimeout = 0
+        try! sut.connect(withHandshakeData: (clientId, bitField))
+        
+        // When
+        communicator.delegate?.peerSentHandshake(communicator, sentHandshakeWithPeerId: peerId, onDHT: false)
+        
+        // Then
+        let e = expectation(description: "Keep alive sent")
+        DispatchQueue.main.async {
+            XCTAssert(self.delegate.peerLostCalled)
+            e.fulfill()
+        }
+        waitForExpectations(timeout: 0.1)
+    }
+    
+    func test_staysConnectedIfKeepAliveSent() {
+        // Given
+        sut.keepAliveTimeout = 0
+        try! sut.connect(withHandshakeData: (clientId, bitField))
+        
+        // When
+        communicator.delegate?.peerSentHandshake(communicator, sentHandshakeWithPeerId: peerId, onDHT: false)
+        sut.keepAliveTimeout = .infinity
+        communicator.delegate?.peerSentKeepAlive(communicator)
+        
+        // Then
+        let e = expectation(description: "Keep alive sent")
+        DispatchQueue.main.async {
+            XCTAssertFalse(self.delegate.peerLostCalled)
+            e.fulfill()
+        }
+        waitForExpectations(timeout: 0.1)
     }
 }

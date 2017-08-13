@@ -16,6 +16,10 @@ struct TorrentProgress {
     private(set) var uploaded: Int = 0
     private(set) var downloaded: Int = 0
     
+    var complete: Bool {
+        return downloaded == bitField.size
+    }
+    
     init(size: Int) {
         self.bitField = BitField(size: size)
     }

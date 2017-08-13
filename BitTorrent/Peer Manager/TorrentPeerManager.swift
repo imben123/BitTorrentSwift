@@ -18,8 +18,8 @@ protocol TorrentPeerManagerDelegate: class {
     
     func torrentPeerManagerCurrentBitfieldForHandshake(_ sender: TorrentPeerManager) -> BitField
     
-    // TODO: add checksum to the request
-    func torrentPeerManagerNextPieceToDownload(_ sender: TorrentPeerManager) -> (pieceIndex: Int, size: Int)?
+    func torrentPeerManager(_ sender: TorrentPeerManager,
+                            nextPieceFromAvailable availablePieces: BitField) -> TorrentPieceRequest?
 }
 
 class TorrentPeerManager {
@@ -33,6 +33,7 @@ class TorrentPeerManager {
     }
     
     var maximumNumberOfConnectedPeers = 20
+    let maximumNumberOfPiecesPerPeer = 2
     
     weak var delegate: TorrentPeerManagerDelegate?
     
@@ -78,6 +79,7 @@ class TorrentPeerManager {
     
     private func connectToPeers<T: Sequence>(_ peers: T, bitField: BitField) where T.Element == TorrentPeer {
         for peer in peers {
+            peer.delegate = self
             do {
                 try peer.connect(withHandshakeData: (clientId: clientId, bitField: bitField))
             } catch let error {
@@ -94,9 +96,12 @@ extension TorrentPeerManager: TorrentPeerDelegate {
     }
     
     func peerCompletedHandshake(_ sender: TorrentPeer) {
-        // TODO: Do this when peer becomes interested so we aren't waiting on choked peers
-        if let pieceRequest = delegate?.torrentPeerManagerNextPieceToDownload(self) {
-            sender.downloadPiece(atIndex: pieceRequest.pieceIndex, size: pieceRequest.size)
+        // Nothing to do here
+    }
+    
+    func peerHasNewAvailablePieces(_ sender: TorrentPeer) {
+        if sender.numberOfPiecesDownloading < maximumNumberOfPiecesPerPeer {
+            requestNextPiece(from: sender)
         }
     }
     
@@ -104,16 +109,26 @@ extension TorrentPeerManager: TorrentPeerDelegate {
         guard let index = peers.index(where: { $0 === sender }) else { return }
         peers.remove(at: index)
         connectToPeersIfNeeded(peers: disconnectedPeers)
+        if enableLogging { print("Lost Peer: \(sender.peerInfo.ip):\(sender.peerInfo.port)")}
     }
     
     func peer(_ sender: TorrentPeer, gotPieceAtIndex index: Int, piece: Data) {
         delegate?.torrentPeerManager(self, downloadedPieceAtIndex: index, piece: piece)
-        if let pieceRequest = delegate?.torrentPeerManagerNextPieceToDownload(self) {
-            sender.downloadPiece(atIndex: pieceRequest.pieceIndex, size: pieceRequest.size)
-        }
+        requestNextPiece(from: sender)
+        // TODO: send have to peers
     }
     
     func peer(_ sender: TorrentPeer, failedToGetPieceAtIndex index: Int) {
         delegate?.torrentPeerManager(self, failedToGetPieceAtIndex: index)
+    }
+    
+    // MARK: -
+    
+    private func requestNextPiece(from peer: TorrentPeer) {
+        if let pieceRequest = delegate?.torrentPeerManager(self, nextPieceFromAvailable: peer.currentProgress) {
+            peer.downloadPiece(atIndex: pieceRequest.pieceIndex, size: pieceRequest.size)
+        } else {
+            print("No available pieces for peer \(peer.peerInfo.ip):\(peer.peerInfo.port) to download")
+        }
     }
 }

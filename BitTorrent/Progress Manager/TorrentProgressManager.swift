@@ -8,6 +8,8 @@
 
 import Foundation
 
+typealias TorrentPieceRequest = (pieceIndex: Int, size: Int, checksum: Data)
+
 class TorrentProgressManager {
     
     let fileManager: TorrentFileManager
@@ -18,7 +20,8 @@ class TorrentProgressManager {
     }
     
     convenience init(metaInfo: TorrentMetaInfo, rootDirectory: String) {
-        let fileManager = TorrentFileManager(metaInfo: metaInfo, rootDirectory: rootDirectory)
+        let downloadDirectory = rootDirectory + "/" + metaInfo.sensibleDownloadDirectoryName()
+        let fileManager = TorrentFileManager(metaInfo: metaInfo, rootDirectory: downloadDirectory)
         let progress = TorrentProgress(size: metaInfo.info.pieces.count)
         self.init(fileManager: fileManager, progress: progress)
     }
@@ -28,8 +31,8 @@ class TorrentProgressManager {
         self.progress = progress
     }
     
-    func getNextPieceToDownload() -> (pieceIndex: Int, size: Int, checksum: Data)? {
-        for i in 0 ..< progress.bitField.size {
+    func getNextPieceToDownload(from availablePieces: BitField) -> TorrentPieceRequest? {
+        for (i, isSet) in availablePieces where isSet {
             if !progress.hasPiece(i) && !progress.isCurrentlyDownloading(piece: i) {
                 progress.setCurrentlyDownloading(piece: i)
                 return (i, metaInfo.info.lengthOfPiece(at: i), metaInfo.info.pieces[i])

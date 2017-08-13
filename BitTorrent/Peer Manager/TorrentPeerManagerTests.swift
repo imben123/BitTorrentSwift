@@ -25,6 +25,11 @@ class TorrentPeerFake: TorrentPeer {
         downloadPieceCalled = true
         downloadPieceParameters = (index, size)
     }
+    
+    var testNumberOfPiecesDownloading = 0
+    override var numberOfPiecesDownloading: Int {
+        return testNumberOfPiecesDownloading
+    }
 }
 
 class TorrentPeerManagerDelegateStub: TorrentPeerManagerDelegate {
@@ -45,11 +50,12 @@ class TorrentPeerManagerDelegateStub: TorrentPeerManagerDelegate {
         failedToGetPieceAtIndexParameters = (sender, index)
     }
     
-    var torrentPeerManagerNextPieceToDownloadCalled = false
-    var torrentPeerManagerNextPieceToDownloadResult: (pieceIndex: Int, size: Int)? = nil
-    func torrentPeerManagerNextPieceToDownload(_ sender: TorrentPeerManager) -> (pieceIndex: Int, size: Int)? {
-        torrentPeerManagerNextPieceToDownloadCalled = true
-        return torrentPeerManagerNextPieceToDownloadResult
+    var nextPieceFromAvailableCalled = false
+    var nextPieceFromAvailableResult: TorrentPieceRequest? = nil
+    func torrentPeerManager(_ sender: TorrentPeerManager,
+                            nextPieceFromAvailable availablePieces: BitField) -> TorrentPieceRequest? {
+        nextPieceFromAvailableCalled = true
+        return nextPieceFromAvailableResult
     }
     
     var torrentPeerManagerCurrentBitfieldForHandshakeCalled = false
@@ -65,6 +71,7 @@ class TorrentPeerManagerTests: XCTestCase {
     let clientId = Data(repeating: 1, count: 20)
     let infoHash = Data(repeating: 2, count: 20)
     let bitFieldSize = 10
+    let pieceRequest = TorrentPieceRequest(pieceIndex: 123, size: 456, checksum: Data())
     
     var delegate: TorrentPeerManagerDelegateStub!
     var sut: TorrentPeerManager!
@@ -175,25 +182,24 @@ class TorrentPeerManagerTests: XCTestCase {
         XCTAssertTrue(peer.connectCalled)
     }
     
-    func test_peerToldToDownloadPieceAfterHandshake() {
+    func test_peerToldToDownloadPieceAfterBitField() {
         
         // Given
         let peerInfo = TorrentPeerInfo(ip: "127.0.0.1", port: 123, peerId: nil)
         sut.addPeers(withInfo: [peerInfo])
         guard let peer = peers.first else { return }
         
-        let pieceIndex = 123
-        let size = 456
-        delegate.torrentPeerManagerNextPieceToDownloadResult = (pieceIndex: pieceIndex, size: size)
+        delegate.nextPieceFromAvailableResult = pieceRequest
         
         // When
         sut.peerCompletedHandshake(peer)
+        sut.peerHasNewAvailablePieces(peer)
         
         // Then
         XCTAssert(peer.downloadPieceCalled)
         if let downloadPieceParameters = peer.downloadPieceParameters {
-            XCTAssertEqual(downloadPieceParameters.index, pieceIndex)
-            XCTAssertEqual(downloadPieceParameters.size, size)
+            XCTAssertEqual(downloadPieceParameters.index, pieceRequest.pieceIndex)
+            XCTAssertEqual(downloadPieceParameters.size, pieceRequest.size)
         }
     }
     
@@ -226,18 +232,16 @@ class TorrentPeerManagerTests: XCTestCase {
         sut.addPeers(withInfo: [peerInfo])
         guard let peer = peers.first else { return }
         
-        let pieceIndex = 123        
-        let size = 456
-        delegate.torrentPeerManagerNextPieceToDownloadResult = (pieceIndex: pieceIndex, size: size)
-        
+        delegate.nextPieceFromAvailableResult = pieceRequest
+
         // When
         sut.peer(peer, gotPieceAtIndex: 0, piece: Data())
         
         // Then
         XCTAssert(peer.downloadPieceCalled)
         if let downloadPieceParameters = peer.downloadPieceParameters {
-            XCTAssertEqual(downloadPieceParameters.index, pieceIndex)
-            XCTAssertEqual(downloadPieceParameters.size, size)
+            XCTAssertEqual(downloadPieceParameters.index, pieceRequest.pieceIndex)
+            XCTAssertEqual(downloadPieceParameters.size, pieceRequest.size)
         }
     }
     
@@ -259,5 +263,23 @@ class TorrentPeerManagerTests: XCTestCase {
             XCTAssert(failedToGetPieceAtIndexParameters.sender === sut)
             XCTAssertEqual(failedToGetPieceAtIndexParameters.index, pieceIndex)
         }
+    }
+    
+    func test_peerNotToldToDownloadMoreThanMaxNumberOfPieces() {
+        
+        // Given
+        let peerInfo = TorrentPeerInfo(ip: "127.0.0.1", port: 123, peerId: nil)
+        sut.addPeers(withInfo: [peerInfo])
+        guard let peer = peers.first else { return }
+        
+        delegate.nextPieceFromAvailableResult = pieceRequest
+        
+        peer.testNumberOfPiecesDownloading = sut.maximumNumberOfPiecesPerPeer
+        
+        // When
+        sut.peerHasNewAvailablePieces(peer)
+        
+        // Then
+        XCTAssertFalse(peer.downloadPieceCalled)
     }
 }

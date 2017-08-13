@@ -276,16 +276,18 @@ extension TorrentPeerCommunicator: TorrentPeerMessageBufferDelegate {
     func peerMessageBuffer(_ sender: TorrentPeerMessageBuffer, gotMessage data: Data) {
         
         guard data.count > 4 else {
+            if enableLogging { print("Got keep alive") }
             delegate?.peerSentKeepAlive(self)
             return
         }
         
         guard let message = Message(rawValue: data[4]) else {
+            if enableLogging { print("Peer sent malformed message") }
             delegate?.peerSentMalformedMessage(self)
             return
         }
         
-        if enableLogging { print("Got Message from peer \(message.stringValue)") }
+        if enableLogging { print("Got Message from peer: \(message.stringValue)") }
         
         switch message {
             

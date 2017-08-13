@@ -20,7 +20,11 @@ class TorrentPeerMessageBuffer {
     
     func appendData(_ data: Data) {
         buffer = buffer + data
-        
+                
+        testIfBufferContainsCompletedMessage()
+    }
+    
+    func testIfBufferContainsCompletedMessage() {
         guard buffer.count >= 4 else {
             return
         }
@@ -31,7 +35,8 @@ class TorrentPeerMessageBuffer {
         if buffer.count >= expectedLength {
             let message = buffer[0..<expectedLength]
             delegate?.peerMessageBuffer(self, gotMessage: message)
-            buffer = buffer[expectedLength..<buffer.count]
+            buffer = Data(buffer[expectedLength..<buffer.count])
+            testIfBufferContainsCompletedMessage()
         }
     }
 }

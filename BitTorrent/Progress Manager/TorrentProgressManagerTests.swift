@@ -21,6 +21,12 @@ class TorrentProgressManagerTests: XCTestCase {
         return TorrentMetaInfo(data: data)!
     }()
     
+    let completeBitField: BitField = {
+        var result = BitField(size: 1)
+        result.set(at: 0)
+        return result
+    }()
+    
     override func setUp() {
         super.setUp()
         
@@ -42,7 +48,7 @@ class TorrentProgressManagerTests: XCTestCase {
     
     func test_canGetNextPieceToDownload() {
         
-        let resultOptional = sut.getNextPieceToDownload()
+        let resultOptional = sut.getNextPieceToDownload(from: completeBitField)
         guard let result = resultOptional else {
             XCTFail("Couldn't get a piece to download")
             return
@@ -54,34 +60,40 @@ class TorrentProgressManagerTests: XCTestCase {
     }
     
     func test_currentlyDownloadingPieceIsNotReturned() {
-        _ = sut.getNextPieceToDownload()
-        let result = sut.getNextPieceToDownload()
+        _ = sut.getNextPieceToDownload(from: completeBitField)
+        let result = sut.getNextPieceToDownload(from: completeBitField)
         XCTAssertNil(result)
     }
     
     func test_downloadedPieceIsNotReturned() {
-        _ = sut.getNextPieceToDownload()
+        _ = sut.getNextPieceToDownload(from: completeBitField)
         
         let data = Data(repeating: 1, count: metaInfo.info.length)
         sut.setDownloadedPiece(data, pieceIndex: 0)
         
-        let result = sut.getNextPieceToDownload()
+        let result = sut.getNextPieceToDownload(from: completeBitField)
         XCTAssertNil(result)
     }
     
     func test_pieceReturnedAgainIfLost() {
-        _ = sut.getNextPieceToDownload()
+        _ = sut.getNextPieceToDownload(from: completeBitField)
         sut.setLostPiece(at: 0)
-        let result = sut.getNextPieceToDownload()
+        let result = sut.getNextPieceToDownload(from: completeBitField)
         XCTAssertNotNil(result)
     }
     
     func test_downloadedPieceIsSavedToFile() {
-        _ = sut.getNextPieceToDownload()
+        _ = sut.getNextPieceToDownload(from: completeBitField)
         
         let data = Data(repeating: 1, count: metaInfo.info.length)
         sut.setDownloadedPiece(data, pieceIndex: 0)
         
         XCTAssertEqualData(fileHandle.data, data)
+    }
+    
+    func test_doesNotReturnUnavailablePieces() {
+        let emptyBitField = BitField(size: 1)
+        let result = sut.getNextPieceToDownload(from: emptyBitField)
+        XCTAssertNil(result)
     }
 }

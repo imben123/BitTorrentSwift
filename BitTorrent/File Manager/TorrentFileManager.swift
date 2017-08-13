@@ -12,7 +12,7 @@ enum TorrentFileManagerError: Error {
     case couldNotCreateFile
 }
 
-class TorrentFileManager {
+public class TorrentFileManager {
     
     let metaInfo: TorrentMetaInfo
     let rootDirectory: String
@@ -59,7 +59,8 @@ class TorrentFileManager {
 // MARK: - Prepare directory
 extension TorrentFileManager {
     
-    static func prepareRootDirectory(_ rootDirectory: String, forTorrentMetaInfo metaInfo: TorrentMetaInfo) throws {
+    public static func prepareRootDirectory(_ rootDirectory: String,
+                                            forTorrentMetaInfo metaInfo: TorrentMetaInfo) throws {
         
         try createDirectoryIfNeeded(directoryPath: rootDirectory)
         

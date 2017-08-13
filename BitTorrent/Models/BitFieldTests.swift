@@ -79,4 +79,21 @@ class BitFieldTests: XCTestCase {
         let result = BitField(data: data)
         XCTAssertEqual(result, example)
     }
+    
+    func test_canEnumerateThrough() {
+        var example = BitField(size: 5)
+        
+        example.set(at: 2)
+        example.set(at: 3)
+        
+        var indices: [Int] = []
+        var values: [Bool] = []
+        for (index, isSet) in example {
+            indices.append(index)
+            values.append(isSet)
+        }
+        
+        XCTAssertEqual(indices, [0,1,2,3,4])
+        XCTAssertEqual(values, [false,false,true,true,false])
+    }
 }

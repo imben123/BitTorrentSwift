@@ -11,6 +11,7 @@ import Foundation
 protocol TorrentPeerDelegate: class {
     func peerCompletedHandshake(_ sender: TorrentPeer)
     func peerLost(_ sender: TorrentPeer)
+    func peerHasNewAvailablePieces(_ sender: TorrentPeer)
     func peer(_ sender: TorrentPeer, gotPieceAtIndex index: Int, piece: Data)
     func peer(_ sender: TorrentPeer, failedToGetPieceAtIndex index: Int)
 }
@@ -24,6 +25,8 @@ class TorrentPeer {
     }
     
     static let maximumNumberOfPendingBlockRequests = 20
+    var keepAliveFrequency: TimeInterval = 60
+    var keepAliveTimeout: TimeInterval = 150
     
     weak var delegate: TorrentPeerDelegate?
     
@@ -37,10 +40,15 @@ class TorrentPeer {
     private(set) var amInterestedInPeer: Bool = false
     private(set) var currentProgress: BitField
     
+    private var downloadPieceRequests: [Int: TorrentPieceDownloadBuffer] = [:]
+    private var numberOfPendingBlockRequests = 0
+    private var keepAliveTimer: Timer?
+    
     var connected: Bool = false
     
-    private var downloadPieceRequests: [Int: TorrentPieceDownloadBuffer] = [:]
-    private var numberOfPendingRequests = 0
+    var numberOfPiecesDownloading: Int {
+        return downloadPieceRequests.count
+    }
     
     init(peerInfo: TorrentPeerInfo, bitFieldSize: Int, communicator: TorrentPeerCommunicator) {
         self.peerInfo = peerInfo
@@ -78,12 +86,12 @@ class TorrentPeer {
     }
     
     private func requestNextBlock() {
-        if numberOfPendingRequests < TorrentPeer.maximumNumberOfPendingBlockRequests {
+        if numberOfPendingBlockRequests < TorrentPeer.maximumNumberOfPendingBlockRequests {
             
             guard let pieceRequest = downloadPieceRequests.values.first else { return }
             guard let blockRequest = pieceRequest.nextDownloadBlock() else { return }
             
-            numberOfPendingRequests += 1
+            numberOfPendingBlockRequests += 1
             
             communicator.sendRequest(fromPieceAtIndex: blockRequest.piece,
                                      begin: blockRequest.begin,
@@ -97,6 +105,42 @@ class TorrentPeer {
             delegate?.peer(self, failedToGetPieceAtIndex: downloadPieceRequest.value.index)
         }
         downloadPieceRequests.removeAll()
+    }
+}
+
+// Keep alive
+extension TorrentPeer {
+    
+    fileprivate func startKeepAlive() {
+        keepAlive()
+        waitForKeepAlive()
+    }
+    
+    private func keepAlive() {
+        DispatchQueue.main.asyncAfter(deadline: .now() + keepAliveFrequency) { [weak self] in
+            guard let strongSelf = self, strongSelf.connected else { return }
+            strongSelf.communicator.sendKeepAlive()
+            strongSelf.keepAlive()
+        }
+    }
+    
+    private func waitForKeepAlive() {
+        keepAliveTimer = Timer.scheduledTimer(timeInterval: keepAliveTimeout,
+                                              target: self,
+                                              selector: #selector(TorrentPeer.didntReceiveKeepAlive),
+                                              userInfo: nil,
+                                              repeats: false)
+    }
+    
+    fileprivate func receivedKeepAlive() {
+        keepAliveTimer?.invalidate()
+        keepAliveTimer = nil
+        waitForKeepAlive()
+    }
+    
+    @objc private func didntReceiveKeepAlive() {
+        keepAliveTimer = nil
+        delegate?.peerLost(self)
     }
 }
 
@@ -120,11 +164,12 @@ extension TorrentPeer: TorrentPeerCommunicatorDelegate {
     }
     
     func peerSentHandshake(_ sender: TorrentPeerCommunicator, sentHandshakeWithPeerId peerId: Data, onDHT: Bool) {
+        startKeepAlive()
         delegate?.peerCompletedHandshake(self)
     }
     
     func peerSentKeepAlive(_ sender: TorrentPeerCommunicator) {
-        
+        receivedKeepAlive()
     }
     
     func peerBecameChoked(_ sender: TorrentPeerCommunicator) {
@@ -147,10 +192,12 @@ extension TorrentPeer: TorrentPeerCommunicatorDelegate {
     
     func peer(_ sender: TorrentPeerCommunicator, hasPiece piece: Int) {
         currentProgress.set(at: piece)
+        delegate?.peerHasNewAvailablePieces(self)
     }
     
     func peer(_ sender: TorrentPeerCommunicator, hasBitField bitField: BitField) {
         currentProgress = bitField
+        delegate?.peerHasNewAvailablePieces(self)
     }
     
     func peer(_ sender: TorrentPeerCommunicator, requestedPiece index: Int, begin: Int, length: Int) {
@@ -159,9 +206,11 @@ extension TorrentPeer: TorrentPeerCommunicatorDelegate {
     
     func peer(_ sender: TorrentPeerCommunicator, sentPiece index: Int, begin: Int, block: Data) {
         guard let downloadPieceBuffer = downloadPieceRequests[index] else { return }
-        numberOfPendingRequests -= 1
+        numberOfPendingBlockRequests -= 1
         downloadPieceBuffer.gotBlock(block, begin: begin)
         if downloadPieceBuffer.isComplete, let piece = downloadPieceBuffer.piece {
+            if enableLogging { print("Got entire piece \(index)")}
+            downloadPieceRequests.removeValue(forKey: index)
             delegate?.peer(self, gotPieceAtIndex: index, piece: piece)
         }
         requestNextBlock()

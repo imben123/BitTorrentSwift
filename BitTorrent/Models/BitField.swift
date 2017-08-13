@@ -88,3 +88,16 @@ struct BitField: Equatable {
         return lhs.value == rhs.value
     }
 }
+
+extension BitField: Sequence {
+    func makeIterator() -> AnyIterator<(Int, Bool)> {
+        var index = 0
+        return AnyIterator {
+            guard index < self.size else { return nil }
+            defer {
+                index += 1
+            }
+            return (index, self.isSet(at: index))
+        }
+    }
+}

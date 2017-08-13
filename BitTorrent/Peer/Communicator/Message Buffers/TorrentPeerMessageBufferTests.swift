@@ -12,9 +12,13 @@ import XCTest
 class TorrentPeerMessageBufferDelegateStub: TorrentPeerMessageBufferDelegate {
 
     var gotMessageCalled = false
+    var gotMessageCallCount = 0
     var gotMessageParameters: (sender: TorrentPeerMessageBuffer, message: Data)?
+    var previousMessages: [Data] = []
     func peerMessageBuffer(_ sender: TorrentPeerMessageBuffer, gotMessage message: Data) {
         gotMessageCalled = true
+        gotMessageCallCount += 1
+        previousMessages.append(message)
         gotMessageParameters = (sender, message)
     }
 }
@@ -123,5 +127,17 @@ class TorrentPeerMessageBufferTests: XCTestCase {
         XCTAssert(delegate.gotMessageCalled)
         XCTAssert(delegate.gotMessageParameters?.sender === sut)
         XCTAssertEqual(delegate.gotMessageParameters?.message, message2)
+    }
+    
+    func test_canGetMultipleMessagesAtOnce() {
+        let message1 = UInt32(5).toData() + Data(bytes: [1,2,3,4,5])
+        let message2 = UInt32(2).toData() + Data(bytes: [6,7])
+        
+        let combined = message1 + message2
+        
+        sut.appendData(combined)
+        XCTAssertEqual(delegate.gotMessageCallCount, 2)
+        XCTAssertEqualData(delegate.previousMessages.first!, message1)
+        XCTAssertEqualData(delegate.previousMessages.last!, message2)
     }
 }

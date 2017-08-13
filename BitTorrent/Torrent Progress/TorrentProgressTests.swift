@@ -56,4 +56,18 @@ class TorrentProgressTests: XCTestCase {
         
         XCTAssertEqual(result.bitField, expected)
     }
+    
+    func test_completeFlag() {
+        var result = TorrentProgress(size: 2)
+        
+        XCTAssertFalse(result.complete)
+        
+        result.setCurrentlyDownloading(piece: 0)
+        result.finishedDownloading(piece: 0)
+        
+        result.setCurrentlyDownloading(piece: 1)
+        result.finishedDownloading(piece: 1)
+        
+        XCTAssertTrue(result.complete)
+    }
 }

@@ -17,6 +17,13 @@ class TorrentPeerDelegateStub: TorrentPeerDelegate {
         peerCompletedHandshakeParameter = sender
     }
     
+    var peerHasNewAvailablePiecesCalled = false
+    var peerHasNewAvailablePiecesParameter: TorrentPeer?
+    func peerHasNewAvailablePieces(_ sender: TorrentPeer) {
+        peerHasNewAvailablePiecesCalled = true
+        peerHasNewAvailablePiecesParameter = sender
+    }
+    
     var peerLostCalled = false
     var peerLostParameter: TorrentPeer?
     func peerLost(_ sender: TorrentPeer) {

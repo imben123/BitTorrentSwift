@@ -15,7 +15,7 @@ private let CONNECTION_ACTION = UInt32(0).toData()
 private let ANNOUNCE_ACTION = UInt32(1).toData()
 private let ERROR_ACTION = UInt32(3).toData()
 
-class TorrentUDPTracker {
+class TorrentUDPTracker: TorrentTracker {
     
     var enableLogging = false
     

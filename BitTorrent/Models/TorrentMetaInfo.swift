@@ -216,7 +216,7 @@ class TorrentInfoDictionary {
 
 extension TorrentMetaInfo {
     
-    func sensibleDownloadDirectoryName() -> String {
+    public func sensibleDownloadDirectoryName() -> String {
         if info.files.count > 1 {
             return info.name
         } else {
