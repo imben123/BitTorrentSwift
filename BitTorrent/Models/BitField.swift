@@ -11,6 +11,9 @@ import Foundation
 public struct BitField: Equatable {
     public let size: Int
     public private(set) var value: [Bool]
+    public var complete: Bool {
+        return !contains(where: { !$0.isSet })
+    }
     
     init(size: Int) {
         self.size = size
@@ -90,7 +93,7 @@ public struct BitField: Equatable {
 }
 
 extension BitField: Sequence {
-    public func makeIterator() -> AnyIterator<(Int, Bool)> {
+    public func makeIterator() -> AnyIterator<(index: Int, isSet: Bool)> {
         var index = 0
         return AnyIterator {
             guard index < self.size else { return nil }

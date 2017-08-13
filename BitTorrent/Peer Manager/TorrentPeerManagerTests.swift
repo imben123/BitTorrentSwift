@@ -282,4 +282,20 @@ class TorrentPeerManagerTests: XCTestCase {
         // Then
         XCTAssertFalse(peer.downloadPieceCalled)
     }
+    
+    func test_downloadSpeedRecordedOnGettingPiece() {
+        
+        // Given
+        let peerInfo = TorrentPeerInfo(ip: "127.0.0.1", port: 123, peerId: nil)
+        sut.addPeers(withInfo: [peerInfo])
+        guard let peer = peers.first else { return }
+        
+        let pieceSize = 100
+        
+        // When
+        sut.peer(peer, gotPieceAtIndex: 0, piece: Data(repeating: 0, count: pieceSize))
+        
+        // Then
+        XCTAssertEqual(sut.downloadSpeedTracker.totalNumberOfBytes, pieceSize)
+    }
 }

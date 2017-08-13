@@ -38,7 +38,10 @@ class TorrentPeer {
     private(set) var peerInterested: Bool = false
     private(set) var amChokedToPeer: Bool = true
     private(set) var amInterestedInPeer: Bool = false
+    
     private(set) var currentProgress: BitField
+    private(set) var downloadSpeedTracker = NetworkSpeedTracker()
+    private(set) var uploadSpeedTracker = NetworkSpeedTracker()
     
     private var downloadPieceRequests: [Int: TorrentPieceDownloadBuffer] = [:]
     private var numberOfPendingBlockRequests = 0
@@ -205,6 +208,7 @@ extension TorrentPeer: TorrentPeerCommunicatorDelegate {
     }
     
     func peer(_ sender: TorrentPeerCommunicator, sentPiece index: Int, begin: Int, block: Data) {
+        downloadSpeedTracker.increase(by: block.count)
         guard let downloadPieceBuffer = downloadPieceRequests[index] else { return }
         numberOfPendingBlockRequests -= 1
         downloadPieceBuffer.gotBlock(block, begin: begin)

@@ -96,4 +96,16 @@ class BitFieldTests: XCTestCase {
         XCTAssertEqual(indices, [0,1,2,3,4])
         XCTAssertEqual(values, [false,false,true,true,false])
     }
+    
+    func test_allBitsSet() {
+        var example = BitField(size: 5)
+        example.set(at: 0)
+        example.set(at: 1)
+        example.set(at: 2)
+        example.set(at: 3)
+        
+        XCTAssertFalse(example.complete)
+        example.set(at: 4)
+        XCTAssertTrue(example.complete)
+    }
 }

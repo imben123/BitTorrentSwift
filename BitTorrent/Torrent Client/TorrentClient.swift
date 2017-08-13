@@ -31,12 +31,12 @@ public class TorrentClient {
     
     public let metaInfo: TorrentMetaInfo
     
-    public var progress: TorrentProgress {
-        return progressManager.progress
-    }
-    
     public private(set) var status: Status = .stopped
-    
+    public var progress: TorrentProgress { return progressManager.progress }
+    public var numberOfConnectedPeers: Int { return peerManager.numberOfConnectedPeers }
+    public var numberOfConnectedSeeds: Int { return peerManager.numberOfConnectedPeers }
+    public var downloadSpeedTracker: NetworkSpeedTracker { return peerManager.downloadSpeedTracker }
+
     let progressManager: TorrentProgressManager
     let peerManager: TorrentPeerManager
     let trackerManager: TorrentTrackerManager

@@ -352,4 +352,16 @@ class TorrentPeerTests: XCTestCase {
         }
         waitForExpectations(timeout: 0.1)
     }
+    
+    // MARK: - Speed trackers
+    
+    func test_gotPieceRecordedInSpeedTracker() {
+        communicator.sendRequestParameters = []
+        communicator.delegate?.peer(communicator,
+                                    sentPiece: pieceIndex,
+                                    begin: 0,
+                                    block: Data(repeating: 0, count: pieceSize))
+        
+        XCTAssertEqual(sut.downloadSpeedTracker.totalNumberOfBytes, pieceSize)
+    }
 }

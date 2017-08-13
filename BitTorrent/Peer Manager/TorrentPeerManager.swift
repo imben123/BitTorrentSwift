@@ -42,9 +42,14 @@ class TorrentPeerManager {
     let bitFieldSize: Int
     
     private(set) var peers: [TorrentPeer] = []
-    private var numberOfConnectedPeers: Int {
+    var numberOfConnectedPeers: Int {
         return peers.filter({ $0.connected }).count
     }
+    var numberOfConnectedSeeds: Int {
+        return peers.filter({ $0.connected && $0.currentProgress.complete }).count
+    }
+    
+    private(set) var downloadSpeedTracker = NetworkSpeedTracker ()
     
     init(clientId: Data, infoHash: Data, bitFieldSize: Int) {
         self.clientId = clientId
@@ -113,6 +118,7 @@ extension TorrentPeerManager: TorrentPeerDelegate {
     }
     
     func peer(_ sender: TorrentPeer, gotPieceAtIndex index: Int, piece: Data) {
+        downloadSpeedTracker.increase(by: piece.count)
         delegate?.torrentPeerManager(self, downloadedPieceAtIndex: index, piece: piece)
         requestNextPiece(from: sender)
         // TODO: send have to peers
