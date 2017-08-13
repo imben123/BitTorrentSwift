@@ -10,7 +10,7 @@ import Foundation
 
 public class TorrentClient {
     
-    public enum Status {
+    public enum Status: Equatable {
         case stopped, started, completed
         
         public var toString: String {
@@ -22,6 +22,10 @@ public class TorrentClient {
             case .completed:
                 return "Completed"
             }
+        }
+        
+        public static func ==(_ lhs: Status, rhs: Status) -> Bool {
+            return lhs.toString == rhs.toString
         }
     }
     
@@ -50,9 +54,19 @@ public class TorrentClient {
         trackerManager = TorrentTrackerManager(metaInfo: metaInfo, clientId: clientId, port: 123)
         
         trackerManager.delegate = self
-        
         peerManager.delegate = self
         peerManager.enableLogging = true
+    }
+    
+    // For testing
+    init(metaInfo: TorrentMetaInfo,
+         progressManager: TorrentProgressManager,
+         peerManager: TorrentPeerManager,
+         trackerManager: TorrentTrackerManager) {
+        self.metaInfo = metaInfo
+        self.progressManager = progressManager
+        self.peerManager = peerManager
+        self.trackerManager = trackerManager
     }
     
     public func start() {
@@ -64,19 +78,16 @@ public class TorrentClient {
 extension TorrentClient: TorrentTrackerManagerDelegate {
     
     func torrentTrackerManager(_ sender: TorrentTrackerManager, gotNewPeers peers: [TorrentPeerInfo]) {
-        let filteredPeers = peers.filter { (peer) -> Bool in
-            return peer.port == 15383
-        }
-        peerManager.addPeers(withInfo: filteredPeers)
+        peerManager.addPeers(withInfo: peers)
     }
     
     func torrentTrackerManagerAnnonuceInfo(_ sender: TorrentTrackerManager) -> TorrentTrackerManagerAnnonuceInfo {
         
-        // Fix this
-        return TorrentTrackerManagerAnnonuceInfo(numberOfBytesRemaining: progressManager.progress.bitField.size,
-                                                 numberOfBytesUploaded: 0,
-                                                 numberOfBytesDownloaded: 0,
-                                                 numberOfPeersToFetch: 20)
+        return TorrentTrackerManagerAnnonuceInfo(
+            numberOfBytesRemaining: progress.remaining * metaInfo.info.pieceLength,
+            numberOfBytesUploaded: progress.uploaded * metaInfo.info.pieceLength,
+            numberOfBytesDownloaded: progress.downloaded * metaInfo.info.pieceLength,
+            numberOfPeersToFetch: 20)
     }
 }
 

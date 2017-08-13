@@ -40,19 +40,7 @@ public func XCTAssertEqual<T>(_ expression1: @autoclosure () throws -> [T],
         let element1 = array1[i]
         let element2 = array2[i]
         
-        if let element1 = element1 as? Int, let element2 = element2 as? Int {
-            XCTAssertEqual(element1, element2)
-        } else if let element1 = element1 as? String, let element2 = element2 as? String {
-            XCTAssertEqual(element1, element2)
-        } else if let element1 = element1 as? Data, let element2 = element2 as? Data {
-            XCTAssertEqual(element1, element2)
-        } else if let element1 = element1 as? [T], let element2 = element2 as? [T] {
-            XCTAssertEqual(element1, element2)
-        } else if let element1 = element1 as? [String:T], let element2 = element2 as? [String:T] {
-            XCTAssertEqual(element1, element2)
-        } else if let element1 = element1 as? [Data:T], let element2 = element2 as? [Data:T] {
-            XCTAssertEqual(element1, element2)
-        }
+        XCTAssertEqualJsonObjects(element1, element2)
     }
 }
 
@@ -73,23 +61,17 @@ public func XCTAssertEqual<T, E>(_ expression1: @autoclosure () throws -> [E: T]
         let element1 = dictionary1[key]
         let element2 = dictionary2[key]
         
-        if let element1 = element1 as? Int, let element2 = element2 as? Int {
-            XCTAssertEqual(element1, element2)
-        } else if let element1 = element1 as? String, let element2 = element2 as? String {
-            XCTAssertEqual(element1, element2)
-        } else if let element1 = element1 as? Data, let element2 = element2 as? Data {
-            XCTAssertEqual(element1, element2)
-        } else if let element1 = element1 as? [T], let element2 = element2 as? [T] {
-            XCTAssertEqual(element1, element2)
-        } else if let element1 = element1 as? [String:T], let element2 = element2 as? [String:T] {
-            XCTAssertEqual(element1, element2)
-        } else if let element1 = element1 as? [Data:T], let element2 = element2 as? [Data:T] {
-            XCTAssertEqual(element1, element2)
-        }
+        XCTAssertEqualJsonObjects(element1, element2)
     }
 }
 
-fileprivate func XCTAssertEqual(_ element1: Any, element2: Any) throws {
+fileprivate func XCTAssertEqualJsonObjects(_ element1: Any?, _ element2: Any?) {
+    
+    guard (element1 != nil && element2 != nil) else {
+        XCTAssert(element1 == nil && element2 == nil)
+        return
+    }
+    
     if let element1 = element1 as? Int, let element2 = element2 as? Int {
         XCTAssertEqual(element1, element2)
     } else if let element1 = element1 as? String, let element2 = element2 as? String {
@@ -102,11 +84,12 @@ fileprivate func XCTAssertEqual(_ element1: Any, element2: Any) throws {
         XCTAssertEqual(element1, element2)
     } else if let element1 = element1 as? [Data:Any], let element2 = element2 as? [Data:Any] {
         XCTAssertEqual(element1, element2)
+    } else if let element1 = element1 as? URL, let element2 = element2 as? URL {
+        XCTAssertEqual(element1, element2)
     } else {
-        throw BEncoderTestError.InvalidType
+        XCTFail()
     }
 }
-
 
 // This is a temporary fix as swift 4 has an issue comparing data obtained using the subscript operator
 func XCTAssertEqualData(_ lhs: Data?, _ rhs: Data?, file: StaticString = #file, line: UInt = #line) {

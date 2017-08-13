@@ -13,7 +13,7 @@ typealias TorrentPieceRequest = (pieceIndex: Int, size: Int, checksum: Data)
 class TorrentProgressManager {
     
     let fileManager: TorrentFileManager
-    var progress: TorrentProgress
+    private(set) var progress: TorrentProgress
     
     var metaInfo: TorrentMetaInfo {
         return fileManager.metaInfo

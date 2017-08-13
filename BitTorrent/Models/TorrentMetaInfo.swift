@@ -221,7 +221,7 @@ extension TorrentMetaInfo {
             return info.name
         } else {
             let url = URL(fileURLWithPath: info.name, isDirectory: false).deletingPathExtension()
-            return url.path
+            return url.lastPathComponent
         }
     }
     

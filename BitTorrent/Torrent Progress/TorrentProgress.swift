@@ -16,6 +16,10 @@ public struct TorrentProgress {
     public private(set) var uploaded: Int = 0
     public private(set) var downloaded: Int = 0
     
+    public var remaining: Int {
+        return bitField.size - downloaded
+    }
+    
     public var complete: Bool {
         return downloaded == bitField.size
     }
