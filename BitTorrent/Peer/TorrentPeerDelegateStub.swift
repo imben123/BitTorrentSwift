@@ -10,13 +10,6 @@
 
 class TorrentPeerDelegateStub: TorrentPeerDelegate {
     
-    var peerCompletedHandshakeCalled = false
-    var peerCompletedHandshakeParameter: TorrentPeer?
-    func peerCompletedHandshake(_ sender: TorrentPeer) {
-        peerCompletedHandshakeCalled = true
-        peerCompletedHandshakeParameter = sender
-    }
-    
     var peerHasNewAvailablePiecesCalled = false
     var peerHasNewAvailablePiecesParameter: TorrentPeer?
     func peerHasNewAvailablePieces(_ sender: TorrentPeer) {
@@ -43,5 +36,14 @@ class TorrentPeerDelegateStub: TorrentPeerDelegate {
     func peer(_ sender: TorrentPeer, gotPieceAtIndex index: Int, piece: Data) {
         gotPieceAtIndexCalled = true
         gotPieceAtIndexParameters = (sender, index, piece)
+    }
+    
+    var requestedPieceAtIndexCalled = false
+    var requestedPieceAtIndexParameters: (sender: TorrentPeer, index: Int)?
+    var requestedPieceAtIndexResult: Data?
+    func peer(_ sender: TorrentPeer, requestedPieceAtIndex index: Int) -> Data? {
+        requestedPieceAtIndexCalled = true
+        requestedPieceAtIndexParameters = (sender, index)
+        return requestedPieceAtIndexResult
     }
 }

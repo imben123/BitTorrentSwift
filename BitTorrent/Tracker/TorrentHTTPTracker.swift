@@ -21,7 +21,7 @@ class TorrentHTTPTracker: TorrentTracker {
     }
     
     func announceClient(with peerId: String,
-                        port: Int,
+                        port: UInt16,
                         event: TorrentTrackerEvent = .started,
                         infoHash: Data,
                         numberOfBytesRemaining: Int,

@@ -125,7 +125,7 @@ class TorrentUDPTrackerTests: XCTestCase {
         
         let peerId = "peerId12345678901234"
         let exampleEvent = TorrentTrackerEvent.started
-        let examplePort = 789
+        let examplePort: UInt16 = 789
         let expectedInfoHash = Data(bytes: [ 1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0 ])
         let numberOfBytesRemaining = 456
         let numberOfBytesUploaded = 1234

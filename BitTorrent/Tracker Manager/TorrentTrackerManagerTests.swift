@@ -15,7 +15,7 @@ class TorrentTrackerStub: TorrentTracker {
     
     var announceClientCalled = false
     var announceClientParameters: (peerId: String,
-    port: Int,
+    port: UInt16,
     event: TorrentTrackerEvent,
     infoHash: Data,
     numberOfBytesRemaining: Int,
@@ -25,7 +25,7 @@ class TorrentTrackerStub: TorrentTracker {
     
     var onAnnounceClient: (()->Void)?
     func announceClient(with peerId: String,
-                        port: Int,
+                        port: UInt16,
                         event: TorrentTrackerEvent,
                         infoHash: Data,
                         numberOfBytesRemaining: Int,
@@ -73,7 +73,7 @@ class TorrentTrackerManagerTests: XCTestCase {
     
     let clientId = "-BD0000-bxa]N#IRKqv`"
     let clientIdData = "-BD0000-bxa]N#IRKqv`".data(using: .ascii)!
-    let listeningPort = 123
+    let listeningPort: UInt16 = 123
     
     
     let announceInfo = TorrentTrackerManagerAnnonuceInfo(numberOfBytesRemaining: 1,

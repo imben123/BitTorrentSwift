@@ -40,32 +40,42 @@ public class TorrentClient {
     let progressManager: TorrentProgressManager
     let peerManager: TorrentPeerManager
     let trackerManager: TorrentTrackerManager
+    let torrentServer: TorrentServer
     
     let clientId = TorrentPeer.makePeerId()
     
     public init(metaInfo: TorrentMetaInfo, rootDirectory: String) {
         self.metaInfo = metaInfo
+        self.torrentServer = TorrentServer(infoHash: metaInfo.infoHash, clientId: clientId)
         self.progressManager = TorrentProgressManager(metaInfo: metaInfo, rootDirectory: rootDirectory)        
         self.peerManager = TorrentPeerManager(clientId: clientId,
                                               infoHash: metaInfo.infoHash,
                                               bitFieldSize: metaInfo.info.pieces.count)
         
         // TODO: listen on this port
-        trackerManager = TorrentTrackerManager(metaInfo: metaInfo, clientId: clientId, port: 123)
+        trackerManager = TorrentTrackerManager(metaInfo: metaInfo, clientId: clientId, port: torrentServer.port)
         
         trackerManager.delegate = self
         peerManager.delegate = self
+        torrentServer.delegate = self
     }
     
     // For testing
     init(metaInfo: TorrentMetaInfo,
+         torrentServer: TorrentServer,
          progressManager: TorrentProgressManager,
          peerManager: TorrentPeerManager,
          trackerManager: TorrentTrackerManager) {
+        
         self.metaInfo = metaInfo
+        self.torrentServer = torrentServer
         self.progressManager = progressManager
         self.peerManager = peerManager
         self.trackerManager = trackerManager
+        
+        trackerManager.delegate = self
+        peerManager.delegate = self
+        torrentServer.delegate = self
     }
     
     public func forceReCheck() {
@@ -73,6 +83,7 @@ public class TorrentClient {
     }
     
     public func start() {
+        torrentServer.startListening()
         trackerManager.start()
         status = .started
     }
@@ -81,7 +92,9 @@ public class TorrentClient {
 extension TorrentClient: TorrentTrackerManagerDelegate {
     
     func torrentTrackerManager(_ sender: TorrentTrackerManager, gotNewPeers peers: [TorrentPeerInfo]) {
-        peerManager.addPeers(withInfo: peers)
+        if !progress.complete {
+            peerManager.addPeers(withInfo: peers)
+        }
     }
     
     func torrentTrackerManagerAnnonuceInfo(_ sender: TorrentTrackerManager) -> TorrentTrackerManagerAnnonuceInfo {
@@ -120,5 +133,18 @@ extension TorrentClient: TorrentPeerManagerDelegate {
                             nextPieceFromAvailable availablePieces: BitField) -> TorrentPieceRequest? {
         return progressManager.getNextPieceToDownload(from: availablePieces)
     }
+    
+    func torrentPeerManager(_ sender: TorrentPeerManager, peerRequiresPieceAtIndex index: Int) -> Data? {
+        return progressManager.fileManager.getPiece(at: index)
+    }
 }
 
+extension TorrentClient: TorrentServerDelegate {
+    func torrentServer(_ torrentServer: TorrentServer, connectedToPeer peer: TorrentPeer) {
+        peerManager.addPeer(peer)
+    }
+    
+    func currentProgress(for torrentServer: TorrentServer) -> BitField {
+        return progress.bitField
+    }
+}

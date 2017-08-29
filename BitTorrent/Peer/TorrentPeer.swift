@@ -9,11 +9,12 @@
 import Foundation
 
 protocol TorrentPeerDelegate: class {
-    func peerCompletedHandshake(_ sender: TorrentPeer)
     func peerLost(_ sender: TorrentPeer)
     func peerHasNewAvailablePieces(_ sender: TorrentPeer)
     func peer(_ sender: TorrentPeer, gotPieceAtIndex index: Int, piece: Data)
     func peer(_ sender: TorrentPeer, failedToGetPieceAtIndex index: Int)
+    
+    func peer(_ sender: TorrentPeer, requestedPieceAtIndex index: Int) -> Data?
 }
 
 class TorrentPeer {
@@ -45,10 +46,16 @@ class TorrentPeer {
     
     private var downloadPieceRequests: [Int: TorrentPieceDownloadBuffer] = [:]
     private var numberOfPendingBlockRequests = 0
+    
+    private var uploadPieceRequests: [Int: TorrentUploadPieceRequest] = [:]
+    private var currentlySendingBlock = false
+    
+    private var handshakeData: (clientId: Data, bitField: BitField)?
+    private var sentHandshake = false
+    
     private var keepAliveTimer: Timer?
     
-    var connected: Bool = false
-    
+    private(set) var connected: Bool = false
     var numberOfPiecesDownloading: Int {
         return downloadPieceRequests.count
     }
@@ -57,6 +64,7 @@ class TorrentPeer {
         self.peerInfo = peerInfo
         self.communicator = communicator
         self.currentProgress = BitField(size: bitFieldSize)
+        self.connected = communicator.connected
         communicator.delegate = self
     }
     
@@ -65,12 +73,22 @@ class TorrentPeer {
         self.init(peerInfo: peerInfo, bitFieldSize: bitFieldSize, communicator: communicator)
     }
     
-    private var handshakeData: (clientId: Data, bitField: BitField)?
     
     func connect(withHandshakeData handshakeData:(clientId: Data, bitField: BitField)) throws {
         self.handshakeData = handshakeData
-        try communicator.connect()
-        connected = true
+        if !communicator.connected {
+            try communicator.connect()
+            connected = true
+        }
+    }
+    
+    fileprivate func sendHandshakeIfNeeded() {
+        guard let (clientId, bitField) = handshakeData, !sentHandshake else { return }
+        
+        communicator.sendHandshake(for: clientId) { [weak self] in
+            self?.sentHandshake = true
+            self?.communicator.sendBitField(bitField)
+        }
     }
     
     func downloadPiece(atIndex index: Int, size: Int) {
@@ -103,6 +121,56 @@ class TorrentPeer {
         }
     }
     
+    private func sendNextBlock() {
+        guard let block = getNextBlockForUpload() else { return }
+        
+        currentlySendingBlock = true
+        communicator.sendPiece(fromPieceAtIndex: block.piece, begin: block.begin, block: block.data) { [weak self] in
+            self?.currentlySendingBlock = false
+            self?.sendNextBlock()
+        }
+    }
+    
+    private func appendBlockRequest(_ blockRequest: TorrentBlockRequest) {
+        let index =  blockRequest.piece
+        var pieceRequest: TorrentUploadPieceRequest
+        if let previousRequest = uploadPieceRequests[index] {
+            pieceRequest = previousRequest
+        } else {
+            guard let pieceData = delegate?.peer(self, requestedPieceAtIndex: index) else {
+                if enableLogging { print ("Error - peer asked for a piece I don't have") }
+                return
+            }
+            pieceRequest = TorrentUploadPieceRequest(data: pieceData, index: index)
+            uploadPieceRequests[index] = pieceRequest
+        }
+        
+        pieceRequest.addRequest(blockRequest)
+    }
+    
+    private func getNextBlockForUpload() -> TorrentBlock? {
+        guard
+            !currentlySendingBlock,
+            let (pieceIndex, pieceRequest) = uploadPieceRequests.first,
+            let block = pieceRequest.nextUploadBlock() else { return nil }
+        
+        if !pieceRequest.hasBlockRequests {
+            uploadPieceRequests[pieceIndex] = nil
+        }
+        
+        return block
+    }
+    
+    private func cancelBlockRequest(_ blockRequest: TorrentBlockRequest) {
+        let pieceIndex = blockRequest.piece
+        guard let pieceRequest = uploadPieceRequests[pieceIndex] else { return }
+        pieceRequest.removeRequest(blockRequest)
+        
+        if !pieceRequest.hasBlockRequests {
+            uploadPieceRequests[pieceIndex] = nil
+        }
+    }
+    
     private func killAllDownloads() {
         for downloadPieceRequest in downloadPieceRequests {
             delegate?.peer(self, failedToGetPieceAtIndex: downloadPieceRequest.value.index)
@@ -110,10 +178,15 @@ class TorrentPeer {
         downloadPieceRequests.removeAll()
     }
     
+    private func killAllUploads() {
+        uploadPieceRequests.removeAll()
+    }
+    
     private func onConnectionDropped() {
         keepAliveTimer?.invalidate()
         keepAliveTimer = nil
         killAllDownloads()
+        killAllUploads()
         connected = false
         delegate?.peerLost(self)
     }
@@ -157,14 +230,8 @@ extension TorrentPeer {
 extension TorrentPeer: TorrentPeerCommunicatorDelegate {
     
     func peerConnected(_ sender: TorrentPeerCommunicator) {
-        
         if enableLogging { print("Peer socket connected (\(peerInfo.ip):\(peerInfo.port)") }
-        
-        guard let (clientId, bitField) = handshakeData else { return }
-        
-        communicator.sendHandshake(for: clientId) { [weak self] in
-            self?.communicator.sendBitField(bitField)
-        }
+        sendHandshakeIfNeeded()
     }
     
     func peerLost(_ sender: TorrentPeerCommunicator) {
@@ -173,7 +240,7 @@ extension TorrentPeer: TorrentPeerCommunicatorDelegate {
     
     func peerSentHandshake(_ sender: TorrentPeerCommunicator, sentHandshakeWithPeerId peerId: Data, onDHT: Bool) {
         startKeepAlive()
-        delegate?.peerCompletedHandshake(self)
+        sendHandshakeIfNeeded()
     }
     
     func peerSentKeepAlive(_ sender: TorrentPeerCommunicator) {
@@ -183,6 +250,7 @@ extension TorrentPeer: TorrentPeerCommunicatorDelegate {
     func peerBecameChoked(_ sender: TorrentPeerCommunicator) {
         peerChoked = true
         killAllDownloads()
+        killAllUploads()
     }
     
     func peerBecameUnchoked(_ sender: TorrentPeerCommunicator) {
@@ -192,10 +260,12 @@ extension TorrentPeer: TorrentPeerCommunicatorDelegate {
     
     func peerBecameInterested(_ sender: TorrentPeerCommunicator) {
         peerInterested = true
+        communicator.sendUnchoke()
     }
     
     func peerBecameUninterested(_ sender: TorrentPeerCommunicator) {
         peerInterested = false
+        killAllUploads()
     }
     
     func peer(_ sender: TorrentPeerCommunicator, hasPiece piece: Int) {
@@ -209,7 +279,9 @@ extension TorrentPeer: TorrentPeerCommunicatorDelegate {
     }
     
     func peer(_ sender: TorrentPeerCommunicator, requestedPiece index: Int, begin: Int, length: Int) {
-        
+        let blockRequest = TorrentBlockRequest(piece: index, begin: begin, length: length)
+        appendBlockRequest(blockRequest)
+        sendNextBlock()
     }
     
     func peer(_ sender: TorrentPeerCommunicator, sentPiece index: Int, begin: Int, block: Data) {
@@ -226,7 +298,8 @@ extension TorrentPeer: TorrentPeerCommunicatorDelegate {
     }
     
     func peer(_ sender: TorrentPeerCommunicator, cancelledRequestedPiece index: Int, begin: Int, length: Int) {
-        
+        let blockRequest = TorrentBlockRequest(piece: index, begin: begin, length: length)
+        cancelBlockRequest(blockRequest)
     }
     
     func peer(_ sender: TorrentPeerCommunicator, onDHTPort port: Int) {

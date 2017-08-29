@@ -22,6 +22,8 @@ protocol TorrentPeerManagerDelegate: class {
     
     func torrentPeerManager(_ sender: TorrentPeerManager,
                             nextPieceFromAvailable availablePieces: BitField) -> TorrentPieceRequest?
+    
+    func torrentPeerManager(_ sender: TorrentPeerManager, peerRequiresPieceAtIndex index: Int) -> Data?
 }
 
 class TorrentPeerManager {
@@ -76,6 +78,11 @@ class TorrentPeerManager {
         connectToPeersIfNeeded(peers: newPeers)
     }
     
+    func addPeer(_ peer: TorrentPeer) {
+        peer.delegate = self
+        peers.append(peer)
+    }
+    
     fileprivate func connectToPeersIfNeeded(peers: [TorrentPeer]) {
         
         guard let delegate = delegate else { return }
@@ -110,10 +117,6 @@ extension TorrentPeerManager: TorrentPeerDelegate {
         return peers.filter { !$0.connected }
     }
     
-    func peerCompletedHandshake(_ sender: TorrentPeer) {
-        // Nothing to do here
-    }
-    
     func peerHasNewAvailablePieces(_ sender: TorrentPeer) {
         if sender.numberOfPiecesDownloading < maximumNumberOfPiecesPerPeer {
             requestNextPiece(from: sender)
@@ -135,6 +138,10 @@ extension TorrentPeerManager: TorrentPeerDelegate {
     
     func peer(_ sender: TorrentPeer, failedToGetPieceAtIndex index: Int) {
         delegate?.torrentPeerManager(self, failedToGetPieceAtIndex: index)
+    }
+    
+    func peer(_ sender: TorrentPeer, requestedPieceAtIndex index: Int) -> Data? {
+        return delegate?.torrentPeerManager(self, peerRequiresPieceAtIndex: index)
     }
     
     // MARK: -

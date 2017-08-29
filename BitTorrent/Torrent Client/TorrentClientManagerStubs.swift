@@ -8,10 +8,24 @@
 
 @testable import BitTorrent
 
+class TorrentServerStub: TorrentServer {
+    init(metaInfo: TorrentMetaInfo) {
+        let clientId = Data(repeating: 1, count: 20)
+        super.init(infoHash: metaInfo.infoHash, clientId: clientId)
+    }
+    
+    var startListeningCalled = false
+    override func startListening() {
+        startListeningCalled = true
+    }
+}
+
 class TorrentProgressManagerStub: TorrentProgressManager {
     
+    let fileHandle: FileHandleFake
+    
     init(metaInfo: TorrentMetaInfo) {
-        let fileHandle = FileHandleFake(data: Data(repeating: 0, count: metaInfo.info.length))
+        fileHandle = FileHandleFake(data: Data(repeating: 0, count: metaInfo.info.length))
         let fileManager = TorrentFileManager(metaInfo: metaInfo, rootDirectory: "/", fileHandles: [fileHandle])
         let progress = TorrentProgress(size: metaInfo.info.pieces.count)
         super.init(fileManager: fileManager, progress: progress)
@@ -50,8 +64,7 @@ class TorrentPeerManagerStub: TorrentPeerManager {
     
     init(metaInfo: TorrentMetaInfo) {
         let clientId = Data(repeating: 1, count: 20)
-        let infoHash = Data(repeating: 2, count: 20)
-        super.init(clientId: clientId, infoHash: infoHash, bitFieldSize: metaInfo.info.pieces.count)
+        super.init(clientId: clientId, infoHash: metaInfo.infoHash, bitFieldSize: metaInfo.info.pieces.count)
     }
     
     var addPeersCalled = false
@@ -59,6 +72,13 @@ class TorrentPeerManagerStub: TorrentPeerManager {
     override func addPeers(withInfo peerInfos: [TorrentPeerInfo]) {
         addPeersCalled = true
         addPeersParameter = peerInfos
+    }
+    
+    var addPeerCalled = false
+    var addPeerParameter: TorrentPeer? = nil
+    override func addPeer(_ peer: TorrentPeer) {
+        addPeerCalled = true
+        addPeerParameter = peer
     }
 }
 

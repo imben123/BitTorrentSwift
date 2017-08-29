@@ -77,6 +77,15 @@ class TorrentPeerManagerDelegateStub: TorrentPeerManagerDelegate {
         torrentPeerManagerCurrentBitfieldForHandshakeCalled = true
         return torrentPeerManagerCurrentBitfieldForHandshakeResult
     }
+    
+    var peerRequiresPieceAtIndexCalled = false
+    var peerRequiresPieceAtIndexParameters: (sender: TorrentPeerManager, index: Int)?
+    var peerRequiresPieceAtIndexResult: Data?
+    func torrentPeerManager(_ sender: TorrentPeerManager, peerRequiresPieceAtIndex index: Int) -> Data? {
+        peerRequiresPieceAtIndexCalled = true
+        peerRequiresPieceAtIndexParameters = (sender, index)
+        return peerRequiresPieceAtIndexResult
+    }
 }
 
 class TorrentPeerManagerTests: XCTestCase {
@@ -108,6 +117,12 @@ class TorrentPeerManagerTests: XCTestCase {
         return TorrentPeerFake(peerInfo: peerInfo, bitFieldSize: bitFieldSize, communicator: communicator)
     }
     
+    func createFakePeer() -> TorrentPeer {
+        let peerInfo = TorrentPeerInfo(ip: "127.0.0.1", port: 123, peerId: nil)
+        let communicator = TorrentPeerCommunicatorStub(peerInfo: peerInfo, infoHash: infoHash)
+        return TorrentPeerFake(peerInfo: peerInfo, bitFieldSize: bitFieldSize, communicator: communicator)
+    }
+    
     func test_addingPeerInfoCreatesPeers() {
         
         // Given
@@ -119,6 +134,14 @@ class TorrentPeerManagerTests: XCTestCase {
         // Then
         XCTAssertEqual(sut.peers.count, 1)
         XCTAssertEqual(sut.peers.first!.peerInfo, peerInfo)
+    }
+    
+    func test_canAddIndividualPeer() {
+        let peer = createFakePeer()
+        sut.addPeer(peer)
+        XCTAssertEqual(sut.peers.count, 1)
+        XCTAssert(sut.peers.first === peer)
+        XCTAssert(sut.peers.first?.delegate === sut)
     }
     
     func test_newPeersConnect() {
@@ -205,7 +228,6 @@ class TorrentPeerManagerTests: XCTestCase {
         delegate.nextPieceFromAvailableResult = pieceRequest
         
         // When
-        sut.peerCompletedHandshake(peer)
         sut.peerHasNewAvailablePieces(peer)
         
         // Then
@@ -324,5 +346,27 @@ class TorrentPeerManagerTests: XCTestCase {
         // Then
         XCTAssert(delegate.torrentPeerManagerNeedsMorePeersCalled)
         XCTAssert(delegate.torrentPeerManagerNeedsMorePeersParameter === sut)
+    }
+    
+    func test_delegateAskedForPieceToUpload() {
+        
+        // Given
+        let peerInfo = TorrentPeerInfo(ip: "127.0.0.1", port: 123, peerId: nil)
+        sut.addPeers(withInfo: [peerInfo])
+        guard let peer = peers.first else { return }
+        
+        let data = Data(bytes: [1,2,3])
+        delegate.peerRequiresPieceAtIndexResult = data
+        
+        // When
+        let result = sut.peer(peer, requestedPieceAtIndex: 123)
+        
+        // Then
+        XCTAssert(delegate.peerRequiresPieceAtIndexCalled)
+        XCTAssertEqualData(result, data)
+        if let parameters = delegate.peerRequiresPieceAtIndexParameters {
+            XCTAssert(parameters.sender === sut)
+            XCTAssertEqual(parameters.index, 123)
+        }
     }
 }

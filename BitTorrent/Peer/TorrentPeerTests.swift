@@ -51,6 +51,13 @@ class TorrentPeerTests: XCTestCase {
         XCTAssertFalse(sut.peerInterested)
         XCTAssertTrue(sut.amChokedToPeer)
         XCTAssertFalse(sut.amInterestedInPeer)
+        XCTAssertFalse(sut.connected)
+    }
+    
+    func test_creationWithConnectedSocket() {
+        communicator.testConnected = true
+        sut = TorrentPeer(peerInfo: peerInfo, bitFieldSize: 10, communicator: communicator)
+        XCTAssertTrue(sut.connected)
     }
     
     // MARK: - Connection + handshake
@@ -65,6 +72,22 @@ class TorrentPeerTests: XCTestCase {
         
         communicator.delegate?.peerConnected(communicator)
         
+        XCTAssert(communicator.sendHandshakeCalled)
+        XCTAssertEqual(communicator.sendHandshakeParameters?.clientId, clientId)
+    }
+    
+    func test_handshakeSentOnRecievingHandshakeFromLeacher() {
+        
+        // Given
+        communicator.testConnected = true
+        sut = TorrentPeer(peerInfo: peerInfo, bitFieldSize: 10, communicator: communicator)
+        
+        // When
+        try! sut.connect(withHandshakeData: (clientId, bitField))
+        communicator.delegate?.peerSentHandshake(communicator, sentHandshakeWithPeerId: peerId, onDHT: false)
+        
+        // Then
+        XCTAssertFalse(communicator.connectCalled)
         XCTAssert(communicator.sendHandshakeCalled)
         XCTAssertEqual(communicator.sendHandshakeParameters?.clientId, clientId)
     }
@@ -85,15 +108,6 @@ class TorrentPeerTests: XCTestCase {
         // Then
         XCTAssert(communicator.sendBitFieldCalled)
         XCTAssertEqual(communicator.sendBitFieldParameters?.bitField, bitField)
-    }
-    
-    func test_delegateNotifiedAfterHandshakeMade() {
-        try! sut.connect(withHandshakeData: (clientId, bitField))
-        communicator.delegate?.peerConnected(communicator)
-        communicator.delegate?.peerSentHandshake(communicator, sentHandshakeWithPeerId: peerId, onDHT: false)
-        
-        XCTAssert(delegate.peerCompletedHandshakeCalled)
-        XCTAssert(delegate.peerCompletedHandshakeParameter === sut)
     }
     
     func test_delegateNotifiedAfterBitField() {
@@ -332,7 +346,7 @@ class TorrentPeerTests: XCTestCase {
             XCTAssertFalse(self.sut.connected)
             e.fulfill()
         }
-        waitForExpectations(timeout: 0.1)
+        waitForExpectations(timeout: 0.2)
     }
     
     func test_staysConnectedIfKeepAliveSent() {
@@ -352,6 +366,11 @@ class TorrentPeerTests: XCTestCase {
             e.fulfill()
         }
         waitForExpectations(timeout: 0.1)
+    }
+    
+    func test_unchokeSentOnPeerInterested() {
+        sut.peerBecameInterested(communicator)
+        XCTAssert(communicator.sendUnchokeCalled)
     }
     
     // MARK: - Speed trackers

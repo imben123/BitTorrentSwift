@@ -36,4 +36,9 @@ class GCDAsyncSocketStub: GCDAsyncSocket {
         writeCalled = true
         writeParameters = (data, timeout, tag)
     }
+    
+    var testIsConnected = false
+    override var isConnected: Bool {
+        return testIsConnected
+    }
 }

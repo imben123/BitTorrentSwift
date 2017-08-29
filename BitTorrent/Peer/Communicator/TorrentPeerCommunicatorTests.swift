@@ -113,6 +113,13 @@ class TorrentPeerComminicatorTests: XCTestCase {
     
     // Mark - Tests
     
+    func test_connectedFlag() {
+        tcpConnection.connected = false
+        XCTAssertFalse(sut.connected)
+        tcpConnection.connected = true
+        XCTAssertTrue(sut.connected)
+    }
+    
     func test_canConnect() {
         try! sut.connect()
         

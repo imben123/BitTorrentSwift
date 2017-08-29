@@ -13,16 +13,15 @@ class TorrentUploadPieceRequestTests: XCTestCase {
     
     let data = Data(repeating: 1, count: 10) + Data(repeating: 2, count: 10)
     let index = 123
-    let length = 20
     
     func test_hasNoPendingRequestsOnInit() {
-        let sut = TorrentUploadPieceRequest(data: data, index: index, length: length)
+        let sut = TorrentUploadPieceRequest(data: data, index: index)
         XCTAssertFalse(sut.hasBlockRequests)
         XCTAssertNil(sut.nextUploadBlock())
     }
     
     func test_nextUploadBlockReturnsCorrectData() {
-        var sut = TorrentUploadPieceRequest(data: data, index: index, length: length)
+        let sut = TorrentUploadPieceRequest(data: data, index: index)
         
         let request = TorrentBlockRequest(piece: index, begin: 5, length: 10)
         sut.addRequest(request)
@@ -40,4 +39,26 @@ class TorrentUploadPieceRequestTests: XCTestCase {
         }
     }
     
+    func test_cannotGetUploadBlockTwice() {
+        let sut = TorrentUploadPieceRequest(data: data, index: index)
+        
+        let request = TorrentBlockRequest(piece: index, begin: 5, length: 10)
+        sut.addRequest(request)
+        
+        _ = sut.nextUploadBlock()
+        let result = sut.nextUploadBlock()
+        
+        XCTAssertNil(result)
+    }
+    
+    func test_canRemoveBlockRequest() {
+        let sut = TorrentUploadPieceRequest(data: data, index: index)
+        
+        let request = TorrentBlockRequest(piece: index, begin: 5, length: 10)
+        sut.addRequest(request)
+        sut.removeRequest(request)
+        
+        let result = sut.nextUploadBlock()
+        XCTAssertNil(result, "Result should be nil")
+    }
 }

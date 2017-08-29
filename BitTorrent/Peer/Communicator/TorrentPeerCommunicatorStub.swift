@@ -10,6 +10,11 @@
 
 class TorrentPeerCommunicatorStub: TorrentPeerCommunicator {
     
+    var testConnected: Bool = false
+    override var connected: Bool {
+        return testConnected
+    }
+    
     var connectCalled = false
     override func connect() throws {
         connectCalled = true
@@ -50,4 +55,15 @@ class TorrentPeerCommunicatorStub: TorrentPeerCommunicator {
         onSendKeepAliveCalled?()
     }
     
+    var sendPieceCallCount = 0
+    var sendPieceParameters: (index: Int, begin: Int, block: Data, completion: (()->Void)?)?
+    override func sendPiece(fromPieceAtIndex index: Int, begin: Int, block: Data, _ completion: (() -> Void)?) {
+        sendPieceCallCount += 1
+        sendPieceParameters = (index, begin, block, completion)
+    }
+    
+    var sendUnchokeCalled = false
+    override func sendUnchoke(_ completion: (() -> Void)?) {
+        sendUnchokeCalled = true
+    }
 }

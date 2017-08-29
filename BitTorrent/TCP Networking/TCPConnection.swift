@@ -15,6 +15,7 @@ protocol TCPConnectionProtocol: class {
     var connectedHost: String? { get }
     var connectedPort: UInt16? { get }
     
+    var connected: Bool { get }
     func connect(to host: String, onPort port: UInt16) throws
     func disconnect()
     
@@ -51,6 +52,10 @@ class TCPConnection: NSObject, TCPConnectionProtocol {
             return nil
         }
         return socket.connectedPort
+    }
+    
+    var connected: Bool {
+        return socket.isConnected
     }
     
     init(socket: GCDAsyncSocket = GCDAsyncSocket()) {

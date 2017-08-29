@@ -13,7 +13,7 @@ protocol TorrentTracker: class {
     weak var delegate: TorrentTrackerDelegate? { get set }
     
     func announceClient(with peerId: String,
-                        port: Int,
+                        port: UInt16,
                         event: TorrentTrackerEvent,
                         infoHash: Data,
                         numberOfBytesRemaining: Int,

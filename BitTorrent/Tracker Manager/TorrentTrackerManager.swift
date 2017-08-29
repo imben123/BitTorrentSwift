@@ -28,7 +28,7 @@ class TorrentTrackerManager {
     
     let metaInfo: TorrentMetaInfo
     let clientId: String
-    let port: Int
+    let port: UInt16
     
     var announceTimeInterval: TimeInterval = 600
     private lazy var announceTimer: Timer = {
@@ -39,7 +39,7 @@ class TorrentTrackerManager {
                                     repeats: true)
     }()
     
-    init(metaInfo: TorrentMetaInfo, clientId: Data, port: Int) {
+    init(metaInfo: TorrentMetaInfo, clientId: Data, port: UInt16) {
         self.metaInfo = metaInfo
         self.clientId = String(data: clientId, encoding: .utf8)!
         self.port = port
@@ -51,7 +51,7 @@ class TorrentTrackerManager {
     }
     
     // For testing
-    init(metaInfo: TorrentMetaInfo, clientId: Data, port: Int, trackers: [TorrentTracker]) {
+    init(metaInfo: TorrentMetaInfo, clientId: Data, port: UInt16, trackers: [TorrentTracker]) {
         self.metaInfo = metaInfo
         self.clientId = String(data: clientId, encoding: .utf8)!
         self.port = port

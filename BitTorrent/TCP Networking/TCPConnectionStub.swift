@@ -15,6 +15,7 @@ class TCPConnectionStub: TCPConnectionProtocol {
     
     var connectedHost: String?
     var connectedPort: UInt16?
+    var connected: Bool = false
     
     var connectCalled = false
     var connectParameters: (host: String, port: UInt16)?

@@ -191,4 +191,11 @@ class TCPConnectionTests: XCTestCase {
         XCTAssertEqual(delegateStub.disconnectedWithErrorParameters?.sender, sut)
         XCTAssertEqual(delegateStub.disconnectedWithErrorParameters?.error as? MyError, error)
     }
+    
+    func test_connectedFlag() {
+        socket.testIsConnected = false
+        XCTAssertFalse(sut.connected)
+        socket.testIsConnected = true
+        XCTAssertTrue(sut.connected)
+    }
 }

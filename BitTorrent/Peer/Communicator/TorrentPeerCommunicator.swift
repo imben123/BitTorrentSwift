@@ -75,6 +75,10 @@ class TorrentPeerCommunicator {
     
     weak var delegate: TorrentPeerCommunicatorDelegate?
     
+    var connected: Bool {
+        return connection.connected
+    }
+    
     private let peerInfo: TorrentPeerInfo
     private let connection: TCPConnectionProtocol
     

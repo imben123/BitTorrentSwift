@@ -15,29 +15,33 @@ struct TorrentBlock {
     let data: Data
 }
 
-struct TorrentUploadPieceRequest {
+class TorrentUploadPieceRequest {
     
     private let data: Data
     private let index: Int
-    private let length: Int
     private var blockRequests: [TorrentBlockRequest] = []
     
     var hasBlockRequests: Bool {
         return blockRequests.first != nil
     }
     
-    init(data: Data, index: Int, length: Int) {
+    init(data: Data, index: Int) {
         self.data = data
         self.index = index
-        self.length = length
     }
     
-    mutating func addRequest(_ request: TorrentBlockRequest) {
+    func addRequest(_ request: TorrentBlockRequest) {
         blockRequests.append(request)
     }
     
+    func removeRequest(_ request: TorrentBlockRequest) {
+        guard let index = blockRequests.index(of: request) else { return }
+        blockRequests.remove(at: index)
+    }
+    
     func nextUploadBlock() -> TorrentBlock? {
-        guard let request = self.blockRequests.first else { return nil }
+        guard let request = blockRequests.first else { return nil }
+        blockRequests.remove(at: 0)
         
         let begin = request.begin
         let end = begin + request.length

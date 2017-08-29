@@ -25,6 +25,7 @@ class TorrentClientTests: XCTestCase {
         return try! Data(contentsOf: URL(fileURLWithPath: path!))
     }()
     
+    var torrentServer: TorrentServerStub!
     var progressManager: TorrentProgressManagerStub!
     var peerManager: TorrentPeerManagerStub!
     var trackerManager: TorrentTrackerManagerStub!
@@ -34,11 +35,13 @@ class TorrentClientTests: XCTestCase {
         super.setUp()
         try! TorrentFileManager.prepareRootDirectory(pathRoot + "/text/", forTorrentMetaInfo: metaInfo)
         
+        torrentServer = TorrentServerStub(metaInfo: metaInfo)
         progressManager = TorrentProgressManagerStub(metaInfo: metaInfo)
         peerManager = TorrentPeerManagerStub(metaInfo: metaInfo)
         trackerManager = TorrentTrackerManagerStub(metaInfo: metaInfo)
         
         sut = TorrentClient(metaInfo: metaInfo,
+                            torrentServer: torrentServer,
                             progressManager: progressManager,
                             peerManager: peerManager,
                             trackerManager: trackerManager)
@@ -48,8 +51,14 @@ class TorrentClientTests: XCTestCase {
         let sut = TorrentClient(metaInfo: metaInfo, rootDirectory: pathRoot)
         
         XCTAssertEqual(sut.metaInfo.infoHash, metaInfo.infoHash)
+        XCTAssert(sut.torrentServer.delegate === sut)
         XCTAssert(sut.trackerManager.delegate === sut)
         XCTAssert(sut.peerManager.delegate === sut)
+    }
+    
+    func test_torrentServerStartsListeningOnTorrentStart() {
+        sut.start()
+        XCTAssert(torrentServer.startListeningCalled)
     }
     
     func test_trackerAnnounceOnTorrentStart() {
@@ -166,5 +175,56 @@ class TorrentClientTests: XCTestCase {
         XCTAssertEqual(result.pieceIndex, expected.pieceIndex)
         XCTAssertEqual(result.size, expected.size)
         XCTAssertEqualData(result.checksum, expected.checksum)
+    }
+    
+    func test_pieceForUploadComesFromFileManager() {
+        
+        progressManager.fileHandle.seek(toFileOffset: 0)
+        progressManager.fileHandle.write(finalData)
+        let result = sut.torrentPeerManager(peerManager, peerRequiresPieceAtIndex: 0)
+        XCTAssertEqualData(result, finalData)
+    }
+    
+    func test_peersConnectingFromServerAreAddedToPeerManager() {
+        
+        // Given
+        let peer = createFakePeer()
+        
+        // When
+        sut.torrentServer(torrentServer, connectedToPeer: peer)
+        
+        // Then
+        XCTAssert(peerManager.addPeerCalled)
+        if let addPeerParameter = peerManager.addPeerParameter {
+            XCTAssert(addPeerParameter === peer)
+        }
+    }
+    
+    func createFakePeer() -> TorrentPeer {
+        let peerInfo = TorrentPeerInfo(ip: "127.0.0.1", port: 123, peerId: nil)
+        let communicator = TorrentPeerCommunicatorStub(peerInfo: peerInfo, infoHash: metaInfo.infoHash)
+        return TorrentPeerFake(peerInfo: peerInfo,
+                               bitFieldSize: metaInfo.info.pieces.count,
+                               communicator: communicator)
+    }
+    
+    func test_currentProgressForTorrentServer() {
+        
+        // Given
+        var progress = TorrentProgress(size: 5)
+        
+        progress.setCurrentlyDownloading(piece: 0)
+        progress.finishedDownloading(piece: 0)
+        
+        progress.setCurrentlyDownloading(piece: 1)
+        progress.finishedDownloading(piece: 1)
+        
+        progressManager.testProgress = progress
+        
+        // When
+        let result = sut.currentProgress(for: torrentServer)
+        
+        // Then
+        XCTAssertEqual(result, progress.bitField)
     }
 }
