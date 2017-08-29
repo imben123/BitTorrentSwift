@@ -92,15 +92,24 @@ public struct BitField: Equatable {
     }
 }
 
-extension BitField: Sequence {
-    public func makeIterator() -> AnyIterator<(index: Int, isSet: Bool)> {
-        var index = 0
-        return AnyIterator {
-            guard index < self.size else { return nil }
-            defer {
-                index += 1
-            }
-            return (index, self.isSet(at: index))
-        }
+extension BitField: Collection {
+    
+    public typealias Index = Array<Bool>.Index
+    
+    public var startIndex: Index {
+        return value.startIndex
+    }
+    
+    public var endIndex: Index {
+        return value.endIndex
+    }
+    
+    public subscript(position: Index) -> (index: Int, isSet: Bool) {
+        precondition(indices.contains(position), "out of bounds")
+        return (index: position, isSet: value[position])
+    }
+    
+    public func index(after i: Index) -> Index {
+        return value.index(after: i)
     }
 }

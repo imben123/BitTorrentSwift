@@ -73,6 +73,4 @@ class TorrentPieceDownloadBuffer {
         
         pendingRequests.remove(at: pendingIndex)
     }
-    
-    
 }

@@ -12,10 +12,10 @@ import CocoaAsyncSocket
 class GCDAsyncSocketStub: GCDAsyncSocket {
     
     var connectToHostCalled = false
-    var connectToHostParameters: (host: String, port: UInt16)?
-    override func connect(toHost host: String, onPort port: UInt16) throws {
+    var connectToHostParameters: (host: String, port: UInt16, timeout: TimeInterval)?
+    override func connect(toHost host: String, onPort port: UInt16, withTimeout timeout: TimeInterval) throws {
         connectToHostCalled = true
-        connectToHostParameters = (host, port)
+        connectToHostParameters = (host, port, timeout)
     }
     
     var readDataCalled = false

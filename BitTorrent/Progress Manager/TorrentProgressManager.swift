@@ -43,7 +43,7 @@ class TorrentProgressManager {
     }
     
     func getNextPieceToDownload(from availablePieces: BitField) -> TorrentPieceRequest? {
-        for (i, isSet) in availablePieces where isSet {
+        for (i, isSet) in availablePieces.pseudoRandomized where isSet {
             if !progress.hasPiece(i) && !progress.isCurrentlyDownloading(piece: i) {
                 progress.setCurrentlyDownloading(piece: i)
                 return (i, metaInfo.info.lengthOfPiece(at: i), metaInfo.info.pieces[i])

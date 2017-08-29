@@ -61,7 +61,7 @@ class TCPConnection: NSObject, TCPConnectionProtocol {
     }
     
     func connect(to host: String, onPort port: UInt16) throws {
-        try socket.connect(toHost: host, onPort: port)
+        try socket.connect(toHost: host, onPort: port, withTimeout: 15)
     }
     
     func disconnect() {

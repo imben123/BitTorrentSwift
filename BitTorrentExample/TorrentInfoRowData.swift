@@ -42,6 +42,7 @@ enum TorrentInfoRowData: Int {
     func value(using client: TorrentClient) -> String {
         
         let speedSampleSize: TimeInterval = 5
+        let etaSampleSize: TimeInterval = 30
         
         switch self {
             
@@ -73,8 +74,8 @@ enum TorrentInfoRowData: Int {
             return "????"
             
         case .eta:
-            let speed = client.downloadSpeedTracker.numberOfBytesDownloaded(over: speedSampleSize)
-            let speedPerSecond = Double(speed) / speedSampleSize
+            let speed = client.downloadSpeedTracker.numberOfBytesDownloaded(over: etaSampleSize)
+            let speedPerSecond = Double(speed) / etaSampleSize
             guard speed > 0 else { return "∞" }
             
             let remaining = client.progress.remaining * client.metaInfo.info.pieceLength

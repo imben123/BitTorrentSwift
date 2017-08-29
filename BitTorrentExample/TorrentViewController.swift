@@ -92,10 +92,10 @@ extension TorrentViewController: UITableViewDataSource {
                 return startCell
             } else {
                 let reCheckCell = UITableViewCell(style: .default, reuseIdentifier: nil)
-                startCell.textLabel?.text = "Start"
-                startCell.textLabel?.textAlignment = .center
-                startCell.textLabel?.textColor = .blue
-                return startCell
+                reCheckCell.textLabel?.text = "Start"
+                reCheckCell.textLabel?.textAlignment = .center
+                reCheckCell.textLabel?.textColor = .blue
+                return reCheckCell
             }
         }
     }
