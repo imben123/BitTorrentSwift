@@ -98,6 +98,7 @@ class MultiFileHandle: FileHandleProtocol {
     }
     
     private func incrementCurrentFile() {
+        guard (fileIndex + 1) < files.count else { return }
         fileIndex += 1
         currentFile.handle.seek(toFileOffset: 0)
     }

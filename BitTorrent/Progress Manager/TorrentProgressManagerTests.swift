@@ -21,6 +21,11 @@ class TorrentProgressManagerTests: XCTestCase {
         return TorrentMetaInfo(data: data)!
     }()
     
+    let finalData: Data = {
+        let path = Bundle(for: TorrentProgressManagerTests.self).path(forResource: "text", ofType: "txt")
+        return try! Data(contentsOf: URL(fileURLWithPath: path!))
+    }()
+    
     let completeBitField: BitField = {
         var result = BitField(size: 1)
         result.set(at: 0)
@@ -40,6 +45,18 @@ class TorrentProgressManagerTests: XCTestCase {
         let progress = TorrentProgress(size: metaInfo.info.pieces.count)
         
         sut = TorrentProgressManager(fileManager: fileManager, progress: progress)
+    }
+    
+    func test_canForceReCheck() {
+        
+        // Given
+        fileHandle.data = finalData
+        
+        // When
+        sut.forceReCheck()
+        
+        // Then
+        XCTAssert(sut.progress.complete)
     }
     
     func test_exampleMetaInfoOnlyHas1Piece() {

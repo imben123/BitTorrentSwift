@@ -329,6 +329,7 @@ class TorrentPeerTests: XCTestCase {
         let e = expectation(description: "Keep alive sent")
         DispatchQueue.main.async {
             XCTAssert(self.delegate.peerLostCalled)
+            XCTAssertFalse(self.sut.connected)
             e.fulfill()
         }
         waitForExpectations(timeout: 0.1)

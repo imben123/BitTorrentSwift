@@ -23,6 +23,7 @@ class TorrentTrackerStub: TorrentTracker {
     numberOfBytesDownloaded: Int,
     numberOfPeersToFetch: Int)?
     
+    var onAnnounceClient: (()->Void)?
     func announceClient(with peerId: String,
                         port: Int,
                         event: TorrentTrackerEvent,
@@ -40,6 +41,7 @@ class TorrentTrackerStub: TorrentTracker {
                                     numberOfBytesUploaded,
                                     numberOfBytesDownloaded,
                                     numberOfPeersToFetch)
+        onAnnounceClient?()
     }
 }
 
@@ -73,6 +75,12 @@ class TorrentTrackerManagerTests: XCTestCase {
     let clientIdData = "-BD0000-bxa]N#IRKqv`".data(using: .ascii)!
     let listeningPort = 123
     
+    
+    let announceInfo = TorrentTrackerManagerAnnonuceInfo(numberOfBytesRemaining: 1,
+                                                         numberOfBytesUploaded: 2,
+                                                         numberOfBytesDownloaded: 3,
+                                                         numberOfPeersToFetch: 4)
+    
     func test_createsTrackers() {
         
         let sut = TorrentTrackerManager(metaInfo: metaInfo, clientId: clientIdData, port: listeningPort)
@@ -89,7 +97,8 @@ class TorrentTrackerManagerTests: XCTestCase {
             return
         }
         
-        XCTAssertEqual(httpTracker.announceURL, metaInfo.announceList![0][0])
+        let httpsScheme = metaInfo.announceList![0][0].bySettingScheme(to: "https")
+        XCTAssertEqual(httpTracker.announceURL, httpsScheme)
         XCTAssertEqual(udpTracker.announceURL, metaInfo.announceList![0][1])
         
         XCTAssert(httpTracker.delegate === sut)
@@ -101,18 +110,14 @@ class TorrentTrackerManagerTests: XCTestCase {
         // Given
         let tracker = TorrentTrackerStub()
         let delegate = TorrentTrackerManagerDelegateStub()
-        let announceInfo = TorrentTrackerManagerAnnonuceInfo(numberOfBytesRemaining: 1,
-                                                             numberOfBytesUploaded: 2,
-                                                             numberOfBytesDownloaded: 3,
-                                                             numberOfPeersToFetch: 4)
         
         let sut = TorrentTrackerManager(metaInfo: metaInfo,
                                         clientId: clientIdData,
                                         port: listeningPort,
                                         trackers: [tracker])
-        sut.delegate = delegate
         
         delegate.torrentTrackerManagerAnnonuceInfoResult = announceInfo
+        sut.delegate = delegate
         
         // When
         sut.start()
@@ -132,5 +137,57 @@ class TorrentTrackerManagerTests: XCTestCase {
         XCTAssertEqual(announceClientParameters.numberOfBytesUploaded, announceInfo.numberOfBytesUploaded)
         XCTAssertEqual(announceClientParameters.numberOfBytesDownloaded, announceInfo.numberOfBytesDownloaded)
         XCTAssertEqual(announceClientParameters.numberOfPeersToFetch, announceInfo.numberOfPeersToFetch)
+    }
+    
+    func test_announceRepeats() {
+        
+        // Given
+        let tracker = TorrentTrackerStub()
+        let delegate = TorrentTrackerManagerDelegateStub()
+        
+        let sut = TorrentTrackerManager(metaInfo: metaInfo,
+                                        clientId: clientIdData,
+                                        port: listeningPort,
+                                        trackers: [tracker])
+        
+        sut.delegate = delegate
+        sut.announceTimeInterval = 0
+        
+        // When
+        sut.start()
+        
+        // Then
+        let expectation = self.expectation(description: "Announce is repeatedly called")
+        tracker.onAnnounceClient = {
+            tracker.onAnnounceClient = nil
+            expectation.fulfill()
+        }
+        waitForExpectations(timeout: 0.1)
+    }
+    
+    func test_canForceReAnnounce_resetsAnnounceTimer() {
+        
+        // Given
+        let tracker = TorrentTrackerStub()
+        let delegate = TorrentTrackerManagerDelegateStub()
+        let sut = TorrentTrackerManager(metaInfo: metaInfo,
+                                        clientId: clientIdData,
+                                        port: listeningPort,
+                                        trackers: [tracker])
+        
+        sut.delegate = delegate
+        sut.announceTimeInterval = 600
+        sut.start()
+        
+        // Then
+        let expectation = self.expectation(description: "Announce is repeatedly called")
+        tracker.onAnnounceClient = {
+            tracker.onAnnounceClient = nil
+            expectation.fulfill()
+        }
+        
+        // When
+        sut.forceRestart()
+        waitForExpectations(timeout: 0.1)
     }
 }

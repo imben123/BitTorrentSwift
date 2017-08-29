@@ -109,6 +109,14 @@ class TorrentPeer {
         }
         downloadPieceRequests.removeAll()
     }
+    
+    private func onConnectionDropped() {
+        keepAliveTimer?.invalidate()
+        keepAliveTimer = nil
+        killAllDownloads()
+        connected = false
+        delegate?.peerLost(self)
+    }
 }
 
 // Keep alive
@@ -142,8 +150,7 @@ extension TorrentPeer {
     }
     
     @objc private func didntReceiveKeepAlive() {
-        keepAliveTimer = nil
-        delegate?.peerLost(self)
+        onConnectionDropped()
     }
 }
 
@@ -161,9 +168,7 @@ extension TorrentPeer: TorrentPeerCommunicatorDelegate {
     }
     
     func peerLost(_ sender: TorrentPeerCommunicator) {
-        killAllDownloads()
-        delegate?.peerLost(self)
-        connected = false
+        onConnectionDropped()
     }
     
     func peerSentHandshake(_ sender: TorrentPeerCommunicator, sentHandshakeWithPeerId peerId: Data, onDHT: Bool) {

@@ -22,13 +22,24 @@ class TorrentProgressManager {
     convenience init(metaInfo: TorrentMetaInfo, rootDirectory: String) {
         let downloadDirectory = rootDirectory + "/" + metaInfo.sensibleDownloadDirectoryName()
         let fileManager = TorrentFileManager(metaInfo: metaInfo, rootDirectory: downloadDirectory)
-        let progress = TorrentProgress(size: metaInfo.info.pieces.count)
+        
+        let progress: TorrentProgress
+        if let bitField = TorrentFileManager.loadSavedProgressBitfield(infoHash: metaInfo.infoHash) {
+            progress = TorrentProgress(bitField: bitField)
+        } else {
+            progress = TorrentProgress(size: metaInfo.info.pieces.count)
+        }
         self.init(fileManager: fileManager, progress: progress)
     }
     
     init(fileManager: TorrentFileManager, progress: TorrentProgress) {
         self.fileManager = fileManager
         self.progress = progress
+    }
+    
+    public func forceReCheck() {
+        let bitField = fileManager.reCheckProgress()
+        progress = TorrentProgress(bitField: bitField)
     }
     
     func getNextPieceToDownload(from availablePieces: BitField) -> TorrentPieceRequest? {
@@ -44,6 +55,7 @@ class TorrentProgressManager {
     func setDownloadedPiece(_ piece: Data, pieceIndex: Int) {
         progress.finishedDownloading(piece: pieceIndex)
         fileManager.setPiece(at: pieceIndex, data: piece)
+        TorrentFileManager.saveProgressBitfield(progress.bitField, infoHash: metaInfo.infoHash)
     }
     
     func setLostPiece(at index: Int) {

@@ -16,6 +16,8 @@ protocol TorrentPeerManagerDelegate: class {
     
     func torrentPeerManager(_ sender: TorrentPeerManager, failedToGetPieceAtIndex index: Int)
     
+    func torrentPeerManagerNeedsMorePeers(_ sender: TorrentPeerManager)
+    
     func torrentPeerManagerCurrentBitfieldForHandshake(_ sender: TorrentPeerManager) -> BitField
     
     func torrentPeerManager(_ sender: TorrentPeerManager,
@@ -32,7 +34,8 @@ class TorrentPeerManager {
         }
     }
     
-    var maximumNumberOfConnectedPeers = 20
+    var maximumNumberOfConnectedPeers = 20 // variable for testing
+    var minimumNumberOfConnectedPeers = 5  // variable for testing
     let maximumNumberOfPiecesPerPeer = 2
     
     weak var delegate: TorrentPeerManagerDelegate?
@@ -49,12 +52,15 @@ class TorrentPeerManager {
         return peers.filter({ $0.connected && $0.currentProgress.complete }).count
     }
     
-    private(set) var downloadSpeedTracker = NetworkSpeedTracker ()
+    private(set) var downloadSpeedTracker: NetworkSpeedTrackable!
     
     init(clientId: Data, infoHash: Data, bitFieldSize: Int) {
         self.clientId = clientId
         self.infoHash = infoHash
         self.bitFieldSize = bitFieldSize
+        self.downloadSpeedTracker = CombinedNetworkSpeedTracker { [unowned self] in
+            return self.peers.map { $0.downloadSpeedTracker }
+        }
     }
     
     // Exposed for testing
@@ -80,8 +86,12 @@ class TorrentPeerManager {
         let bitField = delegate.torrentPeerManagerCurrentBitfieldForHandshake(self)
         let peersToConnectTo = peers[0 ..< numberToConnectTo]
         connectToPeers(peersToConnectTo, bitField: bitField)
+        if numberOfConnectedPeers < minimumNumberOfConnectedPeers {
+            delegate.torrentPeerManagerNeedsMorePeers(self)
+        }
     }
     
+    // Using sequence to allow array slices
     private func connectToPeers<T: Sequence>(_ peers: T, bitField: BitField) where T.Element == TorrentPeer {
         for peer in peers {
             peer.delegate = self
@@ -118,7 +128,6 @@ extension TorrentPeerManager: TorrentPeerDelegate {
     }
     
     func peer(_ sender: TorrentPeer, gotPieceAtIndex index: Int, piece: Data) {
-        downloadSpeedTracker.increase(by: piece.count)
         delegate?.torrentPeerManager(self, downloadedPieceAtIndex: index, piece: piece)
         requestNextPiece(from: sender)
         // TODO: send have to peers
@@ -133,8 +142,8 @@ extension TorrentPeerManager: TorrentPeerDelegate {
     private func requestNextPiece(from peer: TorrentPeer) {
         if let pieceRequest = delegate?.torrentPeerManager(self, nextPieceFromAvailable: peer.currentProgress) {
             peer.downloadPiece(atIndex: pieceRequest.pieceIndex, size: pieceRequest.size)
-        } else {
-            print("No available pieces for peer \(peer.peerInfo.ip):\(peer.peerInfo.port) to download")
+        } else if enableLogging {
+            print("No available pieces for peer \(peer.peerInfo.ip):\(peer.peerInfo.port) to download")                
         }
     }
 }

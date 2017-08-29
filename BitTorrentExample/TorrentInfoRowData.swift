@@ -74,15 +74,16 @@ enum TorrentInfoRowData: Int {
             
         case .eta:
             let speed = client.downloadSpeedTracker.numberOfBytesDownloaded(over: speedSampleSize)
+            let speedPerSecond = Double(speed) / speedSampleSize
             guard speed > 0 else { return "∞" }
             
             let remaining = client.progress.remaining * client.metaInfo.info.pieceLength
-            guard speed > 0 else { return "n/a" }
+            guard remaining > 0 else { return "n/a" }
             
-            return TimeInterval(remaining / speed).stringTime
+            return (Double(remaining) / speedPerSecond).stringTime
             
         case .uploaded:
-            return bytesToString(client.progress.uploaded * client.metaInfo.info.pieceLength)
+            return "????"
         }
     }
 }

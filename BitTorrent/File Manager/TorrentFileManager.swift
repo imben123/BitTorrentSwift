@@ -17,7 +17,7 @@ public class TorrentFileManager {
     let metaInfo: TorrentMetaInfo
     let rootDirectory: String
     
-    fileprivate let fileHandle: MultiFileHandle
+    fileprivate let fileHandle: FileHandleProtocol
     
     convenience init(metaInfo: TorrentMetaInfo, rootDirectory: String) {
         let fileHandles = TorrentFileManager.createFileHandles(for: metaInfo, in: rootDirectory)
@@ -53,6 +53,22 @@ public class TorrentFileManager {
         let length = metaInfo.info.lengthOfPiece(at: index)
         fileHandle.seek(toFileOffset: UInt64(byteIndex))
         return fileHandle.readData(ofLength: length)
+    }
+    
+    // TODO: Multi-threaded check
+    func reCheckProgress() -> BitField {
+        var result = BitField(size: metaInfo.info.pieces.count)
+        for (pieceIndex, _) in result {
+            autoreleasepool {
+                let correctSha1 = metaInfo.info.pieces[pieceIndex]
+                let piece = getPiece(at: pieceIndex)
+                let sha1 = piece.sha1()
+                if sha1 == correctSha1 {
+                    result.set(at: pieceIndex)
+                }
+            }
+        }
+        return result
     }
 }
 
@@ -98,5 +114,32 @@ extension TorrentFileManager {
         lseek(fileDescriptor, off_t(length), SEEK_SET) // seek to the last byte ...
         write(fileDescriptor, UnsafeRawPointer([0]), 1) // ... and write a 0 to it
         close(fileDescriptor) // Now we have a file of the correct size we close it
+    }
+}
+
+// Save/Load progress
+extension TorrentFileManager {
+    
+    static func saveProgressBitfield(_ bitfield: BitField, infoHash: Data) {
+        let fileName = String(asciiData: infoHash.base64EncodedData())!
+        let documentsPath = NSSearchPathForDirectoriesInDomains(.documentDirectory,
+                                                                .userDomainMask,
+                                                                true)[0] as String
+        let documentsUrl = URL(fileURLWithPath: documentsPath, isDirectory: true)
+        let fileURL = documentsUrl.appendingPathComponent("torrent_progress.bin", isDirectory: false)
+        try? bitfield.toData().write(to: fileURL)
+    }
+    
+    static func loadSavedProgressBitfield(infoHash: Data) -> BitField? {
+        let fileName = String(asciiData: infoHash.base64EncodedData())!
+        let documentsPath = NSSearchPathForDirectoriesInDomains(.documentDirectory,
+                                                                .userDomainMask,
+                                                                true)[0] as String
+        let documentsUrl = URL(fileURLWithPath: documentsPath, isDirectory: true)
+        let fileURL = documentsUrl.appendingPathComponent("torrent_progress.bin", isDirectory: false)
+        if let data = try? Data(contentsOf: fileURL) {
+            return BitField(data: data)
+        }
+        return nil
     }
 }

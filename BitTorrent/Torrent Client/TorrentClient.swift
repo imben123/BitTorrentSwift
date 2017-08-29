@@ -35,7 +35,7 @@ public class TorrentClient {
     public var progress: TorrentProgress { return progressManager.progress }
     public var numberOfConnectedPeers: Int { return peerManager.numberOfConnectedPeers }
     public var numberOfConnectedSeeds: Int { return peerManager.numberOfConnectedPeers }
-    public var downloadSpeedTracker: NetworkSpeedTracker { return peerManager.downloadSpeedTracker }
+    public var downloadSpeedTracker: NetworkSpeedTrackable { return peerManager.downloadSpeedTracker }
 
     let progressManager: TorrentProgressManager
     let peerManager: TorrentPeerManager
@@ -55,7 +55,6 @@ public class TorrentClient {
         
         trackerManager.delegate = self
         peerManager.delegate = self
-        peerManager.enableLogging = true
     }
     
     // For testing
@@ -67,6 +66,10 @@ public class TorrentClient {
         self.progressManager = progressManager
         self.peerManager = peerManager
         self.trackerManager = trackerManager
+    }
+    
+    public func forceReCheck() {
+        progressManager.forceReCheck()
     }
     
     public func start() {
@@ -85,9 +88,9 @@ extension TorrentClient: TorrentTrackerManagerDelegate {
         
         return TorrentTrackerManagerAnnonuceInfo(
             numberOfBytesRemaining: progress.remaining * metaInfo.info.pieceLength,
-            numberOfBytesUploaded: progress.uploaded * metaInfo.info.pieceLength,
+            numberOfBytesUploaded: 0,
             numberOfBytesDownloaded: progress.downloaded * metaInfo.info.pieceLength,
-            numberOfPeersToFetch: 20)
+            numberOfPeersToFetch: 50)
     }
 }
 
@@ -103,6 +106,10 @@ extension TorrentClient: TorrentPeerManagerDelegate {
     
     func torrentPeerManager(_ sender: TorrentPeerManager, failedToGetPieceAtIndex index: Int) {
         progressManager.setLostPiece(at: index)
+    }
+    
+    func torrentPeerManagerNeedsMorePeers(_ sender: TorrentPeerManager) {
+        trackerManager.forceRestart()
     }
     
     func torrentPeerManagerCurrentBitfieldForHandshake(_ sender: TorrentPeerManager) -> BitField {

@@ -11,6 +11,11 @@ import XCTest
 
 class TorrentPeerFake: TorrentPeer {
     
+    var testDownloadSpeedTracker = NetworkSpeedTracker()
+    override var downloadSpeedTracker: NetworkSpeedTracker {
+        return testDownloadSpeedTracker
+    }
+    
     var connectCalled = false
     var connectHandshakeData: (clientId: Data, bitField: BitField)?
     override func connect(withHandshakeData handshakeData: (clientId: Data, bitField: BitField)) throws {
@@ -33,6 +38,14 @@ class TorrentPeerFake: TorrentPeer {
 }
 
 class TorrentPeerManagerDelegateStub: TorrentPeerManagerDelegate {
+    
+    var torrentPeerManagerNeedsMorePeersCalled = false
+    var torrentPeerManagerNeedsMorePeersParameter: TorrentPeerManager?
+    func torrentPeerManagerNeedsMorePeers(_ sender: TorrentPeerManager) {
+        torrentPeerManagerNeedsMorePeersCalled = true
+        torrentPeerManagerNeedsMorePeersParameter = sender
+    }
+    
     
     var downloadedPieceAtIndexCalled = false
     var downloadedPieceAtIndexParameters: (sender: TorrentPeerManager, pieceIndex: Int, piece: Data)?
@@ -283,7 +296,7 @@ class TorrentPeerManagerTests: XCTestCase {
         XCTAssertFalse(peer.downloadPieceCalled)
     }
     
-    func test_downloadSpeedRecordedOnGettingPiece() {
+    func test_downloadSpeedSumsPeerDownloadSpeeds() {
         
         // Given
         let peerInfo = TorrentPeerInfo(ip: "127.0.0.1", port: 123, peerId: nil)
@@ -293,9 +306,23 @@ class TorrentPeerManagerTests: XCTestCase {
         let pieceSize = 100
         
         // When
-        sut.peer(peer, gotPieceAtIndex: 0, piece: Data(repeating: 0, count: pieceSize))
+        peer.testDownloadSpeedTracker.increase(by: pieceSize)
         
         // Then
         XCTAssertEqual(sut.downloadSpeedTracker.totalNumberOfBytes, pieceSize)
+    }
+    
+    func test_morePeersRequestedWhenNumberDropsBelowMin() {
+        
+        // Given
+        sut.minimumNumberOfConnectedPeers = 2
+        let peerInfo = TorrentPeerInfo(ip: "127.0.0.1", port: 123, peerId: nil)
+        
+        // When
+        sut.addPeers(withInfo: [peerInfo])
+        
+        // Then
+        XCTAssert(delegate.torrentPeerManagerNeedsMorePeersCalled)
+        XCTAssert(delegate.torrentPeerManagerNeedsMorePeersParameter === sut)
     }
 }

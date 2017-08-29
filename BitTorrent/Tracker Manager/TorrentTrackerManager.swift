@@ -30,6 +30,15 @@ class TorrentTrackerManager {
     let clientId: String
     let port: Int
     
+    var announceTimeInterval: TimeInterval = 600
+    private lazy var announceTimer: Timer = {
+        return Timer.scheduledTimer(timeInterval: self.announceTimeInterval,
+                                    target: self,
+                                    selector: #selector(announce),
+                                    userInfo: nil,
+                                    repeats: true)
+    }()
+    
     init(metaInfo: TorrentMetaInfo, clientId: Data, port: Int) {
         self.metaInfo = metaInfo
         self.clientId = String(data: clientId, encoding: .utf8)!
@@ -51,16 +60,17 @@ class TorrentTrackerManager {
     
     private static func createTrackers(from metaInfo: TorrentMetaInfo) -> [TorrentTracker] {
         
-        let announceList = metaInfo.announceList?.first ?? [metaInfo.announce]
+        let announceList = metaInfo.announceList ?? [[metaInfo.announce]]
+        let flatAnnounceList = announceList.flatMap { return $0 }
         
         var lastPortNumberUsed: UInt16 = 3475
         var result: [TorrentTracker] = []
         
-        for url in announceList {
+        for url in flatAnnounceList {
             
-            if url.scheme == "http" {
+            if url.scheme == "http" || url.scheme == "https" {
                 
-                let tracker = TorrentHTTPTracker(announceURL: url)
+                let tracker = TorrentHTTPTracker(announceURL: url.bySettingScheme(to: "https"))
                 result.append(tracker)
                 
             } else if url.scheme == "udp" {
@@ -76,10 +86,14 @@ class TorrentTrackerManager {
     }
     
     func start() {
-        announce()
+        forceRestart()
     }
     
-    private func announce() {
+    func forceRestart() {
+        announceTimer.fire()
+    }
+    
+    @objc private func announce() {
         
         guard let delegate = delegate else { return }
         

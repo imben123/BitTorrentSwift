@@ -8,9 +8,37 @@
 
 import Foundation
 
-extension Collection {
-    func firstWhere(_ predicate: (Element) -> Bool) -> Element? {
-        return first(where: predicate)
+public protocol NetworkSpeedTrackable {
+    var totalNumberOfBytes: Int { get }
+    func numberOfBytesDownloaded(since date: Date) -> Int
+    func numberOfBytesDownloaded(over timeInterval: TimeInterval) -> Int
+}
+
+public struct NetworkSpeedTracker: NetworkSpeedTrackable {
+    public var totalNumberOfBytes: Int = 0
+    
+    // TODO: limit number of dataPoints stored
+    private var dataPoints: [NetworkSpeedDataPoint] = [NetworkSpeedDataPoint(0)]
+    
+    mutating func increase(by bytes: Int) {
+        totalNumberOfBytes += bytes
+        addDataPoint(NetworkSpeedDataPoint(totalNumberOfBytes))
+    }
+    
+    private mutating func addDataPoint(_ dataPoint: NetworkSpeedDataPoint) {
+        dataPoints = [dataPoint] + dataPoints
+    }
+    
+    public func numberOfBytesDownloaded(since date: Date) -> Int {
+        
+        guard let previouslyDataPoint = dataPoints.firstWhere({ $0.dateRecorded < date }) else {
+            return totalNumberOfBytes
+        }
+        return totalNumberOfBytes - previouslyDataPoint.numberOfBytes
+    }
+    
+    public func numberOfBytesDownloaded(over timeInterval: TimeInterval) -> Int  {
+        return numberOfBytesDownloaded(since: Date(timeIntervalSinceNow: -timeInterval))
     }
 }
 
@@ -27,7 +55,7 @@ public struct NetworkSpeedDataPoint: Equatable, Comparable {
     public static func ==(_ lhs: NetworkSpeedDataPoint, _ rhs: NetworkSpeedDataPoint) -> Bool {
         return (
             lhs.numberOfBytes == rhs.numberOfBytes &&
-            lhs.dateRecorded == rhs.dateRecorded
+                lhs.dateRecorded == rhs.dateRecorded
         )
     }
     
@@ -35,28 +63,9 @@ public struct NetworkSpeedDataPoint: Equatable, Comparable {
         return lhs.dateRecorded.compare(rhs.dateRecorded) == .orderedAscending
     }
 }
-
-public struct NetworkSpeedTracker {
-    var totalNumberOfBytes: Int = 0
-    private var dataPoints: [NetworkSpeedDataPoint] = [NetworkSpeedDataPoint(0)]
-    
-    mutating func increase(by bytes: Int) {
-        totalNumberOfBytes += bytes
-        addDataPoint(NetworkSpeedDataPoint(totalNumberOfBytes))
-    }
-    
-    private mutating func addDataPoint(_ dataPoint: NetworkSpeedDataPoint) {
-        dataPoints = [dataPoint] + dataPoints
-    }
-    
-    public func numberOfBytesDownloaded(since date: Date) -> Int {
-        guard let previouslyDataPoint = dataPoints.firstWhere({ $0.dateRecorded < date }) else {
-            return totalNumberOfBytes
-        }
-        return totalNumberOfBytes - previouslyDataPoint.numberOfBytes
-    }
-    
-    public func numberOfBytesDownloaded(over timeInterval: TimeInterval) -> Int  {
-        return numberOfBytesDownloaded(since: Date(timeIntervalSinceNow: -timeInterval))
+// Not sure why I need this 🤷‍♂️
+extension Collection {
+    func firstWhere(_ predicate: (Element) -> Bool) -> Element? {
+        return first(where: predicate)
     }
 }

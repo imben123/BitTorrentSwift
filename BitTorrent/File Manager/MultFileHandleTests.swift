@@ -82,4 +82,10 @@ class MultFileHandleTests: XCTestCase {
             XCTAssert(fileHandle.synchronizeFileCalled)
         }
     }
+    
+    func test_canReadLastBytes() {
+        sut.seek(toFileOffset: 8)
+        let data = sut.readData(ofLength: 2)
+        XCTAssertEqualData(data, Data(bytes: [9,10]))
+    }
 }

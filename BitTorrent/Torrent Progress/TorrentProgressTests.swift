@@ -14,7 +14,6 @@ class TorrentProgressTests: XCTestCase {
     func test_torrentProgressIsInitialisedAsNoneDownloaded() {
         let result = TorrentProgress(size: 10)
         XCTAssertEqual(result.downloaded, 0)
-        XCTAssertEqual(result.uploaded, 0)
     }
     
     func test_canMarkPieceAsDownloading() {

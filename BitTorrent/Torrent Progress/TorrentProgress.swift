@@ -13,7 +13,6 @@ public struct TorrentProgress {
     public private(set) var bitField: BitField
     private var piecesBeingDownloaded: [Int] = []
     
-    public private(set) var uploaded: Int = 0
     public private(set) var downloaded: Int = 0
     
     public var remaining: Int {
@@ -30,6 +29,13 @@ public struct TorrentProgress {
     
     init(size: Int) {
         self.bitField = BitField(size: size)
+    }
+    
+    init(bitField: BitField) {
+        self.bitField = bitField
+        for (_, isSet) in bitField where isSet {
+            downloaded += 1
+        }
     }
     
     func isCurrentlyDownloading(piece: Int) -> Bool {

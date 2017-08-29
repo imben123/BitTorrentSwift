@@ -11,15 +11,15 @@ import BitTorrent
 
 class TorrentViewController: UIViewController {
     
-    static let refreshRate: TimeInterval = 1
+    let refreshRate: TimeInterval = 1
     
     let tableView = UITableView()
     let torrentClient: TorrentClient
     
     lazy var refreshTimer: Timer = {
-        return Timer.scheduledTimer(timeInterval: TorrentViewController.refreshRate,
+        return Timer.scheduledTimer(timeInterval: self.refreshRate,
                                     target: self,
-                                    selector: #selector(TorrentViewController.timerFired),
+                                    selector: #selector(timerFired),
                                     userInfo: nil,
                                     repeats: true)
     }()
@@ -44,7 +44,14 @@ class TorrentViewController: UIViewController {
         super.viewDidLayoutSubviews()
         tableView.frame = view.bounds
         if tableView.contentInset == .zero {
-            tableView.contentInset = view.safeAreaInsets
+            if #available(iOS 11, *) {
+                tableView.contentInset = view.safeAreaInsets
+            } else {
+                tableView.contentInset = UIEdgeInsetsMake(topLayoutGuide.length,
+                                                          0,
+                                                          bottomLayoutGuide.length,
+                                                          0)
+            }
             tableView.contentOffset = .zero
         }
     }
@@ -69,7 +76,7 @@ extension TorrentViewController: UITableViewDataSource {
         if section == 0 {
             return TorrentInfoRowData.numberOfRows
         } else {
-            return 1
+            return 2
         }
     }
     
@@ -77,11 +84,19 @@ extension TorrentViewController: UITableViewDataSource {
         if indexPath.section == 0 {
             return cellForTorrentInfoSection(at: indexPath, tableView: tableView)
         } else {
-            let startCell = UITableViewCell(style: .default, reuseIdentifier: nil)
-            startCell.textLabel?.text = "Start"
-            startCell.textLabel?.textAlignment = .center
-            startCell.textLabel?.textColor = .blue
-            return startCell
+            if indexPath.row == 0 {
+                let startCell = UITableViewCell(style: .default, reuseIdentifier: nil)
+                startCell.textLabel?.text = "Force re-check"
+                startCell.textLabel?.textAlignment = .center
+                startCell.textLabel?.textColor = .blue
+                return startCell
+            } else {
+                let reCheckCell = UITableViewCell(style: .default, reuseIdentifier: nil)
+                startCell.textLabel?.text = "Start"
+                startCell.textLabel?.textAlignment = .center
+                startCell.textLabel?.textColor = .blue
+                return startCell
+            }
         }
     }
     
@@ -121,10 +136,14 @@ extension TorrentViewController: UITableViewDelegate {
         guard let cell = tableView.cellForRow(at: indexPath) else { return }
         cell.setSelected(false, animated: false)
         
-        if indexPath.section == 1 {
+        guard indexPath.section == 1 else { return }
+        if indexPath.row == 0 {
+            torrentClient.forceReCheck()
+        } else {
             torrentClient.start()
-            tableView.reloadData()
         }
+        tableView.reloadData()
+
     }
     
 }
