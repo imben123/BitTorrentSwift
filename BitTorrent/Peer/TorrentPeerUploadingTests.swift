@@ -69,7 +69,7 @@ class TorrentPeerUploadingTests: XCTestCase {
         let pieceIndex = 123
         let begin1 = 0
         let begin2 = 10
-        let data = Data(repeating: 4, count: 10)
+        let data = Data(repeating: 4, count: 20)
         delegate.requestedPieceAtIndexResult = data
         
         // When
@@ -95,7 +95,7 @@ class TorrentPeerUploadingTests: XCTestCase {
         // Given
         let pieceIndex1 = 1
         let pieceIndex2 = 2
-        let data = Data(repeating: 0, count: 10)
+        let data = Data(repeating: 0, count: 20)
         delegate.requestedPieceAtIndexResult = data
         
         // When
