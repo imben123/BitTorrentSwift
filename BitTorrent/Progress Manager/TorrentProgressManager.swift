@@ -40,10 +40,14 @@ class TorrentProgressManager {
     public func forceReCheck() {
         let bitField = fileManager.reCheckProgress()
         progress = TorrentProgress(bitField: bitField)
+        TorrentFileManager.saveProgressBitfield(progress.bitField, infoHash: metaInfo.infoHash)
     }
     
     func getNextPieceToDownload(from availablePieces: BitField) -> TorrentPieceRequest? {
-        for (i, isSet) in availablePieces.pseudoRandomized where isSet {
+        
+        guard !progress.complete else { return nil }
+        
+        for (i, isSet) in availablePieces.lazy.pseudoRandomized where isSet {
             if !progress.hasPiece(i) && !progress.isCurrentlyDownloading(piece: i) {
                 progress.setCurrentlyDownloading(piece: i)
                 return (i, metaInfo.info.lengthOfPiece(at: i), metaInfo.info.pieces[i])

@@ -149,8 +149,6 @@ extension TorrentPeerManager: TorrentPeerDelegate {
     private func requestNextPiece(from peer: TorrentPeer) {
         if let pieceRequest = delegate?.torrentPeerManager(self, nextPieceFromAvailable: peer.currentProgress) {
             peer.downloadPiece(atIndex: pieceRequest.pieceIndex, size: pieceRequest.size)
-        } else if enableLogging {
-            print("No available pieces for peer \(peer.peerInfo.ip):\(peer.peerInfo.port) to download")                
         }
     }
 }

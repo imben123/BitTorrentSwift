@@ -79,6 +79,13 @@ class TorrentClientTests: XCTestCase {
         XCTAssertEqual(sut.status, .completed)
     }
     
+    func test_whenTorrentAlreadyDownloaded_statusIsCompletedOnStart() {
+        progressManager.testProgress.setCurrentlyDownloading(piece: 0)
+        progressManager.testProgress.finishedDownloading(piece: 0)
+        sut.start()
+        XCTAssertEqual(sut.status, .completed)
+    }
+    
     func test_newPeersFromTrackerAreGivenToPeersManager() {
         
         // Given

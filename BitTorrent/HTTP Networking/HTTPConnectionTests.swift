@@ -76,7 +76,7 @@ class HTTPConnectionTests: XCTestCase {
             expectation.fulfill()
         }
         
-        waitForExpectations(timeout: 0.1)
+        waitForExpectations(timeout: 1)
     }
     
 }

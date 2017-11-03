@@ -86,6 +86,7 @@ public class TorrentClient {
         torrentServer.startListening()
         trackerManager.start()
         status = .started
+        if progressManager.progress.complete { status = .completed }
     }
 }
 
