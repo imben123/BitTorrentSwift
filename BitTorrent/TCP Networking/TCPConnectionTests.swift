@@ -165,6 +165,11 @@ class TCPConnectionTests: XCTestCase {
         let data = Data(bytes: [3,2,1])
         let tag = 123
         sut.socket(socket, didRead: data, withTag: tag)
+        
+        XCTAssert(delegateStub.didReadDataCalled)
+        XCTAssertEqual(delegateStub.didReadDataParameters?.sender, sut)
+        XCTAssertEqual(delegateStub.didReadDataParameters?.data, data)
+        XCTAssertEqual(delegateStub.didReadDataParameters?.tag, tag)
     }
     
     func test_didWriteDataPassedToDelegate() {
@@ -177,19 +182,15 @@ class TCPConnectionTests: XCTestCase {
     }
     
     func test_disconnectedWithErrorPassedToDelegate() {
-        enum MyError: Error, Equatable {
+        enum MyError: Error {
             case failure
-            
-            static func ==(_ lhs: MyError, rhs: MyError) -> Bool {
-                return true
-            }
         }
         
         let error = MyError.failure
         sut.socketDidDisconnect(socket, withError: error)
         XCTAssert(delegateStub.disconnectedWithErrorCalled)
         XCTAssertEqual(delegateStub.disconnectedWithErrorParameters?.sender, sut)
-        XCTAssertEqual(delegateStub.disconnectedWithErrorParameters?.error as? MyError, error)
+        XCTAssertNotNil(delegateStub.disconnectedWithErrorParameters?.error as? MyError)
     }
     
     func test_connectedFlag() {
