@@ -45,6 +45,10 @@ public class TorrentClient {
     let clientId = TorrentPeer.makePeerId()
     
     public init(metaInfo: TorrentMetaInfo, rootDirectory: String) {
+        
+        let downloadDirectory = rootDirectory + "/" + metaInfo.sensibleDownloadDirectoryName()
+        try! TorrentFileManager.prepareRootDirectory(downloadDirectory, forTorrentMetaInfo: metaInfo)
+
         self.metaInfo = metaInfo
         self.torrentServer = TorrentServer(infoHash: metaInfo.infoHash, clientId: clientId)
         self.progressManager = TorrentProgressManager(metaInfo: metaInfo, rootDirectory: rootDirectory)        
@@ -52,7 +56,6 @@ public class TorrentClient {
                                               infoHash: metaInfo.infoHash,
                                               bitFieldSize: metaInfo.info.pieces.count)
         
-        // TODO: listen on this port
         trackerManager = TorrentTrackerManager(metaInfo: metaInfo, clientId: clientId, port: torrentServer.port)
         
         trackerManager.delegate = self

@@ -120,23 +120,30 @@ extension TorrentFileManager {
 // Save/Load progress
 extension TorrentFileManager {
     
+    private static func sanitizedFileName(from infoHash: Data) -> String {
+        let base64EncodedString = String(asciiData: infoHash.base64EncodedData())!
+        let sanitizedString = base64EncodedString
+            .replacingOccurrences(of: "/", with: "_")
+        return sanitizedString + ".torrentprogress"
+    }
+    
     static func saveProgressBitfield(_ bitfield: BitField, infoHash: Data) {
-        let fileName = String(asciiData: infoHash.base64EncodedData())!
-        let documentsPath = NSSearchPathForDirectoriesInDomains(.documentDirectory,
+        let fileName = sanitizedFileName(from: infoHash)
+        let documentsPath = NSSearchPathForDirectoriesInDomains(.cachesDirectory,
                                                                 .userDomainMask,
                                                                 true)[0] as String
         let documentsUrl = URL(fileURLWithPath: documentsPath, isDirectory: true)
-        let fileURL = documentsUrl.appendingPathComponent("torrent_progress.bin", isDirectory: false)
+        let fileURL = documentsUrl.appendingPathComponent(fileName, isDirectory: false)
         try? bitfield.toData().write(to: fileURL)
     }
     
     static func loadSavedProgressBitfield(infoHash: Data) -> BitField? {
-        let fileName = String(asciiData: infoHash.base64EncodedData())!
-        let documentsPath = NSSearchPathForDirectoriesInDomains(.documentDirectory,
+        let fileName = sanitizedFileName(from: infoHash)
+        let documentsPath = NSSearchPathForDirectoriesInDomains(.cachesDirectory,
                                                                 .userDomainMask,
                                                                 true)[0] as String
         let documentsUrl = URL(fileURLWithPath: documentsPath, isDirectory: true)
-        let fileURL = documentsUrl.appendingPathComponent("torrent_progress.bin", isDirectory: false)
+        let fileURL = documentsUrl.appendingPathComponent(fileName, isDirectory: false)
         if let data = try? Data(contentsOf: fileURL) {
             return BitField(data: data)
         }

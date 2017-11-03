@@ -23,10 +23,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         pathRoot = pathRoot + "/Torrent Downloads/"
         
         print(pathRoot)
-        
-        let downloadDirectory = pathRoot + "/" + metaInfo.sensibleDownloadDirectoryName()
-        try! TorrentFileManager.prepareRootDirectory(downloadDirectory, forTorrentMetaInfo: metaInfo)
-        
+                
         torrentClient = TorrentClient(metaInfo: metaInfo, rootDirectory: pathRoot)
         
         window = UIWindow(frame: UIScreen.main.bounds)
