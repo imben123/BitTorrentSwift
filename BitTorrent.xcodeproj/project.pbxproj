@@ -193,7 +193,7 @@
 		B514DD961F40DC8300C932F8 /* LancasterPics.torrent */ = {isa = PBXFileReference; lastKnownFileType = file; path = LancasterPics.torrent; sourceTree = "<group>"; };
 		B514DD991F40DCCA00C932F8 /* BigTorrentTest.torrent */ = {isa = PBXFileReference; lastKnownFileType = file; path = BigTorrentTest.torrent; sourceTree = "<group>"; };
 		B514DD9B1F40DD1B00C932F8 /* URL.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URL.swift; sourceTree = "<group>"; };
-		B514DD9F1F40DFC000C932F8 /* Data.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; name = Data.bin; path = "../../../../../../Library/Developer/CoreSimulator/Devices/BB5761CA-9F0E-4CAF-97A8-22BA0F3CA49D/data/Documents/Data.bin"; sourceTree = "<group>"; };
+		B514DD9F1F40DFC000C932F8 /* Data.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = Data.bin; sourceTree = "<group>"; };
 		B514DDA31F40E96100C932F8 /* CombinedNetworkSpeedTracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CombinedNetworkSpeedTracker.swift; sourceTree = "<group>"; };
 		B51638921F0EE9B6009E563E /* TCPConnection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TCPConnection.swift; sourceTree = "<group>"; };
 		B51638941F0EEAA4009E563E /* TCPConnectionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TCPConnectionTests.swift; sourceTree = "<group>"; };
