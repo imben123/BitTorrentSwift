@@ -107,7 +107,7 @@ extension TorrentUDPTracker: UDPConnectionDelegate {
     
     func udpConnection(_ sender: UDPConnectionProtocol, receivedData data: Data, fromHost host: String) {
         
-        let action = Data(data[0..<4])
+        let action = data.correctingIndicies[0..<4]
         
         log("Got response from UDP tracker \(host)")
         
@@ -125,8 +125,8 @@ extension TorrentUDPTracker: UDPConnectionDelegate {
     
     func parseConnectionResponse(_ response: Data) {
         
-        let transactionId = Data(response[4..<8])
-        let connectionId = Data(response[8..<16])
+        let transactionId = response.correctingIndicies[4..<8]
+        let connectionId = response.correctingIndicies[8..<16]
         
         pendingAnnounce?(transactionId, connectionId)
         pendingAnnounce = nil
@@ -134,13 +134,13 @@ extension TorrentUDPTracker: UDPConnectionDelegate {
     
     private func parseAnnounceResponse(_ response: Data) {
         
-        let transactionId = Data(response[4..<8])
+        let transactionId = response.correctingIndicies[4..<8]
         guard pendingTransactionId == transactionId else { return }
         
-        let interval = response[8..<12].toUInt32()
-        let leechers = response[12..<16].toUInt32()
-        let seeders  = response[16..<20].toUInt32()
-        let peers = TorrentPeerInfo.peersInfoFromBinaryModel(response[20..<response.count])
+        let interval = response.correctingIndicies[8..<12].toUInt32()
+        let leechers = response.correctingIndicies[12..<16].toUInt32()
+        let seeders  = response.correctingIndicies[16..<20].toUInt32()
+        let peers = TorrentPeerInfo.peersInfoFromBinaryModel(response.correctingIndicies[20..<response.count])
         
         let response = TorrentTrackerResponse(peers: peers,
                                               numberOfPeersComplete: Int(seeders),
@@ -152,7 +152,7 @@ extension TorrentUDPTracker: UDPConnectionDelegate {
     
     private func parseErrorResponse(_ response: Data) {
         
-        if let errorMessage = String(data: response[8..<response.count], encoding: .utf8) {
+        if let errorMessage = String(data: response.correctingIndicies[8..<response.count], encoding: .utf8) {
             delegate?.torrentTracker(self, receivedErrorMessage: errorMessage)
         }
     }

@@ -29,13 +29,13 @@ class TorrentPeerMessageBuffer {
             return
         }
         
-        let lengthPrefix = buffer[0..<4]
+        let lengthPrefix = buffer.correctingIndicies[0..<4]
         let expectedLength = Int(UInt32(data: lengthPrefix)) + 4
         
         if buffer.count >= expectedLength {
-            let message = buffer[0..<expectedLength]
+            let message = buffer.correctingIndicies[0..<expectedLength]
             delegate?.peerMessageBuffer(self, gotMessage: message)
-            buffer = Data(buffer[expectedLength..<buffer.count])
+            buffer = buffer.correctingIndicies[expectedLength..<buffer.count]
             testIfBufferContainsCompletedMessage()
         }
     }

@@ -45,7 +45,7 @@ class TorrentUploadPieceRequest {
         
         let begin = request.begin
         let end = begin + request.length
-        let blockData = data[begin..<end]
+        let blockData = data.correctingIndicies[begin..<end]
         return TorrentBlock(piece: request.piece,
                             begin: request.begin,
                             length: request.length,

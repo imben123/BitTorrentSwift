@@ -44,7 +44,7 @@ class TorrentPeerHandshakeMessageBuffer {
             return
         }
         
-        let pstrLen = buffer[0]
+        let pstrLen = buffer.correctingIndicies[0]
         
         guard pstrLen == 19 else {
             delegate?.peerHandshakeMessageBuffer(self, gotBadHandshake: .protocolMismatch)
@@ -55,7 +55,7 @@ class TorrentPeerHandshakeMessageBuffer {
             return
         }
         
-        let protocolStringBytes = Data(buffer[1..<20])
+        let protocolStringBytes = buffer.correctingIndicies[1..<20]
         let protocolString = String(data: protocolStringBytes, encoding: .ascii)
         guard protocolString == "BitTorrent protocol" else {
             delegate?.peerHandshakeMessageBuffer(self, gotBadHandshake: .protocolMismatch)
@@ -66,7 +66,7 @@ class TorrentPeerHandshakeMessageBuffer {
             return
         }
         
-        let infoHash = Data(buffer[28..<48])
+        let infoHash = buffer.correctingIndicies[28..<48]
         
         guard infoHash == expectedInfoHash else {
             delegate?.peerHandshakeMessageBuffer(self, gotBadHandshake: .infoHashMismatch)
@@ -77,16 +77,16 @@ class TorrentPeerHandshakeMessageBuffer {
             return
         }
         
-        let peerId = Data(buffer[48..<68])
+        let peerId = Data(buffer.correctingIndicies[48..<68])
         
         guard expectedPeerId == nil || peerId == expectedPeerId else {
             delegate?.peerHandshakeMessageBuffer(self, gotBadHandshake: .peerIdMismatch)
             return
         }
         
-        let reservedBytes = buffer[20..<28]
-        let onDHT = (reservedBytes[7] & UInt8(1)) == 1
-        let remainingBytes = Data(buffer[68..<buffer.count])
+        let reservedBytes = Data(buffer.correctingIndicies[20..<28])
+        let onDHT = (reservedBytes.correctingIndicies[7] & UInt8(1)) == 1
+        let remainingBytes = Data(buffer.correctingIndicies[68..<buffer.count])
         
         delegate?.peerHandshakeMessageBuffer(self,
                                              gotHandshakeWithPeerId: peerId,

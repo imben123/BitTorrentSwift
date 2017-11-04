@@ -89,10 +89,10 @@ class TorrentUDPTrackerTests: XCTestCase {
             
             XCTAssertEqual(parameters.data.count, 16)
             
-            let protocolId = Data(parameters.data[0..<8])
+            let protocolId = Data(parameters.data.correctingIndicies[0..<8])
             XCTAssertEqual(protocolId, expectedProtocolId)
             
-            let action = Data(parameters.data[8..<12])
+            let action = Data(parameters.data.correctingIndicies[8..<12])
             XCTAssertEqual(action, expectedAction)
             
             XCTAssertEqual(parameters.host, "127.0.0.1")
@@ -113,10 +113,10 @@ class TorrentUDPTrackerTests: XCTestCase {
         XCTAssertEqual(udpConnection.sendCallCount, 2)
         if let parameters = udpConnection.sendDataParameters {
             
-            let connectionId = Data(parameters.data[0..<8])
+            let connectionId = parameters.data.correctingIndicies[0..<8]
             XCTAssertEqual(connectionId, expectedConnectionId)
             
-            let action = Data(parameters.data[8..<12])
+            let action = parameters.data.correctingIndicies[8..<12]
             XCTAssertEqual(action, expectedAction)
         }
     }
@@ -155,7 +155,7 @@ class TorrentUDPTrackerTests: XCTestCase {
         
         // Then
         XCTAssertEqual(udpConnection.sendCallCount, 2)
-        if let data = udpConnection.sendDataParameters?.data {
+        if let data = udpConnection.sendDataParameters?.data.correctingIndicies {
             
             XCTAssertEqual(data.count, 98)
             
@@ -260,7 +260,7 @@ class TorrentUDPTrackerTests: XCTestCase {
         performAnnounce(withEvent: .started)
         _ = simulateAcceptConnection()
         guard let connectionParameters = udpConnection.sendDataParameters else { return }
-        let oldTransactionId = connectionParameters.data[4..<8]
+        let oldTransactionId = connectionParameters.data.correctingIndicies[4..<8]
         
         // When
         performAnnounce(withEvent: .started)
@@ -276,7 +276,7 @@ class TorrentUDPTrackerTests: XCTestCase {
         // Given
         performAnnounce(withEvent: .started)
         guard let connectionParameters = udpConnection.sendDataParameters else { return }
-        let oldTransactionId = connectionParameters.data[4..<8]
+        let oldTransactionId = connectionParameters.data.correctingIndicies[4..<8]
         
         // When
         performAnnounce(withEvent: .started)
@@ -301,7 +301,7 @@ class TorrentUDPTrackerTests: XCTestCase {
                                   peers: Data) {
         
         guard let announceParameters = udpConnection.sendDataParameters else { return }
-        let transactionId = announceParameters.data[12..<16]
+        let transactionId = announceParameters.data.correctingIndicies[12..<16]
         
         simulateAnnounceResponse(interval: interval,
                                  leechers: leechers,
@@ -336,7 +336,7 @@ class TorrentUDPTrackerTests: XCTestCase {
             return connectionId
         }
         
-        let transactionId = connectionParameters.data[12..<16]
+        let transactionId = connectionParameters.data.correctingIndicies[12..<16]
         let actionData = UInt32(0).toData() // Action 0 = connection
         let connectionResponse = actionData + transactionId + connectionId
         
@@ -359,7 +359,7 @@ class TorrentUDPTrackerTests: XCTestCase {
     func simulateErrorResponse(withError errorString: String) {
         
         guard let connectionParameters = udpConnection.sendDataParameters else { return }
-        let transactionId = connectionParameters.data[4..<8]
+        let transactionId = connectionParameters.data.correctingIndicies[4..<8]
         
         let connectionResponse = UInt32(3).toData() +   // Action 3 = error
             transactionId +                             // Responding to transaction

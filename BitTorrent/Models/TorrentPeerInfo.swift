@@ -36,11 +36,11 @@ struct TorrentPeerInfo {
         let numberOfPeers = data.count / 6
         var result: [TorrentPeerInfo] = []
         for i in 0..<numberOfPeers {
-            let ip1 = Int(data[i*6])
-            let ip2 = Int(data[i*6 + 1])
-            let ip3 = Int(data[i*6 + 2])
-            let ip4 = Int(data[i*6 + 3])
-            let portBytes = [data[i*6 + 5], data[i*6 + 4]]
+            let ip1 = Int(data.correctingIndicies[i*6])
+            let ip2 = Int(data.correctingIndicies[i*6 + 1])
+            let ip3 = Int(data.correctingIndicies[i*6 + 2])
+            let ip4 = Int(data.correctingIndicies[i*6 + 3])
+            let portBytes = [data.correctingIndicies[i*6 + 5], data.correctingIndicies[i*6 + 4]]
             
             let port = UnsafePointer(portBytes).withMemoryRebound(to: UInt16.self, capacity: 1) {
                 $0.pointee

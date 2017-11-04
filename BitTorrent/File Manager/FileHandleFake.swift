@@ -24,7 +24,7 @@ class FileHandleFake: FileHandleProtocol {
     func readData(ofLength length: Int) -> Data {
         let beginOffset = currentOffset
         currentOffset += length
-        return data[beginOffset ..< currentOffset]
+        return data.correctingIndicies[beginOffset ..< currentOffset]
     }
     
     func write(_ data: Data) {

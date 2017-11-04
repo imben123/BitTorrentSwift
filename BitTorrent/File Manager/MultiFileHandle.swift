@@ -87,8 +87,8 @@ class MultiFileHandle: FileHandleProtocol {
     
     private func writeDataToEndOfCurrentFile(_ data: Data) -> Data? {
         guard remainingInCurrentFile >= data.count else {
-            let dataToWrite = data[0 ..< Int(remainingInCurrentFile)]
-            let remaining = data[Int(remainingInCurrentFile) ..< data.count]
+            let dataToWrite = data.correctingIndicies[0 ..< Int(remainingInCurrentFile)]
+            let remaining = data.correctingIndicies[Int(remainingInCurrentFile) ..< data.count]
             currentFile.handle.write(dataToWrite)
             incrementCurrentFile()
             return remaining

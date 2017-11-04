@@ -69,8 +69,8 @@ class TorrentPeerHandshakeMessageBufferTests: XCTestCase {
         data = data + infoHash // info_hash
         data = data + peerId // peer_id
         
-        let data1 = data[0..<30]
-        let data2 = data[30..<data.count]
+        let data1 = data.correctingIndicies[0..<30]
+        let data2 = data.correctingIndicies[30..<data.count]
         
         sut.appendData(data1)
         XCTAssertFalse(delegate.gotHandshakeCalled)

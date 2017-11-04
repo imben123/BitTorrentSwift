@@ -285,7 +285,7 @@ extension TorrentPeerCommunicator: TorrentPeerMessageBufferDelegate {
             return
         }
         
-        guard let message = Message(rawValue: data[4]) else {
+        guard let message = Message(rawValue: data.correctingIndicies[4]) else {
             if enableLogging { print("Peer sent malformed message") }
             delegate?.peerSentMalformedMessage(self)
             return
@@ -329,34 +329,34 @@ extension TorrentPeerCommunicator: TorrentPeerMessageBufferDelegate {
     }
     
     private func processHasPieceMessage(_ message: Data) {
-        let pieceIndex = Int(UInt32(data: message[5 ..< 9]))
+        let pieceIndex = Int(UInt32(data: message.correctingIndicies[5 ..< 9]))
         delegate?.peer(self, hasPiece: pieceIndex)
     }
     
     private func processBitFieldMessage(_ message: Data) {
-        let bitFieldData = message[5 ..< message.count]
+        let bitFieldData = message.correctingIndicies[5 ..< message.count]
         let bitField = BitField(data: bitFieldData)
         delegate?.peer(self, hasBitField: bitField)
     }
     
     private func processRequestMessage(_ message: Data) {
-        let pieceIndex = Int(UInt32(data: message[5 ..< 9]))
-        let begin = Int(UInt32(data: message[9 ..< 13]))
-        let length = Int(UInt32(data: message[13 ..< 17]))
+        let pieceIndex = Int(UInt32(data: message.correctingIndicies[5 ..< 9]))
+        let begin = Int(UInt32(data: message.correctingIndicies[9 ..< 13]))
+        let length = Int(UInt32(data: message.correctingIndicies[13 ..< 17]))
         delegate?.peer(self, requestedPiece: pieceIndex, begin: begin, length: length)
     }
     
     private func processSentPieceMessage(_ message: Data) {
-        let pieceIndex = Int(UInt32(data: message[5 ..< 9]))
-        let begin = Int(UInt32(data: message[9 ..< 13]))
-        let block = message[13 ..< message.count]
+        let pieceIndex = Int(UInt32(data: message.correctingIndicies[5 ..< 9]))
+        let begin = Int(UInt32(data: message.correctingIndicies[9 ..< 13]))
+        let block = message.correctingIndicies[13 ..< message.count]
         delegate?.peer(self, sentPiece: pieceIndex, begin: begin, block: block)
     }
     
     private func processCancelRequestMessage(_ message: Data) {
-        let pieceIndex = Int(UInt32(data: message[5 ..< 9]))
-        let begin = Int(UInt32(data: message[9 ..< 13]))
-        let length = Int(UInt32(data: message[13 ..< 17]))
+        let pieceIndex = Int(UInt32(data: message.correctingIndicies[5 ..< 9]))
+        let begin = Int(UInt32(data: message.correctingIndicies[9 ..< 13]))
+        let length = Int(UInt32(data: message.correctingIndicies[13 ..< 17]))
         delegate?.peer(self, cancelledRequestedPiece: pieceIndex, begin: begin, length: length)
     }
 }

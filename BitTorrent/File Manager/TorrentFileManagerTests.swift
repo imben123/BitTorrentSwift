@@ -42,7 +42,7 @@ class TorrentFileManagerTests: XCTestCase {
         sut.setPiece(at: 1, data: piece1)
         
         // Then
-        XCTAssertEqualData(fileHandle.data[pieceLength..<pieceLength*2], piece1)
+        XCTAssertEqualData(fileHandle.data.correctingIndicies[pieceLength..<pieceLength*2], piece1)
     }
     
     func test_canGetPiece() {

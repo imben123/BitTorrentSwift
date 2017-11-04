@@ -23,7 +23,7 @@ public struct BitField: Equatable {
     init(data: Data) {
         self.init(size: data.count*8)
         for byteIndex in 0 ..< data.count {
-            let byte = data[byteIndex]
+            let byte = data.correctingIndicies[byteIndex]
             for i in 0 ..< 8 {
                 if isNthBitSet(byte, n: i) {
                     set(at: byteIndex*8 + i)

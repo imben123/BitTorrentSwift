@@ -24,7 +24,7 @@ extension String {
         
         for i in 0..<data.count {
             
-            let byte = data[i]
+            let byte = data.correctingIndicies[i]
             
             if byte == asciiSpace {
                 result.append("%20")
