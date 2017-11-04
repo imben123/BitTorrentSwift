@@ -43,37 +43,37 @@ class MultFileHandleTests: XCTestCase {
     
     func test_readDataFromFirstFile() {
         let data = sut.readData(ofLength: 2)
-        XCTAssertEqualData(data, Data(bytes: [1,2]))
+        XCTAssertEqual(data, Data(bytes: [1,2]))
     }
     
     func test_scanAndReadData() {
         sut.seek(toFileOffset: 4)
         let data = sut.readData(ofLength: 3)
-        XCTAssertEqualData(data, Data(bytes: [5,6,7]))
+        XCTAssertEqual(data, Data(bytes: [5,6,7]))
     }
     
     func test_readDataOverMultipleFiles() {
         let data = sut.readData(ofLength: 5)
-        XCTAssertEqualData(data, Data(bytes: [1,2,3,4,5]))
+        XCTAssertEqual(data, Data(bytes: [1,2,3,4,5]))
     }
     
     func test_writeDataFromFirstFile() {
         sut.write(Data(bytes: [11, 12]))
         let fileHandle = fileHandles[0]
-        XCTAssertEqualData(fileHandle.data, Data(bytes: [11,12,3]))
+        XCTAssertEqual(fileHandle.data, Data(bytes: [11,12,3]))
     }
     
     func test_scanAndWriteData() {
         sut.seek(toFileOffset: 4)
         sut.write(Data(bytes: [15, 16, 17]))
         let fileHandle = fileHandles[1]
-        XCTAssertEqualData(fileHandle.data, Data(bytes: [4, 15, 16, 17, 8]))
+        XCTAssertEqual(fileHandle.data, Data(bytes: [4, 15, 16, 17, 8]))
     }
     
     func test_writeDataOverMultipleFiles() {
         sut.write(Data(bytes: [11, 12, 13, 14, 15]))
-        XCTAssertEqualData(fileHandles[0].data, Data(bytes: [11, 12, 13]))
-        XCTAssertEqualData(fileHandles[1].data, Data(bytes: [14, 15, 6, 7, 8]))
+        XCTAssertEqual(fileHandles[0].data, Data(bytes: [11, 12, 13]))
+        XCTAssertEqual(fileHandles[1].data, Data(bytes: [14, 15, 6, 7, 8]))
     }
     
     func test_synchroniseFileAppliesToAllFiles() {
@@ -86,6 +86,6 @@ class MultFileHandleTests: XCTestCase {
     func test_canReadLastBytes() {
         sut.seek(toFileOffset: 8)
         let data = sut.readData(ofLength: 2)
-        XCTAssertEqualData(data, Data(bytes: [9,10]))
+        XCTAssertEqual(data, Data(bytes: [9,10]))
     }
 }

@@ -151,7 +151,7 @@ class TorrentClientTests: XCTestCase {
         
         XCTAssert(progressManager.setDownloadedPieceCalled)
         if let setDownloadedPieceParameters = progressManager.setDownloadedPieceParameters {
-            XCTAssertEqualData(setDownloadedPieceParameters.piece, finalData)
+            XCTAssertEqual(setDownloadedPieceParameters.piece, finalData)
             XCTAssertEqual(setDownloadedPieceParameters.pieceIndex, 123)
         }
     }
@@ -181,7 +181,7 @@ class TorrentClientTests: XCTestCase {
         XCTAssertEqual(progressManager.getNextPieceToDownloadParameter!, bitField)
         XCTAssertEqual(result.pieceIndex, expected.pieceIndex)
         XCTAssertEqual(result.size, expected.size)
-        XCTAssertEqualData(result.checksum, expected.checksum)
+        XCTAssertEqual(result.checksum, expected.checksum)
     }
     
     func test_pieceForUploadComesFromFileManager() {
@@ -189,7 +189,7 @@ class TorrentClientTests: XCTestCase {
         progressManager.fileHandle.seek(toFileOffset: 0)
         progressManager.fileHandle.write(finalData)
         let result = sut.torrentPeerManager(peerManager, peerRequiresPieceAtIndex: 0)
-        XCTAssertEqualData(result, finalData)
+        XCTAssertEqual(result, finalData)
     }
     
     func test_peersConnectingFromServerAreAddedToPeerManager() {

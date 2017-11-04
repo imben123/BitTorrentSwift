@@ -363,7 +363,7 @@ class TorrentPeerManagerTests: XCTestCase {
         
         // Then
         XCTAssert(delegate.peerRequiresPieceAtIndexCalled)
-        XCTAssertEqualData(result, data)
+        XCTAssertEqual(result, data)
         if let parameters = delegate.peerRequiresPieceAtIndexParameters {
             XCTAssert(parameters.sender === sut)
             XCTAssertEqual(parameters.index, 123)

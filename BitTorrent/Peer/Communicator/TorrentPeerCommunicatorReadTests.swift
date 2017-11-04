@@ -41,7 +41,7 @@ extension TorrentPeerComminicatorTests {
         sut.tcpConnection(tcpConnection, didRead: handshakePayload, withTag: 0)
         XCTAssert(delegate.peerSentHandshakeCalled)
         XCTAssertEqual(delegate.peerSentHandshakeParameters?.sender, sut)
-        XCTAssertEqualData(delegate.peerSentHandshakeParameters?.peerId, peerId)
+        XCTAssertEqual(delegate.peerSentHandshakeParameters?.peerId, peerId)
         XCTAssertEqual(delegate.peerSentHandshakeParameters?.onDHT, false)
     }
     
@@ -140,7 +140,7 @@ extension TorrentPeerComminicatorTests {
         XCTAssertEqual(delegate.peerSentPieceParameters?.sender, sut)
         XCTAssertEqual(delegate.peerSentPieceParameters?.index, index)
         XCTAssertEqual(delegate.peerSentPieceParameters?.begin, begin)
-        XCTAssertEqualData(delegate.peerSentPieceParameters?.block, block)
+        XCTAssertEqual(delegate.peerSentPieceParameters?.block, block)
     }
     
     func test_delegateCalled_whenPeerSendsCancel() {

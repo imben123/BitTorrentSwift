@@ -35,7 +35,7 @@ class TorrentUploadPieceRequestTests: XCTestCase {
             
             let expected = Data(bytes: [ 1, 1, 1, 1, 1,
                                          2, 2, 2, 2, 2])
-            XCTAssertEqualData(result.data, expected)
+            XCTAssertEqual(result.data, expected)
         }
     }
     

@@ -90,14 +90,3 @@ fileprivate func XCTAssertEqualJsonObjects(_ element1: Any?, _ element2: Any?) {
         XCTFail()
     }
 }
-
-// This is a temporary fix as swift 4 has an issue comparing data obtained using the subscript operator
-func XCTAssertEqualData(_ lhs: Data?, _ rhs: Data?, file: StaticString = #file, line: UInt = #line) {
-    guard lhs != nil && rhs != nil else {
-        if lhs == nil || rhs == nil {
-            XCTFail("\(String(describing: lhs)) is not equal to \(String(describing: rhs))", file: file, line: line)
-        }
-        return
-    }
-    XCTAssertEqual(Data(lhs!), Data(rhs!), file: file, line: line)
-}

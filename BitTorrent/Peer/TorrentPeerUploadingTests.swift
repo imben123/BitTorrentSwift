@@ -59,7 +59,7 @@ class TorrentPeerUploadingTests: XCTestCase {
         if let sendPieceParameters = communicator.sendPieceParameters {
             XCTAssertEqual(sendPieceParameters.index, pieceIndex)
             XCTAssertEqual(sendPieceParameters.begin, begin)
-            XCTAssertEqualData(sendPieceParameters.block, data)
+            XCTAssertEqual(sendPieceParameters.block, data)
         }
     }
     

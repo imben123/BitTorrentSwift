@@ -57,8 +57,8 @@ class TorrentPeerHandshakeMessageBufferTests: XCTestCase {
         
         XCTAssert(delegate.gotHandshakeCalled)
         XCTAssert(delegate.gotHandshakeParameters?.sender === sut)
-        XCTAssertEqualData(delegate.gotHandshakeParameters?.peerId, peerId)
-        XCTAssertEqualData(delegate.gotHandshakeParameters?.remainingBuffer, Data())
+        XCTAssertEqual(delegate.gotHandshakeParameters?.peerId, peerId)
+        XCTAssertEqual(delegate.gotHandshakeParameters?.remainingBuffer, Data())
         XCTAssertEqual(delegate.gotHandshakeParameters?.onDHT, false)
     }
     
@@ -93,7 +93,7 @@ class TorrentPeerHandshakeMessageBufferTests: XCTestCase {
         sut.appendData(data)
         
         XCTAssert(delegate.gotHandshakeCalled)
-        XCTAssertEqualData(delegate.gotHandshakeParameters?.remainingBuffer, extraBytes)
+        XCTAssertEqual(delegate.gotHandshakeParameters?.remainingBuffer, extraBytes)
     }
     
     func test_canParseOnDHTPeerDiscoveryNetwork() {

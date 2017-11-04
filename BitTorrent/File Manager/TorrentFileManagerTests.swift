@@ -42,7 +42,7 @@ class TorrentFileManagerTests: XCTestCase {
         sut.setPiece(at: 1, data: piece1)
         
         // Then
-        XCTAssertEqualData(fileHandle.data.correctingIndicies[pieceLength..<pieceLength*2], piece1)
+        XCTAssertEqual(fileHandle.data.correctingIndicies[pieceLength..<pieceLength*2], piece1)
     }
     
     func test_canGetPiece() {
@@ -53,7 +53,7 @@ class TorrentFileManagerTests: XCTestCase {
         let result = sut.getPiece(at: 1)
         
         // Then
-        XCTAssertEqualData(result, piece1)
+        XCTAssertEqual(result, piece1)
     }
     
     // Really slow test (takes ~3.5 seconds)

@@ -105,7 +105,7 @@ class TorrentProgressManagerTests: XCTestCase {
         let data = Data(repeating: 1, count: metaInfo.info.length)
         sut.setDownloadedPiece(data, pieceIndex: 0)
         
-        XCTAssertEqualData(fileHandle.data, data)
+        XCTAssertEqual(fileHandle.data, data)
     }
     
     func test_doesNotReturnUnavailablePieces() {

@@ -118,7 +118,7 @@ class TorrentPeerMessageBufferTests: XCTestCase {
         sut.appendData(data1)
         XCTAssert(delegate.gotMessageCalled)
         XCTAssert(delegate.gotMessageParameters?.sender === sut)
-        XCTAssertEqualData(delegate.gotMessageParameters?.message, message1)
+        XCTAssertEqual(delegate.gotMessageParameters?.message, message1)
         
         delegate.gotMessageCalled = false
         delegate.gotMessageParameters = nil
@@ -137,7 +137,7 @@ class TorrentPeerMessageBufferTests: XCTestCase {
         
         sut.appendData(combined)
         XCTAssertEqual(delegate.gotMessageCallCount, 2)
-        XCTAssertEqualData(delegate.previousMessages.first!, message1)
-        XCTAssertEqualData(delegate.previousMessages.last!, message2)
+        XCTAssertEqual(delegate.previousMessages.first!, message1)
+        XCTAssertEqual(delegate.previousMessages.last!, message2)
     }
 }
