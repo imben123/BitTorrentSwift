@@ -111,7 +111,7 @@ extension TorrentFileManager {
         }
         
         let fileDescriptor: CInt = open(path, O_WRONLY, 0644) // open file for writing
-        lseek(fileDescriptor, off_t(length), SEEK_SET) // seek to the last byte ...
+        lseek(fileDescriptor, off_t(length - 1), SEEK_SET) // seek to the last byte ...
         write(fileDescriptor, UnsafeRawPointer([0]), 1) // ... and write a 0 to it
         close(fileDescriptor) // Now we have a file of the correct size we close it
     }
