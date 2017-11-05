@@ -79,10 +79,10 @@ class TorrentPeerCommunicatorDelegateStub: TorrentPeerCommunicatorDelegate {
     }
     
     var peerHasBitFieldCalled = false
-    var peerHasBitFieldParameters: (sender: TorrentPeerCommunicator, bitField: BitField)?
-    func peer(_ sender: TorrentPeerCommunicator, hasBitField bitField: BitField) {
+    var peerHasBitFieldParameters: (sender: TorrentPeerCommunicator, bitFieldData: Data)?
+    func peer(_ sender: TorrentPeerCommunicator, hasBitFieldData bitFieldData: Data) {
         peerHasBitFieldCalled = true
-        peerHasBitFieldParameters = (sender, bitField)
+        peerHasBitFieldParameters = (sender, bitFieldData)
     }
     
     var peerRequestedPieceCalled = false

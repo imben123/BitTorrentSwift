@@ -23,11 +23,13 @@ class TorrentProgressManager {
         let downloadDirectory = rootDirectory + "/" + metaInfo.sensibleDownloadDirectoryName()
         let fileManager = TorrentFileManager(metaInfo: metaInfo, rootDirectory: downloadDirectory)
         
+        let bitFieldSize = metaInfo.info.pieces.count
         let progress: TorrentProgress
-        if let bitField = TorrentFileManager.loadSavedProgressBitfield(infoHash: metaInfo.infoHash) {
+        if let bitField = TorrentFileManager.loadSavedProgressBitfield(infoHash: metaInfo.infoHash,
+                                                                       size: bitFieldSize) {
             progress = TorrentProgress(bitField: bitField)
         } else {
-            progress = TorrentProgress(size: metaInfo.info.pieces.count)
+            progress = TorrentProgress(size: bitFieldSize)
         }
         self.init(fileManager: fileManager, progress: progress)
     }

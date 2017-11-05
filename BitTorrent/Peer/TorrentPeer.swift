@@ -269,12 +269,14 @@ extension TorrentPeer: TorrentPeerCommunicatorDelegate {
     }
     
     func peer(_ sender: TorrentPeerCommunicator, hasPiece piece: Int) {
+        guard !currentProgress.isSet(at: piece) else { return }
         currentProgress.set(at: piece)
         delegate?.peerHasNewAvailablePieces(self)
     }
     
-    func peer(_ sender: TorrentPeerCommunicator, hasBitField bitField: BitField) {
-        currentProgress = bitField
+    func peer(_ sender: TorrentPeerCommunicator, hasBitFieldData bitFieldData: Data) {
+        let bitFieldSize = currentProgress.size
+        currentProgress = BitField(data: bitFieldData, size: bitFieldSize)
         delegate?.peerHasNewAvailablePieces(self)
     }
     

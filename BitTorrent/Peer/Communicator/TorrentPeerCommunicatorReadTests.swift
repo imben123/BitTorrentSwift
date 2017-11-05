@@ -107,7 +107,7 @@ extension TorrentPeerComminicatorTests {
         
         XCTAssert(delegate.peerHasBitFieldCalled)
         XCTAssertEqual(delegate.peerHasBitFieldParameters?.sender, sut)
-        XCTAssertEqual(delegate.peerHasBitFieldParameters?.bitField, bitField)
+        XCTAssertEqual(delegate.peerHasBitFieldParameters?.bitFieldData, bitField.toData())
     }
     
     func test_delegateCalled_whenPeerSendsRequest() {

@@ -20,16 +20,22 @@ public struct BitField: Equatable {
         self.value = Array(repeating: false, count: size)
     }
     
-    init(data: Data) {
-        self.init(size: data.count*8)
+    init(data: Data, size: Int) {
+        precondition(BitField.dataMatchesSize(size, data: data), "The number of bytes doesn't match the given size")
+        self.init(size: size)
         for byteIndex in 0 ..< data.count {
             let byte = data.correctingIndicies[byteIndex]
-            for i in 0 ..< 8 {
+            for i in 0 ..< 8 where (byteIndex*8 + i) < size {
                 if isNthBitSet(byte, n: i) {
                     set(at: byteIndex*8 + i)
                 }
             }
         }
+    }
+    
+    private static func dataMatchesSize(_ size: Int, data: Data) -> Bool {
+        let numberOfBytes = numberOfBytesForSize(size)
+        return data.count == numberOfBytes
     }
     
     fileprivate func isNthBitSet(_ byte: UInt8, n: Int) -> Bool {
@@ -51,12 +57,7 @@ public struct BitField: Equatable {
     }
     
     func toData() -> Data {
-        let numberOfBytes: Int
-        if (size % 8) == 0 {
-            numberOfBytes = size / 8
-        } else {
-            numberOfBytes = (size / 8) + 1
-        }
+        let numberOfBytes = BitField.numberOfBytesForSize(size)
         
         var bytes: [UInt8] = []
         for i in 0..<numberOfBytes {
@@ -87,6 +88,14 @@ public struct BitField: Equatable {
         return Data(bytes: bytes)
     }
     
+    private static func numberOfBytesForSize(_ size: Int) -> Int {
+        if (size % 8) == 0 {
+            return size / 8
+        } else {
+            return (size / 8) + 1
+        }
+    }
+    
     public static func ==(_ lhs: BitField, _ rhs: BitField) -> Bool {
         return lhs.value == rhs.value
     }
@@ -105,7 +114,7 @@ extension BitField: Collection {
     }
     
     public subscript(position: Index) -> (index: Int, isSet: Bool) {
-        precondition(indices.contains(position), "out of bounds")
+        precondition(position >= 0 && position < size, "out of bounds")
         return (index: position, isSet: value[position])
     }
     

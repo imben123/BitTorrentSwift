@@ -76,7 +76,7 @@ class BitFieldTests: XCTestCase {
         example.set(at: 14)
         
         let data = example.toData()
-        let result = BitField(data: data)
+        let result = BitField(data: data, size: 16)
         XCTAssertEqual(result, example)
     }
     

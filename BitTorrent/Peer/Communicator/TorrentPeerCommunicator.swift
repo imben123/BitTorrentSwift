@@ -19,7 +19,7 @@ protocol TorrentPeerCommunicatorDelegate: class {
     func peerBecameInterested(_ sender: TorrentPeerCommunicator)
     func peerBecameUninterested(_ sender: TorrentPeerCommunicator)
     func peer(_ sender: TorrentPeerCommunicator, hasPiece piece: Int)
-    func peer(_ sender: TorrentPeerCommunicator, hasBitField bitField: BitField)
+    func peer(_ sender: TorrentPeerCommunicator, hasBitFieldData bitFieldData: Data)
     func peer(_ sender: TorrentPeerCommunicator, requestedPiece index: Int, begin: Int, length: Int)
     func peer(_ sender: TorrentPeerCommunicator, sentPiece index: Int, begin: Int, block: Data)
     func peer(_ sender: TorrentPeerCommunicator, cancelledRequestedPiece index: Int, begin: Int, length: Int)
@@ -335,8 +335,7 @@ extension TorrentPeerCommunicator: TorrentPeerMessageBufferDelegate {
     
     private func processBitFieldMessage(_ message: Data) {
         let bitFieldData = message.correctingIndicies[5 ..< message.count]
-        let bitField = BitField(data: bitFieldData)
-        delegate?.peer(self, hasBitField: bitField)
+        delegate?.peer(self, hasBitFieldData: bitFieldData)
     }
     
     private func processRequestMessage(_ message: Data) {

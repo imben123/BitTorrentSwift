@@ -10,10 +10,10 @@
 
 class TorrentPeerDelegateStub: TorrentPeerDelegate {
     
-    var peerHasNewAvailablePiecesCalled = false
+    var peerHasNewAvailablePiecesCallCount = 0
     var peerHasNewAvailablePiecesParameter: TorrentPeer?
     func peerHasNewAvailablePieces(_ sender: TorrentPeer) {
-        peerHasNewAvailablePiecesCalled = true
+        peerHasNewAvailablePiecesCallCount += 1
         peerHasNewAvailablePiecesParameter = sender
     }
     

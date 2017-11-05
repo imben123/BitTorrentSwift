@@ -137,7 +137,7 @@ extension TorrentFileManager {
         try? bitfield.toData().write(to: fileURL)
     }
     
-    static func loadSavedProgressBitfield(infoHash: Data) -> BitField? {
+    static func loadSavedProgressBitfield(infoHash: Data, size: Int) -> BitField? {
         let fileName = sanitizedFileName(from: infoHash)
         let documentsPath = NSSearchPathForDirectoriesInDomains(.cachesDirectory,
                                                                 .userDomainMask,
@@ -145,7 +145,7 @@ extension TorrentFileManager {
         let documentsUrl = URL(fileURLWithPath: documentsPath, isDirectory: true)
         let fileURL = documentsUrl.appendingPathComponent(fileName, isDirectory: false)
         if let data = try? Data(contentsOf: fileURL) {
-            return BitField(data: data)
+            return BitField(data: data, size: size)
         }
         return nil
     }

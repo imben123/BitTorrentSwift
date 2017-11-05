@@ -111,17 +111,24 @@ class TorrentPeerTests: XCTestCase {
     }
     
     func test_delegateNotifiedAfterBitField() {
-        communicator.delegate?.peer(communicator, hasBitField: bitField)
+        communicator.delegate?.peer(communicator, hasBitFieldData: bitField.toData())
         
-        XCTAssert(delegate.peerHasNewAvailablePiecesCalled)
+        XCTAssertEqual(delegate.peerHasNewAvailablePiecesCallCount, 1)
         XCTAssert(delegate.peerHasNewAvailablePiecesParameter === sut)
     }
     
     func test_delegateNotifiedAfterHaveMessage() {
         communicator.delegate?.peer(communicator, hasPiece: 0)
         
-        XCTAssert(delegate.peerHasNewAvailablePiecesCalled)
+        XCTAssertEqual(delegate.peerHasNewAvailablePiecesCallCount, 1)
         XCTAssert(delegate.peerHasNewAvailablePiecesParameter === sut)
+    }
+    
+    func test_delegateNotNotifiedAfterRedundantHaveMessage() {
+        communicator.delegate?.peer(communicator, hasPiece: 0)
+        communicator.delegate?.peer(communicator, hasPiece: 0)
+
+        XCTAssertEqual(delegate.peerHasNewAvailablePiecesCallCount, 1)
     }
     
     // MARK: - Tracking peer status
@@ -129,7 +136,7 @@ class TorrentPeerTests: XCTestCase {
     func test_bitFieldRecorded() {
         var bitField = BitField(size: 10)
         bitField.set(at: 0)
-        communicator.delegate?.peer(communicator, hasBitField: bitField)
+        communicator.delegate?.peer(communicator, hasBitFieldData: bitField.toData())
         XCTAssertEqual(sut.currentProgress, bitField)
     }
     
