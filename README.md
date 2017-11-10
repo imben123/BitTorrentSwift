@@ -6,7 +6,7 @@ This is a working implementation of the basic BitTorrent protocol. Still a work 
 but for now it works! 🎉
 
 I decided to write this because I found it a interesting a challenging way to practise my iOS, it was a lot of fun to write, 
-and to demonstrate my ability to write good code!
+and to demonstrate how I write code.
 
 ### What can it do today?
 - It can download a torrent from other seeds/peers given a valid `.torrent` file.
